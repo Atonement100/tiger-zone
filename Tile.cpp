@@ -4,3 +4,7 @@ Tile::Tile(){
 
 
 }
+
+Tile::~Tile() {
+
+}

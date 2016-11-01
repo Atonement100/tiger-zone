@@ -4,3 +4,8 @@ Meeple::Meeple(){
 
 
 }
+
+Meeple::~Meeple() {
+
+
+}

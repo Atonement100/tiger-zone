@@ -4,3 +4,8 @@ PlayerState::PlayerState(){
 
 
 }
+
+PlayerState::~PlayerState() {
+
+
+}
