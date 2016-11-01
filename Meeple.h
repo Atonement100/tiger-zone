@@ -12,4 +12,4 @@ private:
 	int status,
 		ownerId;
 	BoardLocation location;	
-}
+};

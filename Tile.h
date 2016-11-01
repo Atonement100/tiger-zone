@@ -12,4 +12,4 @@ private:
 	int edges[NUM_TILE_EDGES]; 
 
 	rotateTile();
-}
+};

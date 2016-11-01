@@ -8,4 +8,4 @@ private:
 	int score;
 	//reference to current tile?
 	bool isWaiting; //Is waiting for turn?
-}
+};

@@ -14,4 +14,4 @@ private:
 	notifyTurn();
 	verifyMove();
 	drawTile();
-}
+};
