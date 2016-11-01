@@ -6,8 +6,7 @@
 #include "Tile.h"
 
 int main(){
-	std::cout << "test" << std::endl;
-	
-	
+	GameController gameController;
+
 	return 0;
 }

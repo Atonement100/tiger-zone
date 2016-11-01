@@ -3,17 +3,20 @@
 
 TileSetRetriever::TileSetRetriever(){
 
+	return;
 }
 
 TileSetRetriever::~TileSetRetriever() {
 
+	return;
 }
 
 std::vector<Tile> TileSetRetriever::FetchTileSet()
 {
 	std::vector<Tile> Deck = std::vector<Tile>();
 
-	Deck.push_back(Tile(false, false, false, true, [EdgeType::Plains, EdgeType::Plains, EdgeType::City, EdgeType::City]));
+	std::vector<int> Edges =  { EdgeType::Plains, EdgeType::Road, EdgeType::City, EdgeType::City };
+	Deck.push_back(Tile(false, false, false, true, Edges));
 
 	return Deck;
 }

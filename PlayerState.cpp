@@ -2,10 +2,10 @@
 
 PlayerState::PlayerState(){
 
-
+	return;
 }
 
 PlayerState::~PlayerState() {
 
-
+	return;
 }

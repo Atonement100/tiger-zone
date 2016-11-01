@@ -2,10 +2,10 @@
 
 Meeple::Meeple(){
 
-
+	return;
 }
 
 Meeple::~Meeple() {
 
-
+	return;
 }

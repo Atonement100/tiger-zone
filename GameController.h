@@ -2,6 +2,7 @@
 
 #include "Tile.h"
 #include "PlayerState.h"
+#include "TileSetRetriever.h"
 
 #ifndef GAMECONTROLLER_H
 #define GAMECONTROLLER_H
@@ -14,7 +15,7 @@ public:
 	GameController(); //Default constructor. May be reasonable to take in number of players..
 	~GameController();
 
-	InitializeGame();
+	void InitializeGame();
 
 private:
 	std::vector<Tile> gameBoard; 
@@ -23,10 +24,10 @@ private:
 	int currentPlayerID; //ID of player whose turn it currently is
 	int currentTile; //Most recently drawn tile, that is the tile to be played next
 
-	GetTileSet();
-	NotifyTurn();
-	VerifyMove();
-	DrawTile();
+	std::vector<Tile> GetTileSet();
+	void NotifyTurn();
+	void VerifyMove();
+	void DrawTile();
 };
 
 #endif //GAMECONTROLLER_H
