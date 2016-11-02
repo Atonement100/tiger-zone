@@ -1,7 +1,13 @@
+#include <iostream>
+
 #include "Tile.h"
 
 Tile::Tile(){
-
+	this->hasMonastery = false;
+	this->roadsEnd = false;
+	this->citiesAreIndependent = false;
+	this->hasShield = false;
+	this->edges = std::vector<int>(NUM_TILE_EDGES);
 	return;
 }
 

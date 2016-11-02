@@ -17,23 +17,14 @@ GameController::~GameController() {
 void GameController::InitializeGame() {
 	std::cout << "Retrieving tileset. . ." << std::endl;
 
-	GetTileSet();
-
-	std::vector<int> aa = tileStack[0].GetEdges();
-	for (std::vector<int>::iterator it = aa.begin(); it != aa.end(); it++) {
-		std::cout << aa[*it];
-	}
-
-	//std::cout << tileStack[0].GetEdges() << std::endl;
+	RetrieveTileStack();
 
 	return;
 }
 
-std::vector<Tile> GameController::GetTileSet() {
+void GameController::RetrieveTileStack() {
 	TileSetRetriever tileSetRetriver;
-	tileStack = tileSetRetriver.FetchTileSet();
+	tileStack = tileSetRetriver.ImportTileSet();
 
 	std::cout << "TileSet Retrieved. . ." << std::endl;
-
-	return tileStack;
 }

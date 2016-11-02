@@ -12,4 +12,3 @@ clean:
 
 $(TARGET): main.cpp
 	$(CC) $(CFLAGS) -o $(TARGET) $(SOURCE) 
-

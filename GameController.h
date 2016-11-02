@@ -24,7 +24,7 @@ private:
 	int currentPlayerID; //ID of player whose turn it currently is
 	int currentTile; //Most recently drawn tile, that is the tile to be played next
 
-	std::vector<Tile> GetTileSet();
+	void RetrieveTileStack();
 	void NotifyTurn();
 	void VerifyMove();
 	void DrawTile();

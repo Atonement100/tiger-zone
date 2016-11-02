@@ -26,7 +26,7 @@ private:
 		 roadsEnd,				//All roads connected to this tile may view this tile as an endpoint.
 		 citiesAreIndependent,  //There are cases when a tile may have 2 city edges, but these cities are independent of one another.
 		 hasShield;				//Increases value of tile by 1.
-	std::vector<int> edges;	//Array of edge types. 0 is North, 1 is East, 2 South, 3 West.
+	std::vector<int> edges;		//Array of edge types. 0 is North, 1 is East, 2 South, 3 West.
 								
 };
 
