@@ -21,8 +21,8 @@ private:
 	std::vector<Tile> gameBoard;
 	PlayerState playerStates[NUM_PLAYERS];
 	std::vector<Tile> tileStack; //Stack of all undrawn tiles
+	Tile currentTile; //Most recently drawn tile, that is the tile to be played next
 	int currentPlayerID; //ID of player whose turn it currently is
-	int currentTile; //Most recently drawn tile, that is the tile to be played next
 
 	void RetrieveTileStack();
 	void PrepareTileStack();

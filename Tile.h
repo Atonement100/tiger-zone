@@ -19,7 +19,7 @@ public:
 	~Tile();
 
 	/*Mutators*/
-	void RotateClockwise(int Rotations);	//Rotates 90 degrees times the number of rotations. 
+	void RotateClockwise(int rotations);	//Rotates 90 degrees times the number of rotations. 
 	
 	/*Accessors*/
 	std::vector<int> GetEdges();	
@@ -28,6 +28,9 @@ public:
 	bool GetCitiesAreIndependent();
 	bool GetHasShield();
 
+	void PrintTileInformation(bool printVerbose = false);
+
+	/*Operators*/
 	bool operator==(const Tile& tile);
 
 private:

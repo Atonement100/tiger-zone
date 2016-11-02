@@ -1,5 +1,6 @@
 #include <algorithm> //std::reverse
 #include <iostream>
+#include <string>
 
 #include "Tile.h"
 
@@ -27,13 +28,12 @@ Tile::~Tile() {
 	return;
 }
 
-void Tile::RotateClockwise(int Rotations)
-{
-	Rotations = Rotations % NUM_TILE_EDGES; //4 rotations is equivalent to zero, 5 to 1, etc.
+void Tile::RotateClockwise(int rotations) {
+	rotations = rotations % NUM_TILE_EDGES; //4 rotations is equivalent to zero, 5 to 1, etc.
 	
 	std::reverse(edges.begin(), edges.end());	//Simple and quick circular shift method
-	std::reverse(edges.begin(), edges.begin() + Rotations - 1);
-	std::reverse(edges.begin() + Rotations, edges.end());
+	std::reverse(edges.begin(), edges.begin() + rotations - 1);
+	std::reverse(edges.begin() + rotations, edges.end());
 
 	return;
 }
@@ -41,7 +41,7 @@ void Tile::RotateClockwise(int Rotations)
 
 std::vector<int> Tile::GetEdges()
 {
-	return edges;
+	return this->edges;
 }
 
 bool Tile::GetHasMonastery()
@@ -62,6 +62,34 @@ bool Tile::GetCitiesAreIndependent()
 bool Tile::GetHasShield()
 {
 	return this->hasShield;
+}
+
+std::string ConvertEdgeEnumToString(int edgeValue) {
+	switch (edgeValue) {
+	case EdgeType::Plains: return "Plains";
+	case EdgeType::Road: return "Road";
+	case EdgeType::City: return "City";
+	default: return "";
+	}
+}
+
+void Tile::PrintTileInformation(bool printVerbose) {
+	if (printVerbose) {
+		std::cout << "Has Monastery: " << ((hasMonastery) ? "Yes" : "No") << std::endl
+			<< "Roads End Here: " << ((roadsEnd) ? "Yes" : "No") << std::endl
+			<< "Independent Cities: " << ((citiesAreIndependent) ? "Yes" : "No") << std::endl
+			<< "Has Shield: " << ((hasShield) ? "Yes" : "No") << std::endl
+			<< "North: " << ConvertEdgeEnumToString(edges[0]) << std::endl
+			<< "East: " << ConvertEdgeEnumToString(edges[1]) << std::endl
+			<< "South: " << ConvertEdgeEnumToString(edges[2]) << std::endl
+			<< "West: " << ConvertEdgeEnumToString(edges[3]) << std::endl;
+	}
+	else {
+		std::cout << hasMonastery << " " << roadsEnd << " " << citiesAreIndependent << " " << hasShield
+			<< " " << edges[0] << " " << edges[1] << " " << edges[2] << " " << edges[3] << std::endl;
+	}
+
+	return;
 }
 
 bool Tile::operator==(const Tile& tile) {
