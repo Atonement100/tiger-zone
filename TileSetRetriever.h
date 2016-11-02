@@ -10,7 +10,6 @@ class TileSetRetriever {
 public:
 	TileSetRetriever(); //Default constructor. May be reasonable to take in number of players..
 	~TileSetRetriever();
-
 	std::vector<Tile> ImportTileSet();
 
 private:

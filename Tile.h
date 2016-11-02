@@ -18,8 +18,13 @@ public:
 	Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool bHasShield, std::vector<int> Edges);
 	~Tile();
 
-	void RotateTileClockwise(int Rotations);	//Rotates 90 degrees times the number of rotations. 
-	std::vector<int> GetEdges();
+	/*Mutators*/
+	void RotateClockwise(int Rotations);	//Rotates 90 degrees times the number of rotations. 
+	
+	/*Accessors*/
+	std::vector<int> GetEdges();				
+
+	bool operator==(const Tile& tile);
 
 private:
 	bool hasMonastery,			//Tile contains a monastery, which may have a meeple placed on it, and is scored differently.
