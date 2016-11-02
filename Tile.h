@@ -4,6 +4,7 @@
 #define TILE_H
 
 #define NUM_TILE_EDGES 4
+#define UNKNOWN_TILE_TYPE '?'
 
 enum EdgeType {
 	Plains,
@@ -16,6 +17,7 @@ class Tile {
 public:
 	Tile(); //Default constructor. 
 	Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool bHasShield, std::vector<int> Edges);
+	Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool bHasShield, std::vector<int> Edges, char cTileType);
 	~Tile();
 
 	/*Mutators*/
@@ -34,6 +36,7 @@ public:
 	bool operator==(const Tile& tile);
 
 private:
+	char tileType;
 	bool hasMonastery,			//Tile contains a monastery, which may have a meeple placed on it, and is scored differently.
 		 roadsEnd,				//All roads connected to this tile may view this tile as an endpoint.
 		 citiesAreIndependent,  //There are cases when a tile may have 2 city edges, but these cities are independent of one another.

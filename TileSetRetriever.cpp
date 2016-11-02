@@ -21,9 +21,9 @@ std::vector<Tile> TileSetRetriever::ImportTileSet()
 }
 
 std::vector<Tile> TileSetRetriever::ImportTileSetFromFile() {
-	/* This processes a file for the tileset, expecting the file to be presented in the format:								*
-	 * Quantity of tile | Has Monastery | Roads End | Cities Independent | Has Shield | Edge 1 | Edge 2 | Edge 3 | Edge 4	*
-	 * Note the pipes are just for clarity of reading, the file should only have integers representing each value			*/
+	/* This processes a file for the tileset, expecting the file to be presented in the format:											*
+	 * Quantity of tile | Has Monastery | Roads End | Cities Independent | Has Shield | Edge 1 | Edge 2 | Edge 3 | Edge 4 | Tile Type	*
+	 * Note the pipes are just for clarity of reading, the file should only have integers representing each value						*/
 	std::ifstream tileSetFile;
 	tileSetFile.open("tileset.txt");
 
@@ -33,15 +33,19 @@ std::vector<Tile> TileSetRetriever::ImportTileSetFromFile() {
 	}
 
 	std::vector<Tile> tileSet = std::vector<Tile>();
-	std::vector<int> fileInput(9);
+	std::vector<int> fileInput(10);
 	while (tileSetFile >> fileInput[0]) { 
-		for (unsigned int Index = 1; Index < fileInput.size(); Index++) {
+		for (unsigned int Index = 1; Index < fileInput.size() - 1; Index++) {
 			tileSetFile >> fileInput[Index];
 		}
 
-		Tile currentInputTile(fileInput[1], fileInput[2], fileInput[3], fileInput[4], { fileInput[5], fileInput[6], fileInput[7], fileInput[8] });
-		for (int Quantity = fileInput[0]; Quantity > 0; Quantity--) {
+		tileSetFile.ignore();				//Special case since tile type is a char, not an int.
+		fileInput[9] = tileSetFile.get();
+
+		Tile currentInputTile(fileInput[1], fileInput[2], fileInput[3], fileInput[4], { fileInput[5], fileInput[6], fileInput[7], fileInput[8] }, (char)fileInput[9]);
+		while (fileInput[0] > 0) {
 			tileSet.push_back(currentInputTile);
+			fileInput[0]--;
 		}
 	}
 

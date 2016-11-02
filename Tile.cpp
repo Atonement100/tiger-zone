@@ -10,6 +10,7 @@ Tile::Tile(){
 	this->citiesAreIndependent = false;
 	this->hasShield = false;
 	this->edges = std::vector<int>(NUM_TILE_EDGES);
+	this->tileType = UNKNOWN_TILE_TYPE;
 	return;
 }
 
@@ -20,6 +21,18 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 	this->citiesAreIndependent = bCitiesAreIndependent;
 	this->hasShield = bHasShield;
 	this->edges = Edges;
+	this->tileType = UNKNOWN_TILE_TYPE;
+	return;
+}
+
+Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool bHasShield, std::vector<int> Edges, char cTileType)
+{
+	this->hasMonastery = bHasMonastery;
+	this->roadsEnd = bRoadsEnd;
+	this->citiesAreIndependent = bCitiesAreIndependent;
+	this->hasShield = bHasShield;
+	this->edges = Edges;
+	this->tileType = cTileType;
 	return;
 }
 
@@ -75,7 +88,8 @@ std::string ConvertEdgeEnumToString(int edgeValue) {
 
 void Tile::PrintTileInformation(bool printVerbose) {
 	if (printVerbose) {
-		std::cout << "Has Monastery: " << ((hasMonastery) ? "Yes" : "No") << std::endl
+		std::cout << "Tile Type: " << tileType << std::endl
+			<< "Has Monastery: " << ((hasMonastery) ? "Yes" : "No") << std::endl
 			<< "Roads End Here: " << ((roadsEnd) ? "Yes" : "No") << std::endl
 			<< "Independent Cities: " << ((citiesAreIndependent) ? "Yes" : "No") << std::endl
 			<< "Has Shield: " << ((hasShield) ? "Yes" : "No") << std::endl
@@ -85,7 +99,7 @@ void Tile::PrintTileInformation(bool printVerbose) {
 			<< "West: " << ConvertEdgeEnumToString(edges[3]) << std::endl;
 	}
 	else {
-		std::cout << hasMonastery << " " << roadsEnd << " " << citiesAreIndependent << " " << hasShield
+		std::cout << tileType << " " << hasMonastery << " " << roadsEnd << " " << citiesAreIndependent << " " << hasShield
 			<< " " << edges[0] << " " << edges[1] << " " << edges[2] << " " << edges[3] << std::endl;
 	}
 
@@ -93,6 +107,14 @@ void Tile::PrintTileInformation(bool printVerbose) {
 }
 
 bool Tile::operator==(const Tile& tile) {
+	if (this->tileType != UNKNOWN_TILE_TYPE) {
+		return (this->tileType == tile.tileType));
+	}
+	
+	//If we do not control the input tiles, then we will need to /always/ use the following code
+	//which more thoroughly checks if two tiles are equal. As long as we know the tile types are
+	//valid then we can simply compare those, as above.
+
 	if (this->hasMonastery == tile.hasMonastery &&
 		this->roadsEnd == tile.roadsEnd &&
 		this->citiesAreIndependent == tile.citiesAreIndependent &&
