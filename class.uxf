@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>80</y>
+      <w>210</w>
+      <h>410</h>
+    </coordinates>
+    <panel_attributes>Object:Tile
+--
+hasMonstery: boolean
+edge : int[ ]
+roadsEnd: boolean
+Shield: boolean
+
+
+
+
+
+--
+tileRotate()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>490</x>
+      <y>470</y>
+      <w>210</w>
+      <h>370</h>
+    </coordinates>
+    <panel_attributes>Object: Meeple
+--
+type: int (0,inPlace)(1,farmer)(2,city)(3,road)
+ownerId: int
+Location: int x, int y
+
+
+
+
+
+
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>240</x>
+      <y>450</y>
+      <w>210</w>
+      <h>290</h>
+    </coordinates>
+    <panel_attributes>Object:PlayerState
+--
+
+playerId: int
+Score: int
+currenttile :Tile
+isWaiting: boolean
+
+
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>490</x>
+      <y>80</y>
+      <w>210</w>
+      <h>360</h>
+    </coordinates>
+    <panel_attributes>Object: gameHandler
+--
+gameBoard: tile [ ] [ ]
+players= Player[ ]
+drawpile
+currentPlayerId: int
+currentPlayerTile: Tile
+
+
+
+
+
+--
+initGame()
+notifyTurn() -&gt;find all
+verifyMove() //placing the tile and making the move
+-&gt; check if legal move 
+	- if not let the player try again
+	- if so place tile and progress the game
+			- draw nad notify turn
+drawTile()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>240</x>
+      <y>80</y>
+      <w>220</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>/AbstractClass: MoveVerification/
+--
+checkViableTileLocation()
+checkViableMeepleLocation()
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>560</y>
+      <w>210</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>Object: playerController
+--
+
+
+--
+sendMove()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>240</x>
+      <y>340</y>
+      <w>210</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Objects: Score
+--
+--
+
+scoreTile()</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
