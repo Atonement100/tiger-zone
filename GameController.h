@@ -18,16 +18,21 @@ public:
 	void InitializeGame();
 
 private:
-	std::vector<Tile> gameBoard; 
-	PlayerState playerStates[NUM_PLAYERS]; 
+	std::vector<Tile> gameBoard;
+	PlayerState playerStates[NUM_PLAYERS];
 	std::vector<Tile> tileStack; //Stack of all undrawn tiles
 	int currentPlayerID; //ID of player whose turn it currently is
 	int currentTile; //Most recently drawn tile, that is the tile to be played next
 
 	void RetrieveTileStack();
+	void PrepareTileStack();
 	void NotifyTurn();
 	void VerifyMove();
 	void DrawTile();
+
+	void PrintTileStack();
+
+	const Tile startingTile = Tile(false, false, false, false, {0, 1, 2, 1});
 };
 
 #endif //GAMECONTROLLER_H
