@@ -22,7 +22,11 @@ public:
 	void RotateClockwise(int Rotations);	//Rotates 90 degrees times the number of rotations. 
 	
 	/*Accessors*/
-	std::vector<int> GetEdges();				
+	std::vector<int> GetEdges();	
+	bool GetHasMonastery();
+	bool GetRoadsEnd();
+	bool GetCitiesAreIndependent();
+	bool GetHasShield();
 
 	bool operator==(const Tile& tile);
 

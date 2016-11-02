@@ -1,5 +1,5 @@
-#include <iostream>
 #include <algorithm> //std::reverse
+#include <iostream>
 
 #include "Tile.h"
 
@@ -42,6 +42,26 @@ void Tile::RotateClockwise(int Rotations)
 std::vector<int> Tile::GetEdges()
 {
 	return edges;
+}
+
+bool Tile::GetHasMonastery()
+{
+	return this->hasMonastery;
+}
+
+bool Tile::GetRoadsEnd()
+{
+	return this->roadsEnd;
+}
+
+bool Tile::GetCitiesAreIndependent()
+{
+	return this->citiesAreIndependent;
+}
+
+bool Tile::GetHasShield()
+{
+	return this->hasShield;
 }
 
 bool Tile::operator==(const Tile& tile) {
