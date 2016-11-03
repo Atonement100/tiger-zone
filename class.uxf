@@ -4,81 +4,95 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>0</x>
-      <y>80</y>
-      <w>210</w>
+      <x>40</x>
+      <y>0</y>
+      <w>280</w>
       <h>410</h>
     </coordinates>
     <panel_attributes>Object:Tile
 --
 hasMonstery: boolean
-edge : int[ ]
-roadsEnd: boolean
-Shield: boolean
-
-
+EdgeType : int[ ]
+hasMonastery boolean
+roadsEnd boolean
+hasShield boolean
+citiesAreIndependent boolean
+edges vector&lt;int&gt;
 
 
 
 --
-tileRotate()</panel_attributes>
+Tile();
+~Tile();
+RotateClockwise()
+GetEdges();	
+GetHasMonastery();
+GetRoadsEnd();
+GetCitiesAreIndependent();
+GetHasShield();</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>490</x>
-      <y>470</y>
+      <x>780</x>
+      <y>560</y>
       <w>210</w>
       <h>370</h>
     </coordinates>
     <panel_attributes>Object: Meeple
 --
-type: int (0,inPlace)(1,farmer)(2,city)(3,road)
-ownerId: int
-Location: int x, int y
+status int
+ownerId int
+location BoardLocation
 
 
 
 
 
 
---</panel_attributes>
+
+--
+Meeple()
+~Meeple()</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>240</x>
-      <y>450</y>
+      <x>1290</x>
+      <y>10</y>
       <w>210</w>
       <h>290</h>
     </coordinates>
     <panel_attributes>Object:PlayerState
 --
 
-playerId: int
-Score: int
-currenttile :Tile
-isWaiting: boolean
+playerId int
+score int
+isWaiting boolean
 
 
---</panel_attributes>
+--
+
+PlayerState();
+~PlayerState();
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>490</x>
-      <y>80</y>
-      <w>210</w>
-      <h>360</h>
+      <x>390</x>
+      <y>0</y>
+      <w>360</w>
+      <h>460</h>
     </coordinates>
-    <panel_attributes>Object: gameHandler
+    <panel_attributes>Object: GameController
 --
+NUM_PLAYERS = 2
 gameBoard: tile [ ] [ ]
-players= Player[ ]
-drawpile
+players= Player[NUM_PALYERS]
 currentPlayerId: int
 currentPlayerTile: Tile
 
@@ -87,61 +101,37 @@ currentPlayerTile: Tile
 
 
 --
-initGame()
+RetrieveTileStack()
+PrepareTileStack()
+NotifyTurn()
+VerifyMove()
+DrawTile()
+
+/*initGame()
 notifyTurn() -&gt;find all
 verifyMove() //placing the tile and making the move
 -&gt; check if legal move 
 	- if not let the player try again
 	- if so place tile and progress the game
 			- draw nad notify turn
-drawTile()</panel_attributes>
+drawTile()*/</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>240</x>
-      <y>80</y>
-      <w>220</w>
-      <h>220</h>
-    </coordinates>
-    <panel_attributes>/AbstractClass: MoveVerification/
---
-checkViableTileLocation()
-checkViableMeepleLocation()
-
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>0</x>
-      <y>560</y>
+      <x>980</x>
+      <y>0</y>
       <w>210</w>
-      <h>210</h>
+      <h>230</h>
     </coordinates>
-    <panel_attributes>Object: playerController
---
-
-
---
-sendMove()</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>240</x>
-      <y>340</y>
-      <w>210</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>Objects: Score
+    <panel_attributes>Object:TileSetRetriver.h
 --
 --
-
-scoreTile()</panel_attributes>
+TileSetRetriever();
+~TileSetRetriver();
+ImportTileSet();
+ImportTileSetFromFile()</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>
