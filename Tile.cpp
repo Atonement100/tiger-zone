@@ -108,7 +108,7 @@ void Tile::PrintTileInformation(bool printVerbose) {
 
 bool Tile::operator==(const Tile& tile) {
 	if (this->tileType != UNKNOWN_TILE_TYPE) {
-		return (this->tileType == tile.tileType));
+		return (this->tileType == tile.tileType);
 	}
 	
 	//If we do not control the input tiles, then we will need to /always/ use the following code
