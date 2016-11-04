@@ -35,6 +35,7 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 	this->hasShield = bHasShield;
 	this->edges = Edges;
 	this->tileNodes.resize(NUM_TILE_NODES);
+	this->tileType = cTileType;
 
 	//Count up number of road edges and city edges, for use later
 	int numRoads = 0, numCities = 0;
@@ -77,7 +78,29 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 		}
 	}
 
-	this->tileType = cTileType;
+	if (numRoads == 2) {
+		for (unsigned int nodeIndex = 1; nodeIndex < this->tileNodes.size() - 1; nodeIndex += NODES_PER_EDGE) {
+			if (tileNodes[nodeIndex].nodeType == TerrainType::Road) {
+				for (unsigned int targetNodeIndex = nodeIndex; targetNodeIndex < this->tileNodes.size(); nodeIndex += NODES_PER_EDGE) {
+					if (tileNodes[targetNodeIndex].nodeType == TerrainType::Road) {
+						tileNodes[nodeIndex].connectedNodes.push_back(&tileNodes[targetNodeIndex]);
+						tileNodes[targetNodeIndex].connectedNodes.push_back(&tileNodes[nodeIndex]);
+						goto roadStop; //Break all the way out of nested loop
+					}
+				}
+			}
+		}
+	}
+	roadStop:
+	if (numCities == 2 && !this->citiesAreIndependent) {
+		for (unsigned int nodeIndex = 1; nodeIndex < this->tileNodes.size() - 1; nodeIndex += NODES_PER_EDGE) {
+			if (tileNodes[nodeIndex].nodeType == TerrainType::City && tileNodes[nodeIndex + NODES_PER_EDGE * 2].nodeType == TerrainType::City) {
+				tileNodes[nodeIndex].connectedNodes.push_back(&tileNodes[nodeIndex + NODES_PER_EDGE * 2]);
+				tileNodes[nodeIndex + NODES_PER_EDGE * 2].connectedNodes.push_back(&tileNodes[nodeIndex]);
+			}
+		}
+	}
+	
 	return;
 }
 
