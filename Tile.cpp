@@ -11,7 +11,7 @@ Tile::Tile(){
 	this->citiesAreIndependent = false;
 	this->hasShield = false;
 	this->edges = std::vector<int>(NUM_TILE_EDGES);
-	this->tileNodes = std::vector<GraphNode>(NUM_TILE_NODES);
+	this->tileNodes = std::vector<GraphNode*>(NUM_TILE_NODES);
 	this->tileType = UNKNOWN_TILE_TYPE;
 	return;
 }
@@ -47,41 +47,40 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 	//Handles the creation of each node, one edge at a time, as well as identifying features ending
 	for (unsigned int edgeIndex = 0; edgeIndex < this->edges.size(); edgeIndex++) {
 		//First and third nodes are always plains if the edge is not a city, and a city if the edge is a city. Second node is always equal to edge type.
-		tileNodes[edgeIndex * (NODES_PER_EDGE)] = (edges[edgeIndex] == TerrainType::City) ? GraphNode(TerrainType::City) : GraphNode(TerrainType::Plains);
-		tileNodes[edgeIndex * (NODES_PER_EDGE) + 1] = GraphNode(edges[edgeIndex]);
-		tileNodes[edgeIndex * (NODES_PER_EDGE) + 2] = (edges[edgeIndex] == TerrainType::City) ? GraphNode(TerrainType::City) : GraphNode(TerrainType::Plains);
+		tileNodes[edgeIndex * (NODES_PER_EDGE)] = (edges[edgeIndex] == TerrainType::City) ? new GraphNode(TerrainType::City) : new GraphNode(TerrainType::Plains);
+		tileNodes[edgeIndex * (NODES_PER_EDGE) + 1] = new GraphNode(edges[edgeIndex]);
+		tileNodes[edgeIndex * (NODES_PER_EDGE) + 2] = (edges[edgeIndex] == TerrainType::City) ? new GraphNode(TerrainType::City) : new GraphNode(TerrainType::Plains);
 
-		if (this->roadsEnd) tileNodes[edgeIndex * (NODES_PER_EDGE)+1].featureEnd = true;
+		if (this->roadsEnd) tileNodes[edgeIndex * (NODES_PER_EDGE)+1]->featureEnd = true;
 
 		if (edges[edgeIndex] == TerrainType::City && (this->citiesAreIndependent || numCities == 1)) {
 			for (unsigned int subIndex = 0; subIndex < NODES_PER_EDGE; subIndex++) {
-				tileNodes[edgeIndex * NODES_PER_EDGE + subIndex].featureEnd = true;
+				tileNodes[edgeIndex * NODES_PER_EDGE + subIndex]->featureEnd = true;
 			}
 		}
 		else if (edges[edgeIndex] == TerrainType::Road && (this->roadsEnd || numRoads == 1)) {
-			tileNodes[edgeIndex * NODES_PER_EDGE + 1].featureEnd = true;
+			tileNodes[edgeIndex * NODES_PER_EDGE + 1]->featureEnd = true;
 		}
 	}
-	tileNodes[NUM_TILE_NODES - 1] = this->hasMonastery ? GraphNode(TerrainType::Monastery) : GraphNode(TerrainType::None);
+	tileNodes[NUM_TILE_NODES - 1] = this->hasMonastery ? new GraphNode(TerrainType::Monastery) : new GraphNode(TerrainType::None);
 
 	//Handles linking all adjacent nodes within a tile that need to be linked
 	for (unsigned int nodeIndex = 0; nodeIndex < this->tileNodes.size() - 1; nodeIndex++) { //-1 because this part should handle only outer nodes
-		if (this->citiesAreIndependent && this->tileNodes[nodeIndex].nodeType == TerrainType::City && (nodeIndex + 1) % NODES_PER_EDGE == 0) { // Identifies corners of tiles
+		if (this->citiesAreIndependent && this->tileNodes[nodeIndex]->nodeType == TerrainType::City && (nodeIndex + 1) % NODES_PER_EDGE == 0) { // Identifies corners of tiles
 			continue;
 		}
 
-		auto currNode = &this->tileNodes[nodeIndex];
-		auto nextNode = &this->tileNodes[(nodeIndex + 1) % (NUM_TILE_NODES - 1)];
+		GraphNode* currNode = this->tileNodes[nodeIndex];
+		GraphNode* nextNode = this->tileNodes[(nodeIndex + 1) % (NUM_TILE_NODES - 1)];
 
 		if (currNode->nodeType == nextNode->nodeType) {
-			std::cout << "edge: " << edges[nodeIndex / NODES_PER_EDGE] << " curr node: " << currNode->nodeType << " next node " << nextNode->nodeType << std::endl;
+			std::cout << "edge: " << edges[nodeIndex / NODES_PER_EDGE] << " curr node: " << currNode << " next node " << nextNode << std::endl;
 			currNode->connectedNodes.push_back(nextNode);
 			nextNode->connectedNodes.push_back(currNode);
-			std::cout << "edge: " << edges[nodeIndex / NODES_PER_EDGE] << " curr node: " << currNode->connectedNodes.back()->nodeType << " next node " << nextNode->connectedNodes.back()->nodeType << std::endl;
+			std::cout << "edge: " << edges[nodeIndex / NODES_PER_EDGE] << " curr node: " << currNode->connectedNodes.back() << " next node " << nextNode->connectedNodes.back() << std::endl;
 		}
 	}
-	std::cout << std::endl << std::endl;
-	
+	/*
 	if (numRoads == 2) {
 		for (unsigned int nodeIndex = 1; nodeIndex < this->tileNodes.size() - 1; nodeIndex += NODES_PER_EDGE) {
 			if (tileNodes[nodeIndex].nodeType == TerrainType::Road) {
@@ -104,7 +103,7 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 			}
 		}
 	}
-	
+	*/
 	return;
 }
 
@@ -186,10 +185,12 @@ void Tile::PrintTileNodeInformation(bool printVerbose) {
 	if (printVerbose) {
 		std::cout << "NW " << std::endl;
 		for (unsigned int Index = 0; Index < tileNodes.size(); Index++) {
-			std::cout << tileNodes[Index].nodeType << " -> ";
-			for (GraphNode* node : tileNodes[Index].connectedNodes) {
+			std::cout << tileNodes[Index]->nodeType << " -> ";
+			
+			for (GraphNode* node : tileNodes[Index]->connectedNodes) {
 				std::cout << node->nodeType << ", ";
 			}
+
 			std::cout << std::endl;
 		}
 	}
@@ -197,7 +198,7 @@ void Tile::PrintTileNodeInformation(bool printVerbose) {
 		std::cout << "NW ";
 		for (unsigned int Index = 0; Index < tileNodes.size(); Index++) {
 			if (Index % NODES_PER_EDGE == 0) std::cout << " ";
-			std::cout << tileNodes[Index].nodeType;
+			std::cout << tileNodes[Index]->nodeType;
 		}
 		std::cout << std::endl;
 	}

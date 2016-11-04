@@ -17,8 +17,8 @@ enum TerrainType {
 };
 
 typedef struct GraphNode {
-	int nodeType;
-	bool featureEnd;
+	int nodeType = -1;
+	bool featureEnd = false;
 	std::vector<GraphNode*> connectedNodes;
 
 	GraphNode() {
@@ -31,6 +31,7 @@ typedef struct GraphNode {
 		this->connectedNodes = std::vector<GraphNode*>();
 		return;
 	}
+	
 } GraphNode;
 
 class Tile {
@@ -64,7 +65,7 @@ private:
 		 citiesAreIndependent,  //There are cases when a tile may have 2 city edges, but these cities are independent of one another.
 		 hasShield;				//Increases value of tile by 1.
 	std::vector<int> edges;		//Array of edge types. 0 is North, 1 is East, 2 South, 3 West.
-	std::vector<GraphNode> tileNodes;
+	std::vector<GraphNode*> tileNodes;
 };
 
 #endif //TILE_H
