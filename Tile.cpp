@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 
+#include "Debug.h"
 #include "Tile.h"
 
 Tile::Tile(){
@@ -10,6 +11,7 @@ Tile::Tile(){
 	this->citiesAreIndependent = false;
 	this->hasShield = false;
 	this->edges = std::vector<int>(NUM_TILE_EDGES);
+	this->tileNodes = std::vector<GraphNode>(NUM_TILE_NODES);
 	this->tileType = UNKNOWN_TILE_TYPE;
 	return;
 }
@@ -32,6 +34,25 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 	this->citiesAreIndependent = bCitiesAreIndependent;
 	this->hasShield = bHasShield;
 	this->edges = Edges;
+
+	this->tileNodes.resize(NUM_TILE_NODES);
+	for (unsigned int edgeIndex = 0; edgeIndex < this->edges.size(); edgeIndex++) {
+		//First and third nodes are always plains if the edge is not a city, and a city if the edge is a city. Second node is always equal to edge type.
+		tileNodes[edgeIndex * (NUM_TILE_EDGES - 1)] = (edges[edgeIndex] == TerrainType::City) ? GraphNode(TerrainType::City) : GraphNode(TerrainType::Plains);
+		tileNodes[edgeIndex * (NUM_TILE_EDGES - 1) + 1] = GraphNode(edges[edgeIndex]);
+		tileNodes[edgeIndex * (NUM_TILE_EDGES - 1) + 2] = (edges[edgeIndex] == TerrainType::City) ? GraphNode(TerrainType::City) : GraphNode(TerrainType::Plains);
+	}
+	tileNodes[NUM_TILE_NODES-1] = GraphNode(TerrainType::Monastery);
+	
+	for (unsigned int nodeIndex = 0; nodeIndex < this->tileNodes.size() - 1; nodeIndex++) { //-1 because this part should handle only outer nodes
+		auto currNode = &this->tileNodes[nodeIndex];
+		auto nextNode = &this->tileNodes[(nodeIndex + 1) % (NUM_TILE_NODES - 1)];
+		if (currNode->nodeType == nextNode->nodeType) {
+			currNode->connectedNodes.push_back(nextNode);
+			nextNode->connectedNodes.push_back(currNode);
+		}
+	}
+
 	this->tileType = cTileType;
 	return;
 }
@@ -79,9 +100,9 @@ bool Tile::GetHasShield()
 
 std::string ConvertEdgeEnumToString(int edgeValue) {
 	switch (edgeValue) {
-	case EdgeType::Plains: return "Plains";
-	case EdgeType::Road: return "Road";
-	case EdgeType::City: return "City";
+	case TerrainType::Plains: return "Plains";
+	case TerrainType::Road: return "Road";
+	case TerrainType::City: return "City";
 	default: return "";
 	}
 }

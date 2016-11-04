@@ -23,7 +23,7 @@ void GameController::InitializeGame() {
 
 	while (tileStack.size() > 0) {
 		DrawTile();
-		currentTile.PrintTileInformation();
+		currentTile.PrintTileInformation(0);
 	}
 	return;
 }
@@ -50,7 +50,7 @@ void GameController::PrepareTileStack() {
 
 void GameController::PrintTileStack()
 {
-	std::cout << "M R C S 1 2 3 4" << std::endl;
+	std::cout << "T M R C S 1 2 3 4" << std::endl;
 	for (unsigned int tileIndex = 0; tileIndex < tileStack.size(); tileIndex++) {
 		Tile tempTileRef = tileStack[tileIndex];
 		tempTileRef.PrintTileInformation(0);
