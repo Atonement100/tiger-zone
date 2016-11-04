@@ -63,21 +63,25 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 		}
 	}
 	tileNodes[NUM_TILE_NODES - 1] = this->hasMonastery ? GraphNode(TerrainType::Monastery) : GraphNode(TerrainType::None);
-	
+
 	//Handles linking all adjacent nodes within a tile that need to be linked
 	for (unsigned int nodeIndex = 0; nodeIndex < this->tileNodes.size() - 1; nodeIndex++) { //-1 because this part should handle only outer nodes
-		if (this->citiesAreIndependent && (nodeIndex + 1) % NODES_PER_EDGE == 0) { // Identifies corners of tiles
+		if (this->citiesAreIndependent && this->tileNodes[nodeIndex].nodeType == TerrainType::City && (nodeIndex + 1) % NODES_PER_EDGE == 0) { // Identifies corners of tiles
 			continue;
 		}
 
 		auto currNode = &this->tileNodes[nodeIndex];
 		auto nextNode = &this->tileNodes[(nodeIndex + 1) % (NUM_TILE_NODES - 1)];
+
 		if (currNode->nodeType == nextNode->nodeType) {
+			std::cout << "edge: " << edges[nodeIndex / NODES_PER_EDGE] << " curr node: " << currNode->nodeType << " next node " << nextNode->nodeType << std::endl;
 			currNode->connectedNodes.push_back(nextNode);
 			nextNode->connectedNodes.push_back(currNode);
+			std::cout << "edge: " << edges[nodeIndex / NODES_PER_EDGE] << " curr node: " << currNode->connectedNodes.back()->nodeType << " next node " << nextNode->connectedNodes.back()->nodeType << std::endl;
 		}
 	}
-
+	std::cout << std::endl << std::endl;
+	
 	if (numRoads == 2) {
 		for (unsigned int nodeIndex = 1; nodeIndex < this->tileNodes.size() - 1; nodeIndex += NODES_PER_EDGE) {
 			if (tileNodes[nodeIndex].nodeType == TerrainType::Road) {
@@ -180,7 +184,14 @@ void Tile::PrintTileInformation(bool printVerbose) {
 
 void Tile::PrintTileNodeInformation(bool printVerbose) {
 	if (printVerbose) {
-
+		std::cout << "NW " << std::endl;
+		for (unsigned int Index = 0; Index < tileNodes.size(); Index++) {
+			std::cout << tileNodes[Index].nodeType << " -> ";
+			for (GraphNode* node : tileNodes[Index].connectedNodes) {
+				std::cout << node->nodeType << ", ";
+			}
+			std::cout << std::endl;
+		}
 	}
 	else {
 		std::cout << "NW ";

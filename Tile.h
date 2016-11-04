@@ -13,7 +13,7 @@ enum TerrainType {
 	Road,
 	City,
 	Monastery,
-	None
+	None = 9
 };
 
 typedef struct GraphNode {
