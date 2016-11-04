@@ -38,9 +38,9 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 	this->tileNodes.resize(NUM_TILE_NODES);
 	for (unsigned int edgeIndex = 0; edgeIndex < this->edges.size(); edgeIndex++) {
 		//First and third nodes are always plains if the edge is not a city, and a city if the edge is a city. Second node is always equal to edge type.
-		tileNodes[edgeIndex * (NUM_TILE_EDGES - 1)] = (edges[edgeIndex] == TerrainType::City) ? GraphNode(TerrainType::City) : GraphNode(TerrainType::Plains);
-		tileNodes[edgeIndex * (NUM_TILE_EDGES - 1) + 1] = GraphNode(edges[edgeIndex]);
-		tileNodes[edgeIndex * (NUM_TILE_EDGES - 1) + 2] = (edges[edgeIndex] == TerrainType::City) ? GraphNode(TerrainType::City) : GraphNode(TerrainType::Plains);
+		tileNodes[edgeIndex * (NODES_PER_EDGE)] = (edges[edgeIndex] == TerrainType::City) ? GraphNode(TerrainType::City) : GraphNode(TerrainType::Plains);
+		tileNodes[edgeIndex * (NODES_PER_EDGE) + 1] = GraphNode(edges[edgeIndex]);
+		tileNodes[edgeIndex * (NODES_PER_EDGE) + 2] = (edges[edgeIndex] == TerrainType::City) ? GraphNode(TerrainType::City) : GraphNode(TerrainType::Plains);
 	}
 	tileNodes[NUM_TILE_NODES-1] = GraphNode(TerrainType::Monastery);
 	
@@ -68,6 +68,10 @@ void Tile::RotateClockwise(int rotations) {
 	std::reverse(edges.begin(), edges.end());	//Simple and quick circular shift method
 	std::reverse(edges.begin(), edges.begin() + rotations - 1);
 	std::reverse(edges.begin() + rotations, edges.end());
+
+	std::reverse(tileNodes.begin(), tileNodes.end() - 1); //Don't include the last vector item (tile-center), it should never move!
+	std::reverse(tileNodes.begin(), tileNodes.begin() + (rotations * NODES_PER_EDGE) - 1);
+	std::reverse(tileNodes.begin() + (rotations * NODES_PER_EDGE), edges.end()-1)
 
 	return;
 }
