@@ -27,7 +27,7 @@ typedef struct GraphNode {
 	GraphNode(int iNodeType) {
 		this->nodeType = iNodeType;
 		this->featureEnd = false;
-		//this->connectedNodes = std::vector<std::unique_ptr<GraphNode>>(0);
+		this->connectedNodes = std::vector<GraphNode*>();
 		return;
 	}
 } GraphNode;
@@ -51,6 +51,7 @@ public:
 	bool GetHasShield();
 
 	void PrintTileInformation(bool printVerbose = false);
+	void PrintTileNodeInformation(bool printVerbose = false);
 
 	/*Operators*/
 	bool operator==(const Tile& tile);

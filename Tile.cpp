@@ -127,6 +127,20 @@ void Tile::PrintTileInformation(bool printVerbose) {
 	return;
 }
 
+void Tile::PrintTileNodeInformation(bool printVerbose) {
+	if (printVerbose) {
+
+	}
+	else {
+		std::cout << "NW ";
+		for (unsigned int Index = 0; Index < tileNodes.size(); Index++) {
+			if (Index % NODES_PER_EDGE == 0) std::cout << " ";
+			std::cout << tileNodes[Index].nodeType;
+		}
+		std::cout << std::endl;
+	}
+}
+
 bool Tile::operator==(const Tile& tile) {
 	if (this->tileType != UNKNOWN_TILE_TYPE) {
 		return (this->tileType == tile.tileType);
