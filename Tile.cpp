@@ -34,17 +34,41 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 	this->citiesAreIndependent = bCitiesAreIndependent;
 	this->hasShield = bHasShield;
 	this->edges = Edges;
-
 	this->tileNodes.resize(NUM_TILE_NODES);
+
+	//Count up number of road edges and city edges, for use later
+	int numRoads = 0, numCities = 0;
+	for (unsigned int edgeIndex = 0; edgeIndex < this->edges.size(); edgeIndex++) {
+		if (edges[edgeIndex] == TerrainType::City) numCities++;
+		else if (edges[edgeIndex] == TerrainType::Road) numRoads++;
+	}
+
+	//Handles the creation of each node, one edge at a time, as well as identifying features ending
 	for (unsigned int edgeIndex = 0; edgeIndex < this->edges.size(); edgeIndex++) {
 		//First and third nodes are always plains if the edge is not a city, and a city if the edge is a city. Second node is always equal to edge type.
 		tileNodes[edgeIndex * (NODES_PER_EDGE)] = (edges[edgeIndex] == TerrainType::City) ? GraphNode(TerrainType::City) : GraphNode(TerrainType::Plains);
 		tileNodes[edgeIndex * (NODES_PER_EDGE) + 1] = GraphNode(edges[edgeIndex]);
 		tileNodes[edgeIndex * (NODES_PER_EDGE) + 2] = (edges[edgeIndex] == TerrainType::City) ? GraphNode(TerrainType::City) : GraphNode(TerrainType::Plains);
+
+		if (this->roadsEnd) tileNodes[edgeIndex * (NODES_PER_EDGE)+1].featureEnd = true;
+
+		if (edges[edgeIndex] == TerrainType::City && (this->citiesAreIndependent || numCities == 1)) {
+			for (unsigned int subIndex = 0; subIndex < NODES_PER_EDGE; subIndex++) {
+				tileNodes[edgeIndex * NODES_PER_EDGE + subIndex].featureEnd = true;
+			}
+		}
+		else if (edges[edgeIndex] == TerrainType::Road && (this->roadsEnd || numRoads == 1)) {
+			tileNodes[edgeIndex * NODES_PER_EDGE + 1].featureEnd = true;
+		}
 	}
-	tileNodes[NUM_TILE_NODES-1] = GraphNode(TerrainType::Monastery);
+	tileNodes[NUM_TILE_NODES - 1] = this->hasMonastery ? GraphNode(TerrainType::Monastery) : GraphNode(TerrainType::None);
 	
+	//Handles linking all adjacent nodes within a tile that need to be linked
 	for (unsigned int nodeIndex = 0; nodeIndex < this->tileNodes.size() - 1; nodeIndex++) { //-1 because this part should handle only outer nodes
+		if (this->citiesAreIndependent && (nodeIndex + 1) % NODES_PER_EDGE == 0) { // Identifies corners of tiles
+			continue;
+		}
+
 		auto currNode = &this->tileNodes[nodeIndex];
 		auto nextNode = &this->tileNodes[(nodeIndex + 1) % (NUM_TILE_NODES - 1)];
 		if (currNode->nodeType == nextNode->nodeType) {
@@ -71,7 +95,7 @@ void Tile::RotateClockwise(int rotations) {
 
 	std::reverse(tileNodes.begin(), tileNodes.end() - 1); //Don't include the last vector item (tile-center), it should never move!
 	std::reverse(tileNodes.begin(), tileNodes.begin() + (rotations * NODES_PER_EDGE) - 1);
-	std::reverse(tileNodes.begin() + (rotations * NODES_PER_EDGE), edges.end()-1)
+	std::reverse(tileNodes.begin() + (rotations * NODES_PER_EDGE), tileNodes.end() - 1);
 
 	return;
 }

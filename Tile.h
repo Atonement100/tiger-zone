@@ -12,7 +12,8 @@ enum TerrainType {
 	Plains,
 	Road,
 	City,
-	Monastery
+	Monastery,
+	None
 };
 
 typedef struct GraphNode {
