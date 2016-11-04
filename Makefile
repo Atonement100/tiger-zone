@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -std=c++11
+CFLAGS = -Wall -std=c++14
 #Include -g if debugging through gdb, otherwise no need to add the overhead
 
 TARGET = tz

@@ -4,13 +4,35 @@
 #define TILE_H
 
 #define NUM_TILE_EDGES 4
+#define NODES_PER_EDGE 3
+#define NUM_TILE_NODES (NUM_TILE_EDGES*NODES_PER_EDGE + 1) //i.e. + 1 center node
 #define UNKNOWN_TILE_TYPE '?'
 
-enum EdgeType {
+enum TerrainType {
 	Plains,
 	Road,
-	City
+	City,
+	Monastery,
+	None = 9
 };
+
+typedef struct GraphNode {
+	int nodeType = -1;
+	bool featureEnd = false;
+	std::vector<GraphNode*> connectedNodes;
+
+	GraphNode() {
+		return;
+	}
+
+	GraphNode(int iNodeType) {
+		this->nodeType = iNodeType;
+		this->featureEnd = false;
+		this->connectedNodes = std::vector<GraphNode*>();
+		return;
+	}
+	
+} GraphNode;
 
 class Tile {
 
@@ -31,6 +53,7 @@ public:
 	bool GetHasShield();
 
 	void PrintTileInformation(bool printVerbose = false);
+	void PrintTileNodeInformation(bool printVerbose = false);
 
 	/*Operators*/
 	bool operator==(const Tile& tile);
@@ -42,7 +65,7 @@ private:
 		 citiesAreIndependent,  //There are cases when a tile may have 2 city edges, but these cities are independent of one another.
 		 hasShield;				//Increases value of tile by 1.
 	std::vector<int> edges;		//Array of edge types. 0 is North, 1 is East, 2 South, 3 West.
-								
+	std::vector<GraphNode*> tileNodes;
 };
 
 #endif //TILE_H
