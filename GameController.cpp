@@ -24,7 +24,7 @@ void GameController::InitializeGame() {
 	while (tileStack.size() > 0) {
 		DrawTile();
 		currentTile.PrintTileInformation(0);
-		currentTile.PrintTileNodeInformation(1);
+		//currentTile.PrintTileNodeInformation(1);
 	}
 	return;
 }

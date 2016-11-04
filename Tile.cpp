@@ -74,36 +74,36 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 		GraphNode* nextNode = this->tileNodes[(nodeIndex + 1) % (NUM_TILE_NODES - 1)];
 
 		if (currNode->nodeType == nextNode->nodeType) {
-			std::cout << "edge: " << edges[nodeIndex / NODES_PER_EDGE] << " curr node: " << currNode << " next node " << nextNode << std::endl;
 			currNode->connectedNodes.push_back(nextNode);
 			nextNode->connectedNodes.push_back(currNode);
-			std::cout << "edge: " << edges[nodeIndex / NODES_PER_EDGE] << " curr node: " << currNode->connectedNodes.back() << " next node " << nextNode->connectedNodes.back() << std::endl;
 		}
 	}
-	/*
+	
 	if (numRoads == 2) {
 		for (unsigned int nodeIndex = 1; nodeIndex < this->tileNodes.size() - 1; nodeIndex += NODES_PER_EDGE) {
-			if (tileNodes[nodeIndex].nodeType == TerrainType::Road) {
-				for (unsigned int targetNodeIndex = nodeIndex; targetNodeIndex < this->tileNodes.size(); nodeIndex += NODES_PER_EDGE) {
-					if (tileNodes[targetNodeIndex].nodeType == TerrainType::Road) {
-						tileNodes[nodeIndex].connectedNodes.push_back(&tileNodes[targetNodeIndex]);
-						tileNodes[targetNodeIndex].connectedNodes.push_back(&tileNodes[nodeIndex]);
+			if (tileNodes[nodeIndex]->nodeType == TerrainType::Road) {
+				for (unsigned int targetNodeIndex = nodeIndex + NODES_PER_EDGE; targetNodeIndex < this->tileNodes.size(); targetNodeIndex += NODES_PER_EDGE) {
+					if (tileNodes[targetNodeIndex]->nodeType == TerrainType::Road) {
+						tileNodes[nodeIndex]->connectedNodes.push_back(tileNodes[targetNodeIndex]);
+						tileNodes[targetNodeIndex]->connectedNodes.push_back(tileNodes[nodeIndex]);
 						goto roadStop; //Break all the way out of nested loop
 					}
 				}
 			}
 		}
 	}
-	roadStop:
+
+roadStop:
 	if (numCities == 2 && !this->citiesAreIndependent) {
 		for (unsigned int nodeIndex = 1; nodeIndex < this->tileNodes.size() - 1; nodeIndex += NODES_PER_EDGE) {
-			if (tileNodes[nodeIndex].nodeType == TerrainType::City && tileNodes[nodeIndex + NODES_PER_EDGE * 2].nodeType == TerrainType::City) {
-				tileNodes[nodeIndex].connectedNodes.push_back(&tileNodes[nodeIndex + NODES_PER_EDGE * 2]);
-				tileNodes[nodeIndex + NODES_PER_EDGE * 2].connectedNodes.push_back(&tileNodes[nodeIndex]);
+			if (tileNodes[nodeIndex]->nodeType == TerrainType::City && tileNodes[nodeIndex + NODES_PER_EDGE * 2]->nodeType == TerrainType::City) {
+				tileNodes[nodeIndex]->connectedNodes.push_back(tileNodes[nodeIndex + NODES_PER_EDGE * 2]);
+				tileNodes[nodeIndex + NODES_PER_EDGE * 2]->connectedNodes.push_back(tileNodes[nodeIndex]);
+				break;
 			}
 		}
 	}
-	*/
+	
 	return;
 }
 
