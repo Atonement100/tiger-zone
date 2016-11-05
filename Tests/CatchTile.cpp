@@ -44,8 +44,42 @@ TEST_CASE("Tile rotate function works properly", "[tile]") {
 	std::vector<int> StartingRotation = halfConnectedCityWithPlainsTiles.GetEdges();
 	std::vector<int> OneRotation = { TerrainType::City,	TerrainType::Plains, TerrainType::Plains, TerrainType::City };
 	std::vector<int> TwoRotations = { TerrainType::City, TerrainType::City, TerrainType::Plains, TerrainType::Plains };
+	std::vector<int> ThreeRotations = { TerrainType::Plains, TerrainType::City, TerrainType::City, TerrainType::Plains };
 	halfConnectedCityWithPlainsTiles.RotateClockwise(4);
 	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+	halfConnectedCityWithPlainsTiles.RotateClockwise(0);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+
+	halfConnectedCityWithPlainsTiles.RotateClockwise(1);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == OneRotation);
+	halfConnectedCityWithPlainsTiles.RotateClockwise(1);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == TwoRotations);
+	halfConnectedCityWithPlainsTiles.RotateClockwise(1);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == ThreeRotations);
+	halfConnectedCityWithPlainsTiles.RotateClockwise(1);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+
+	halfConnectedCityWithPlainsTiles.RotateClockwise(2);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == TwoRotations);
+	halfConnectedCityWithPlainsTiles.RotateClockwise(2);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+
 	halfConnectedCityWithPlainsTiles.RotateClockwise(3);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == ThreeRotations);
+	halfConnectedCityWithPlainsTiles.RotateClockwise(3);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == TwoRotations);
+	halfConnectedCityWithPlainsTiles.RotateClockwise(3);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == OneRotation);
+	halfConnectedCityWithPlainsTiles.RotateClockwise(3);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+
+	halfConnectedCityWithPlainsTiles.RotateClockwise(-1);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == ThreeRotations);
+	halfConnectedCityWithPlainsTiles.RotateClockwise(-3);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+
+	halfConnectedCityWithPlainsTiles.RotateClockwise(5);
+	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == OneRotation);
+	halfConnectedCityWithPlainsTiles.RotateClockwise(-5);
 	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
 }
