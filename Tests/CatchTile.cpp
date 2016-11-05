@@ -13,10 +13,10 @@ Tile allFalseTile(false, false, false, false, plainsEdges, 'B');
 Tile allPlainsTile(false, false, false, false, plainsEdges, 'C');
 Tile allCitiesTile(false, false, false, false, citiesEdges, 'D');
 Tile allRoadsTile(false, true, false, false, roadsEdges, 'E');
-Tile halfConnectedCityWithPlainsTiles(false, false, false, false, halfCityWithPlainsEdges, 'F');
-Tile halfUnconnectedCityWithPlainsTiles(false, false, true, false, halfCityWithPlainsEdges, 'G');
-Tile halfConnectedCityWithRoadsTiles(false, false, false, false, halfCityWithRoadsEdges, 'H');
-Tile halfUnconnectedCityWithRoadsTiles(false, false, true, false, halfCityWithRoadsEdges, 'I');
+Tile halfConnectedCityWithPlainsTile(false, false, false, false, halfCityWithPlainsEdges, 'F');
+Tile halfUnconnectedCityWithPlainsTile(false, false, true, false, halfCityWithPlainsEdges, 'G');
+Tile halfConnectedCityWithRoadsTile(false, false, false, false, halfCityWithRoadsEdges, 'H');
+Tile halfUnconnectedCityWithRoadsTile(false, false, true, false, halfCityWithRoadsEdges, 'I');
 
 TEST_CASE("Tile booleans are set properly", "[tile]"){
 	REQUIRE(allTrueTile.GetHasMonastery() == true);
@@ -33,53 +33,74 @@ TEST_CASE("Tile edges are set properly", "[tile]") {
 	REQUIRE(allPlainsTile.GetEdges() == plainsEdges);
 	REQUIRE(allCitiesTile.GetEdges() == citiesEdges);
 	REQUIRE(allRoadsTile.GetEdges() == roadsEdges);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == halfUnconnectedCityWithPlainsTiles.GetEdges());
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == halfCityWithPlainsEdges);
-	REQUIRE(halfConnectedCityWithRoadsTiles.GetEdges() == halfUnconnectedCityWithRoadsTiles.GetEdges());
-	REQUIRE(halfConnectedCityWithRoadsTiles.GetEdges() == halfCityWithRoadsEdges);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == halfUnconnectedCityWithPlainsTile.GetEdges());
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == halfCityWithPlainsEdges);
+	REQUIRE(halfConnectedCityWithRoadsTile.GetEdges() == halfUnconnectedCityWithRoadsTile.GetEdges());
+	REQUIRE(halfConnectedCityWithRoadsTile.GetEdges() == halfCityWithRoadsEdges);
 }
 
 TEST_CASE("Tile rotate function works properly", "[tile]") {
 	//Originally plains, plains, city, city
-	std::vector<int> StartingRotation = halfConnectedCityWithPlainsTiles.GetEdges();
+	std::vector<int> StartingRotation = halfConnectedCityWithPlainsTile.GetEdges();
 	std::vector<int> OneRotation = { TerrainType::City,	TerrainType::Plains, TerrainType::Plains, TerrainType::City };
 	std::vector<int> TwoRotations = { TerrainType::City, TerrainType::City, TerrainType::Plains, TerrainType::Plains };
 	std::vector<int> ThreeRotations = { TerrainType::Plains, TerrainType::City, TerrainType::City, TerrainType::Plains };
-	halfConnectedCityWithPlainsTiles.RotateClockwise(4);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
-	halfConnectedCityWithPlainsTiles.RotateClockwise(0);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+	halfConnectedCityWithPlainsTile.RotateClockwise(4);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == StartingRotation);
+	halfConnectedCityWithPlainsTile.RotateClockwise(0);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == StartingRotation);
 
-	halfConnectedCityWithPlainsTiles.RotateClockwise(1);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == OneRotation);
-	halfConnectedCityWithPlainsTiles.RotateClockwise(1);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == TwoRotations);
-	halfConnectedCityWithPlainsTiles.RotateClockwise(1);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == ThreeRotations);
-	halfConnectedCityWithPlainsTiles.RotateClockwise(1);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+	halfConnectedCityWithPlainsTile.RotateClockwise(1);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == OneRotation);
+	halfConnectedCityWithPlainsTile.RotateClockwise(1);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == TwoRotations);
+	halfConnectedCityWithPlainsTile.RotateClockwise(1);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == ThreeRotations);
+	halfConnectedCityWithPlainsTile.RotateClockwise(1);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == StartingRotation);
 
-	halfConnectedCityWithPlainsTiles.RotateClockwise(2);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == TwoRotations);
-	halfConnectedCityWithPlainsTiles.RotateClockwise(2);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+	halfConnectedCityWithPlainsTile.RotateClockwise(2);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == TwoRotations);
+	halfConnectedCityWithPlainsTile.RotateClockwise(2);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == StartingRotation);
 
-	halfConnectedCityWithPlainsTiles.RotateClockwise(3);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == ThreeRotations);
-	halfConnectedCityWithPlainsTiles.RotateClockwise(3);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == TwoRotations);
-	halfConnectedCityWithPlainsTiles.RotateClockwise(3);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == OneRotation);
-	halfConnectedCityWithPlainsTiles.RotateClockwise(3);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+	halfConnectedCityWithPlainsTile.RotateClockwise(3);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == ThreeRotations);
+	halfConnectedCityWithPlainsTile.RotateClockwise(3);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == TwoRotations);
+	halfConnectedCityWithPlainsTile.RotateClockwise(3);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == OneRotation);
+	halfConnectedCityWithPlainsTile.RotateClockwise(3);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == StartingRotation);
 
-	halfConnectedCityWithPlainsTiles.RotateClockwise(-1);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == ThreeRotations);
-	halfConnectedCityWithPlainsTiles.RotateClockwise(-3);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+	halfConnectedCityWithPlainsTile.RotateClockwise(-1);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == ThreeRotations);
+	halfConnectedCityWithPlainsTile.RotateClockwise(-3);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == StartingRotation);
 
-	halfConnectedCityWithPlainsTiles.RotateClockwise(5);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == OneRotation);
-	halfConnectedCityWithPlainsTiles.RotateClockwise(-5);
-	REQUIRE(halfConnectedCityWithPlainsTiles.GetEdges() == StartingRotation);
+	halfConnectedCityWithPlainsTile.RotateClockwise(5);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == OneRotation);
+	halfConnectedCityWithPlainsTile.RotateClockwise(-5);
+	REQUIRE(halfConnectedCityWithPlainsTile.GetEdges() == StartingRotation);
+}
+
+TEST_CASE("Tile equality operator works properly", "[tile]") {
+	Tile allTrueTileCopy = allTrueTile;
+	REQUIRE(allTrueTile == allTrueTileCopy);
+	allTrueTileCopy.RotateClockwise(2);
+	REQUIRE(allTrueTile == allTrueTileCopy);
+	
+	//This test is not actually a requirement of our system, but could be in the future
+	//if the tileset becomes not under our control
+	//Tile allTrueTileWithDifferentChar(true, true, true, true, plainsEdges, 'Z');
+	//REQUIRE(allTrueTile == allTrueTileWithDifferentChar);
+
+	REQUIRE_FALSE(allTrueTile == allFalseTile);
+	REQUIRE_FALSE(allTrueTile == allCitiesTile);
+	REQUIRE_FALSE(allTrueTile == halfConnectedCityWithPlainsTile);
+	
+	REQUIRE_FALSE(halfConnectedCityWithPlainsTile == halfUnconnectedCityWithPlainsTile);
+	REQUIRE_FALSE(halfConnectedCityWithRoadsTile == halfUnconnectedCityWithRoadsTile);
+
+	REQUIRE_FALSE(allTrueTile == Tile());
 }
