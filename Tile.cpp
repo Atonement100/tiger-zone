@@ -95,7 +95,7 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 
 roadStop:
 	if (numCities == 2 && !this->citiesAreIndependent) {
-		for (unsigned int nodeIndex = 1; nodeIndex < this->tileNodes.size() - 1; nodeIndex += NODES_PER_EDGE) {
+		for (unsigned int nodeIndex = 1; nodeIndex < (this->tileNodes.size() - 1)/2; nodeIndex += NODES_PER_EDGE) {
 			if (tileNodes[nodeIndex]->nodeType == TerrainType::City && tileNodes[nodeIndex + NODES_PER_EDGE * 2]->nodeType == TerrainType::City) {
 				tileNodes[nodeIndex]->connectedNodes.push_back(tileNodes[nodeIndex + NODES_PER_EDGE * 2]);
 				tileNodes[nodeIndex + NODES_PER_EDGE * 2]->connectedNodes.push_back(tileNodes[nodeIndex]);
