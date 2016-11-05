@@ -113,15 +113,18 @@ Tile::~Tile() {
 }
 
 void Tile::RotateClockwise(int rotations) {
-	rotations = rotations % NUM_TILE_EDGES; //4 rotations is equivalent to zero, 5 to 1, etc.
-	
-	std::reverse(edges.begin(), edges.end());	//Simple and quick circular shift method
-	std::reverse(edges.begin(), edges.begin() + rotations - 1);
-	std::reverse(edges.begin() + rotations, edges.end());
+	rotations %= NUM_TILE_EDGES; //4 rotations is equivalent to zero, 5 to 1, etc.
 
-	std::reverse(tileNodes.begin(), tileNodes.end() - 1); //Don't include the last vector item (tile-center), it should never move!
-	std::reverse(tileNodes.begin(), tileNodes.begin() + (rotations * NODES_PER_EDGE) - 1);
-	std::reverse(tileNodes.begin() + (rotations * NODES_PER_EDGE), tileNodes.end() - 1);
+	if (rotations == 0) return;
+	else if (rotations < 0) rotations += NUM_TILE_EDGES; //modulo operator can give negative numbers, add to num_tile_edges to offset this behavior
+
+	std::rotate(edges.begin(), edges.end() - rotations, edges.end());
+
+	std::rotate(tileNodes.begin(), tileNodes.end() - 1 - (rotations*NODES_PER_EDGE), tileNodes.end() - 1); //Don't include the last vector item (tile-center), it should never move!
+
+//	std::reverse(tileNodes.begin(), tileNodes.end() - 1); 
+//	std::reverse(tileNodes.begin(), tileNodes.begin() + (rotations * NODES_PER_EDGE));
+//	std::reverse(tileNodes.begin() + (rotations * NODES_PER_EDGE) + 1, tileNodes.end() - 1);
 
 	return;
 }
