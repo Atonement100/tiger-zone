@@ -9,7 +9,13 @@ typedef struct BoardLocation {
 class Meeple {
 
 public:
-	Meeple(); //Default constructor. 
+	Meeple(int ownerId); //Default constructor. 
+	void updateStatus(int status);
+	void updateLocation(int x, int y);
+	int getOwnerId();
+	int getLocationX();
+	int getLocationY();
+	int getStatus();
 	~Meeple();
 
 private:
