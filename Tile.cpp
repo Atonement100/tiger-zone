@@ -13,6 +13,7 @@ Tile::Tile(){
 	this->edges = std::vector<int>(NUM_TILE_EDGES);
 	this->tileNodes = std::vector<GraphNode*>(NUM_TILE_NODES);
 	this->tileType = UNKNOWN_TILE_TYPE;
+	this->rotations = 0;
 	return;
 }
 
@@ -24,6 +25,7 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 	this->hasShield = bHasShield;
 	this->edges = Edges;
 	this->tileType = UNKNOWN_TILE_TYPE;
+	this->rotations = 0;
 	return;
 }
 
@@ -36,6 +38,7 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 	this->edges = Edges;
 	this->tileNodes.resize(NUM_TILE_NODES);
 	this->tileType = cTileType;
+	this->rotations = 0;
 
 	//Count up number of road edges and city edges, for use later
 	int numRoads = 0, numCities = 0;
@@ -118,13 +121,11 @@ void Tile::RotateClockwise(int rotations) {
 	if (rotations == 0) return;
 	else if (rotations < 0) rotations += NUM_TILE_EDGES; //modulo operator can give negative numbers, add to num_tile_edges to offset this behavior
 
+	this->rotations = (this->rotations + rotations) % NUM_TILE_EDGES; //no need to check for negative, since this->rot always >= 0 and rotations is always >= 0 by now.
+
 	std::rotate(edges.begin(), edges.end() - rotations, edges.end());
 
 	std::rotate(tileNodes.begin(), tileNodes.end() - 1 - (rotations*NODES_PER_EDGE), tileNodes.end() - 1); //Don't include the last vector item (tile-center), it should never move!
-
-//	std::reverse(tileNodes.begin(), tileNodes.end() - 1); 
-//	std::reverse(tileNodes.begin(), tileNodes.begin() + (rotations * NODES_PER_EDGE));
-//	std::reverse(tileNodes.begin() + (rotations * NODES_PER_EDGE) + 1, tileNodes.end() - 1);
 
 	return;
 }

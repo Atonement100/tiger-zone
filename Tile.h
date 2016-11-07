@@ -66,6 +66,7 @@ private:
 		 hasShield;				//Increases value of tile by 1.
 	std::vector<int> edges;		//Array of edge types. 0 is North, 1 is East, 2 South, 3 West.
 	std::vector<GraphNode*> tileNodes;
+	int rotations; //This is not necessary for maintenance of the structure, but is a convenience for tile display.
 };
 
 #endif //TILE_H
