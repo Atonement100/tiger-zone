@@ -3,7 +3,7 @@ CFLAGS = -Wall -std=c++14
 #Include -g if debugging through gdb, otherwise no need to add the overhead
 
 TARGET = unitTests
-SOURCE = CatchConfig.cpp CatchTile.cpp ../Tile.cpp
+SOURCE = CatchConfig.cpp CatchTile.cpp ../Tile.cpp CatchMeeple.cpp ../Meeple.cpp
 
 all: $(TARGET)
 
