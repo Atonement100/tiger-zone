@@ -12,6 +12,7 @@ enum TerrainType {
 	Plains,
 	Road,
 	City,
+	Wall,
 	Monastery,
 	None = 9
 };
