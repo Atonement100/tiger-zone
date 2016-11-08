@@ -18,7 +18,7 @@ public:
 	void InitializeGame();
 
 private:
-	std::vector<Tile> gameBoard;
+    std::vector< std::vector<Tile> > gameBoard;
 	PlayerState playerStates[NUM_PLAYERS];
 	std::vector<Tile> tileStack; //Stack of all undrawn tiles
 	Tile currentTile; //Most recently drawn tile, that is the tile to be played next
