@@ -75,8 +75,7 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 			tileNodes[cityLocations[0] * NODES_PER_EDGE + subIndex]->nodeType = TerrainType::Wall;
 		}
 	}
-
-	if (numCities == 2 && !this->citiesAreIndependent) {
+	else if (numCities == 2 && !this->citiesAreIndependent) {
 	/*	for (unsigned int nodeIndex = 1; nodeIndex < (this->tileNodes.size() - 1) / 2; nodeIndex += NODES_PER_EDGE) {
 			if (tileNodes[nodeIndex]->nodeType == TerrainType::City && tileNodes[nodeIndex + NODES_PER_EDGE * 2]->nodeType == TerrainType::City) {
 				tileNodes[nodeIndex]->connectedNodes.push_back(tileNodes[nodeIndex + NODES_PER_EDGE * 2]);
@@ -97,6 +96,11 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 		}
 		else {
 			if (cityLocations[1] - cityLocations[0] == 3) { std::reverse(cityLocations.begin(), cityLocations.end()); }
+			//Set up inner corners, leave to be linked later
+			tileNodes[(cityLocations[0] + 1) * NODES_PER_EDGE - 1]->nodeType = TerrainType::Wall;
+			tileNodes[cityLocations[1] * NODES_PER_EDGE]->nodeType = TerrainType::Wall;
+
+			//Set up outer corners and link immediately
 			tileNodes[cityLocations[0] * NODES_PER_EDGE]->nodeType = TerrainType::Wall;
 			tileNodes[(cityLocations[1] + 1) * NODES_PER_EDGE - 1]->nodeType = TerrainType::Wall;
 
@@ -104,16 +108,29 @@ Tile::Tile(bool bHasMonastery, bool bRoadsEnd, bool bCitiesAreIndependent, bool 
 			tileNodes[(cityLocations[1] + 1) * NODES_PER_EDGE - 1]->connectedNodes.push_back(tileNodes[cityLocations[0] * NODES_PER_EDGE]);
 		}
 	}
-
-	if (numCities == 3) {
+	else if (numCities == 3) {
 		for (unsigned int nodeIndex = 2; nodeIndex < this->tileNodes.size() - 1; nodeIndex += NODES_PER_EDGE) {
-			if (tileNodes[nodeIndex]->nodeType == TerrainType::City && tileNodes[(nodeIndex + (NODES_PER_EDGE + 1)) % (NUM_TILE_NODES - 1)]->nodeType == TerrainType::Plains) {
+			//Set up the outer connections
+			if (tileNodes[nodeIndex]->nodeType == TerrainType::City && tileNodes[(nodeIndex + (NODES_PER_EDGE)) % (NUM_TILE_NODES - 1)]->nodeType == TerrainType::Plains) {
+				tileNodes[nodeIndex]->nodeType = TerrainType::Wall;
+				tileNodes[(nodeIndex + NODES_PER_EDGE + 1) % (NUM_TILE_NODES - 1)]->nodeType = TerrainType::Wall;
+
+				tileNodes[nodeIndex]->connectedNodes.push_back(tileNodes[(nodeIndex + NODES_PER_EDGE + 1) % (NUM_TILE_NODES - 1)]);
+				tileNodes[(nodeIndex + NODES_PER_EDGE + 1) % (NUM_TILE_NODES - 1)]->connectedNodes.push_back(tileNodes[nodeIndex]);
+			}
+
+			//Make sure inner connections are ready to be linked automatically later
+			if ((tileNodes[nodeIndex]->nodeType == TerrainType::City || tileNodes[nodeIndex]->nodeType == TerrainType::Wall)
+					&& (tileNodes[(nodeIndex + 1) % (NUM_TILE_NODES - 1)]->nodeType == TerrainType::City || tileNodes[(nodeIndex + 1) % (NUM_TILE_NODES - 1)]->nodeType == TerrainType::Wall)){
 				tileNodes[nodeIndex]->nodeType = TerrainType::Wall;
 				tileNodes[(nodeIndex + 1) % (NUM_TILE_NODES - 1)]->nodeType = TerrainType::Wall;
-
-				tileNodes[nodeIndex]->connectedNodes.push_back(tileNodes[(nodeIndex + 1) % (NUM_TILE_NODES - 1)]);
-				tileNodes[(nodeIndex + 1) % (NUM_TILE_NODES - 1)]->connectedNodes.push_back(tileNodes[nodeIndex]);
-				break;
+			}
+		}
+	}
+	else if (numCities == 4) {
+		for (unsigned int nodeIndex = 0; nodeIndex < this->tileNodes.size() - 1; nodeIndex++){
+			if (nodeIndex % NODES_PER_EDGE != 1){
+				tileNodes[nodeIndex]->nodeType = TerrainType::Wall; //Will be connected automatically later
 			}
 		}
 	}
@@ -230,7 +247,7 @@ void Tile::PrintTileNodeInformation(bool printVerbose) {
 	if (printVerbose) {
 		std::cout << "NW " << std::endl;
 		for (unsigned int Index = 0; Index < tileNodes.size(); Index++) {
-			std::cout << tileNodes[Index] << " -> ";
+			std::cout << tileNodes[Index]->nodeType << " " << tileNodes[Index] << " -> ";
 			
 			for (GraphNode* node : tileNodes[Index]->connectedNodes) {
 				std::cout << node << ", ";
