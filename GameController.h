@@ -26,6 +26,9 @@ private:
 
 	void RetrieveTileStack();
 	void PrepareTileStack();
+	void PrepareGameBoard();
+	void PlaceTile();
+	void PrintBoard();
 	void NotifyTurn();
 	void VerifyMove();
 	void DrawTile();
