@@ -1,9 +1,9 @@
 
 public class Location {
-	int R,C;
+	int Row, Col;
 	
-	Location(int R, int C){
-		this.R = R;
-		this.C = C;
+	Location(int Row, int Col){
+		this.Row = Row;
+		this.Col = Col;
 	}
 }

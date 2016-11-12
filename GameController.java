@@ -8,26 +8,26 @@ public class GameController {
 	ArrayList<Tile> player1Tiles;
 	ArrayList<Tile> player2Tiles;
 	
-	public GameController(int r, int c){
-		board = new Tile[r][c];
+	public GameController(int row, int col){
+		board = new Tile[row][col];
 	}
 	
 	boolean placeTile(Tile toPlace, Location loc){
-		int r = loc.R;
-		int c = loc.C;
+		int row = loc.Row;
+		int col = loc.Col;
 
-		int rB = board.length;
-		int cB = board[0].length;
+		int rowBoundary = board.length;
+		int colBoundary = board[0].length;
 		
 		//****************************************************************************************
 		//logic(simple) CHECKS
 		
-		if(r < 0 || r >= rB || c < 0 || c >= cB){
+		if(row < 0 || row >= rowBoundary || col < 0 || col >= colBoundary){
 			
 			return false;			//placement out of bounds;
 		}
 		
-		if(board[r][c] != null){
+		if(board[row][col] != null){
 			return false;			//if tile exists at loc
 		}
 		
@@ -42,10 +42,10 @@ public class GameController {
 		
 		boolean noNeighboringTile = false;		//CHANGE THIS TO FALSE/TRUE FOR TESTING PURPOSES
 		Tile[] neighborTiles = new Tile[4];		//N, E, S, W
-		for(int i = 0; i < 4; i++){
-			if(r+dx[i] >= 0 && r + dx[i] < rB && c + dy[i] >= 0 && c + dy[i] < cB){
-				neighborTiles[i] = board[r+dx[i]][c+dy[i]];
-				if(neighborTiles[i] != null){
+		for(int direction = 0; direction < 4; direction++){
+			if(row + dx[direction] >= 0 && row + dx[direction] < rowBoundary && col + dy[direction] >= 0 && col + dy[direction] < colBoundary){
+				neighborTiles[direction] = board[row + dx[direction]][col + dy[direction]];
+				if(neighborTiles[direction] != null){
 					noNeighboringTile = false;
 				}
 			}
@@ -57,28 +57,28 @@ public class GameController {
 		}
 		
 		//check compatibility with neighboring tiles
-		for(int i = 0; i < 4; i++){
+		for(int direction = 0; direction < 4; direction++){
 			
-			if(neighborTiles[i] == null) continue;			//if there is no tile, no check is necessary, continue
+			if(neighborTiles[direction] == null) continue;			//if there is no tile, no check is necessary, continue
 			
-			switch(i){
+			switch(direction){
 				case 0:										//check NORTH tile compatibility (north edge of this, south edge of other)
-					if(!toPlace.edges[i].isCompatible(neighborTiles[i].edges[2])){
+					if(!toPlace.edges[direction].isCompatible(neighborTiles[direction].edges[2])){
 						compatible = false;
 					}
 					break;
 				case 1:										//check EAST tile compatibility (east edge of this, west edge of other)
-					if(!toPlace.edges[i].isCompatible(neighborTiles[i].edges[3])){
+					if(!toPlace.edges[direction].isCompatible(neighborTiles[direction].edges[3])){
 						compatible = false;
 					}
 					break;
 				case 2:										//check SOUTH tile compatibility (south edge of this, north edge of other)
-					if(!toPlace.edges[i].isCompatible(neighborTiles[i].edges[0])){
+					if(!toPlace.edges[direction].isCompatible(neighborTiles[direction].edges[0])){
 						compatible = false;
 					}
 					break;
 				case 3:										//check WEST tile compatibility (west edge of this, east edge of other)
-					if(!toPlace.edges[i].isCompatible(neighborTiles[i].edges[1])){
+					if(!toPlace.edges[direction].isCompatible(neighborTiles[direction].edges[1])){
 						compatible = false;
 					}
 					break;
@@ -87,7 +87,7 @@ public class GameController {
 		
 		//if passed all compatibility checks, place tile
 		if(compatible){
-			board[r][c] = toPlace;	
+			board[row][col] = toPlace;
 			return true;
 		}
 		

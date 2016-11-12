@@ -25,56 +25,56 @@ public class TigerZone {
          * 
          */
         
-        for(int r = 0; r < 60; r++){
-            for(int c = 0; c < 60; c++){
+        for(int row = 0; row < 60; row++){
+            for(int col = 0; col < 60; col++){
 
-                if(game.board[r][c] == null){
+                if(game.board[row][col] == null){
                     System.out.print("     ");
                 }
                 else{
                     System.out.print(" ");
-                    for(int n = 0; n < game.board[r][c].edges[0].nodes.length; n++){
-                        System.out.print(game.board[r][c].edges[0].nodes[n].territory);
+                    for(int nodeIndex = 0; nodeIndex < game.board[row][col].edges[0].nodes.length; nodeIndex++){
+                        System.out.print(game.board[row][col].edges[0].nodes[nodeIndex].featureType.print());
                     }
                     System.out.print(" ");
                 }
             }
             System.out.println("");
-            for(int c = 0; c < 60; c++){
-            	if(game.board[r][c] == null){
+            for(int col = 0; col < 60; col++){
+            	if(game.board[row][col] == null){
             		System.out.print("     ");
             	}
             	else{
-            		System.out.print(game.board[r][c].edges[3].nodes[0].territory + "   " + game.board[r][c].edges[1].nodes[0].territory);
+            		System.out.print(game.board[row][col].edges[3].nodes[0].featureType.print() + "   " + game.board[row][col].edges[1].nodes[0].featureType.print());
             	}
             }
             System.out.println("");
-            for(int c = 0; c < 60; c++){
-            	if(game.board[r][c] == null){
+            for(int col = 0; col < 60; col++){
+            	if(game.board[row][col] == null){
             		System.out.print("     ");
             	}
             	else{
-            		System.out.print(game.board[r][c].edges[3].nodes[1].territory + " "+ game.board[r][c].middle.territory +" " + game.board[r][c].edges[1].nodes[1].territory);
+            		System.out.print(game.board[row][col].edges[3].nodes[1].featureType.print() + " "+ game.board[row][col].middle.featureType.print() +" " + game.board[row][col].edges[1].nodes[1].featureType.print());
             	}
             }
             System.out.println("");
-            for(int c = 0; c < 60; c++){
-            	if(game.board[r][c] == null){
+            for(int col = 0; col < 60; col++){
+            	if(game.board[row][col] == null){
             		System.out.print("     ");
             	}
             	else{
-            		System.out.print(game.board[r][c].edges[3].nodes[2].territory + "   " + game.board[r][c].edges[1].nodes[2].territory);
+            		System.out.print(game.board[row][col].edges[3].nodes[2].featureType.print() + "   " + game.board[row][col].edges[1].nodes[2].featureType.print());
             	}
             }
             System.out.println();
-            for(int c = 0; c < 60; c++){
-                if(game.board[r][c] == null){
+            for(int col = 0; col < 60; col++){
+                if(game.board[row][col] == null){
                     System.out.print("     ");
                 }
                 else{
                     System.out.print(" ");
-                    for(int n = 0; n < game.board[r][c].edges[2].nodes.length; n++){
-                        System.out.print(game.board[r][c].edges[2].nodes[n].territory);
+                    for(int nodeIndex = 0; nodeIndex < game.board[row][col].edges[2].nodes.length; nodeIndex++){
+                        System.out.print(game.board[row][col].edges[2].nodes[nodeIndex].featureType.print());
                     }
                     System.out.print(" ");
                 }

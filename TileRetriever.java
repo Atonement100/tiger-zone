@@ -7,7 +7,6 @@ public class TileRetriever {
 	public TileRetriever(String path){
 		tiles = new ArrayList<Tile>();
 
-		
 		String line = null;
 
 		try {
@@ -31,7 +30,7 @@ public class TileRetriever {
 	            tiles.add(new Tile(edgesBuffer, middleBuffer));
 	            
 			}
-			bufferedReader.close();         
+			bufferedReader.close();
 		}
 		catch(FileNotFoundException ex) {
 			System.out.println(

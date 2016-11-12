@@ -16,7 +16,7 @@ public class Tile {
 	
 	public void connectNodes(){
 		
-		if(this.edges[0].nodes[1].territory == 'R' && this.edges[2].nodes[1].territory == 'R' && this.middle.territory == 'R'){
+		if(this.edges[0].nodes[1].featureType == FeatureTypeEnum.Road && this.edges[2].nodes[1].featureType == FeatureTypeEnum.Road && this.middle.featureType == FeatureTypeEnum.Road){
 			
 			this.edges[0].nodes[1].neighbors.add(this.middle);
 			

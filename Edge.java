@@ -8,18 +8,18 @@ public class Edge {
 	
 	public boolean isCompatible(Edge other){
 		
-		boolean compatible = true;
+		boolean edgeIsCompatible = true;
 		for(int i = 0; i < nodes.length; i++){
-			if(this.nodes[i].territory == 'W' && other.nodes[i].territory == 'C') continue;				//false signal, valid placement
-			else if(this.nodes[i].territory == 'C' && other.nodes[i].territory == 'W') continue;		//false signal, valid placement
-			else if(this.nodes[i].territory == 'W' && other.nodes[i].territory == 'F') continue;
-			else if(this.nodes[i].territory == 'F' && other.nodes[i].territory == 'W') continue;
-			else if(this.nodes[i].territory != other.nodes[i].territory){
-				compatible = false;
+			if(this.nodes[i].featureType == FeatureTypeEnum.Wall && other.nodes[i].featureType == FeatureTypeEnum.City) continue;				//false signal, valid placement
+			else if(this.nodes[i].featureType == FeatureTypeEnum.City && other.nodes[i].featureType == FeatureTypeEnum.Wall) continue;		//false signal, valid placement
+			else if(this.nodes[i].featureType == FeatureTypeEnum.Wall && other.nodes[i].featureType == FeatureTypeEnum.Field) continue;
+			else if(this.nodes[i].featureType == FeatureTypeEnum.Field && other.nodes[i].featureType == FeatureTypeEnum.Wall) continue;
+			else if(this.nodes[i].featureType != other.nodes[i].featureType){
+				edgeIsCompatible = false;
 			}
 		}
 		
-		return compatible;
+		return edgeIsCompatible;
 		
 	}
 }
