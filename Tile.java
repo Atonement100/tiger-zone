@@ -1,3 +1,5 @@
+import com.sun.org.apache.xalan.internal.utils.FeatureManager;
+
 import javax.smartcardio.TerminalFactory;
 import java.util.ArrayList;
 
@@ -34,9 +36,10 @@ public class Tile {
 		this.rotations = 0;
 		this.edgeValues = edgeValues;
 		this.animalType = animalType;
+		this.ID = identify++;
 
-		if (this.hasMonastery) this.middle = new Node(FeatureTypeEnum.Monastery.toChar());
-		else this.middle = new Node('n'); //none
+		if (this.hasMonastery) this.middle = new Node(FeatureTypeEnum.Monastery.toChar(), this.ID);
+		else this.middle = new Node(FeatureTypeEnum.None.toChar(), this.ID); //none
 
 		//Count number of road + city edges
 		int numRoads = 0, numCities = 0;
@@ -60,15 +63,15 @@ public class Tile {
 				switch (nodeIndex) {
 					case 0:	// For first and third nodes, always field if not a city, otherwise always a city
 					case 2:
-						nodeBuffer[nodeIndex] = (edgeValues[edgeIndex] == FeatureTypeEnum.City.toInt()) ? new Node(FeatureTypeEnum.City.toChar()) : new Node(FeatureTypeEnum.Field.toChar());
+						nodeBuffer[nodeIndex] = (edgeValues[edgeIndex] == FeatureTypeEnum.City.toInt()) ? new Node(FeatureTypeEnum.City.toChar(), this.ID) : new Node(FeatureTypeEnum.Field.toChar(), this.ID);
 						break;
 					case 1: // For second node, always equal to the type of edge it is on.
 						if (edgeValues[edgeIndex] == FeatureTypeEnum.City.toInt())
-							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.City.toChar());
+							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.City.toChar(), this.ID);
 						else if (edgeValues[edgeIndex] == FeatureTypeEnum.Road.toInt())
-							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.Road.toChar());
+							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.Road.toChar(), this.ID);
 						else if (edgeValues[edgeIndex] == FeatureTypeEnum.Field.toInt())
-							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.Field.toChar());
+							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.Field.toChar(), this.ID);
 						else
 							System.out.println("Error with tile import: invalid edge value");
 						break;

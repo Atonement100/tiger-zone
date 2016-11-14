@@ -5,8 +5,11 @@ public class Node {
 	Meeple meeple;
 	boolean meeplePlacedInFeature;
 	ArrayList<Node> neighbors;
+
+	boolean visited;
+	int owningTileId;
 	
-	public Node(char featureType){
+	public Node(char featureType, int owningTileId){
 		switch (featureType){
 			case 'f':
 			case 'F': this.featureType = FeatureTypeEnum.Field; break;
@@ -27,6 +30,9 @@ public class Node {
 			default: this.featureType = FeatureTypeEnum.None; break;
 		}
 		this.neighbors = new ArrayList<Node>();
+		this.visited = false;
+		this.owningTileId = owningTileId;
+		this.meeplePlacedInFeature = false;
 	}
 	
 	
