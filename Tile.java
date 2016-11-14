@@ -15,8 +15,8 @@ public class Tile {
 	char tileType;
 	boolean hasMonastery,
 		 	roadsEnd,
-			citiesAreIndependent,
-			hasShield;
+			citiesAreIndependent;
+	int animalType;
 
 
 	/*public Tile(Edge[] edges, Node middle){
@@ -26,14 +26,14 @@ public class Tile {
 		this.ID = ++identify;
 	}*/
 
-	public Tile(boolean hasMonastery, boolean roadsEnd, boolean citiesAreIndependent, boolean hasShield, int[] edgeValues, char tileType){
+	public Tile(boolean hasMonastery, boolean roadsEnd, boolean citiesAreIndependent, int animalType, int[] edgeValues, char tileType){
 		this.hasMonastery = hasMonastery;
 		this.roadsEnd = roadsEnd;
 		this.citiesAreIndependent = citiesAreIndependent;
-		this.hasShield = hasShield;
 		this.tileType = tileType;
 		this.rotations = 0;
 		this.edgeValues = edgeValues;
+		this.animalType = animalType;
 
 		if (this.hasMonastery) this.middle = new Node(FeatureTypeEnum.Monastery.toChar());
 		else this.middle = new Node('n'); //none
