@@ -34,7 +34,7 @@ public class TigerZone {
                 else{
                     System.out.print(" ");
                     for(int nodeIndex = 0; nodeIndex < game.board[row][col].edges[0].nodes.length; nodeIndex++){
-                        System.out.print(game.board[row][col].edges[0].nodes[nodeIndex].featureType.print());
+                        System.out.print(game.board[row][col].edges[0].nodes[nodeIndex].featureType.toChar());
                     }
                     System.out.print(" ");
                 }
@@ -45,7 +45,7 @@ public class TigerZone {
             		System.out.print("     ");
             	}
             	else{
-            		System.out.print(game.board[row][col].edges[3].nodes[0].featureType.print() + "   " + game.board[row][col].edges[1].nodes[0].featureType.print());
+            		System.out.print(game.board[row][col].edges[3].nodes[0].featureType.toChar() + "   " + game.board[row][col].edges[1].nodes[0].featureType.toChar());
             	}
             }
             System.out.println("");
@@ -54,7 +54,7 @@ public class TigerZone {
             		System.out.print("     ");
             	}
             	else{
-            		System.out.print(game.board[row][col].edges[3].nodes[1].featureType.print() + " "+ game.board[row][col].middle.featureType.print() +" " + game.board[row][col].edges[1].nodes[1].featureType.print());
+            		System.out.print(game.board[row][col].edges[3].nodes[1].featureType.toChar() + " "+ game.board[row][col].middle.featureType.toChar() +" " + game.board[row][col].edges[1].nodes[1].featureType.toChar());
             	}
             }
             System.out.println("");
@@ -63,7 +63,7 @@ public class TigerZone {
             		System.out.print("     ");
             	}
             	else{
-            		System.out.print(game.board[row][col].edges[3].nodes[2].featureType.print() + "   " + game.board[row][col].edges[1].nodes[2].featureType.print());
+            		System.out.print(game.board[row][col].edges[3].nodes[2].featureType.toChar() + "   " + game.board[row][col].edges[1].nodes[2].featureType.toChar());
             	}
             }
             System.out.println();
@@ -74,7 +74,7 @@ public class TigerZone {
                 else{
                     System.out.print(" ");
                     for(int nodeIndex = 0; nodeIndex < game.board[row][col].edges[2].nodes.length; nodeIndex++){
-                        System.out.print(game.board[row][col].edges[2].nodes[nodeIndex].featureType.print());
+                        System.out.print(game.board[row][col].edges[2].nodes[nodeIndex].featureType.toChar());
                     }
                     System.out.print(" ");
                 }

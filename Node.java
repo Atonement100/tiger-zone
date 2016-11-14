@@ -22,6 +22,8 @@ public class Node {
 			case 'I': this.featureType = FeatureTypeEnum.InnerWall; break;
 			case 'm':
 			case 'M': this.featureType = FeatureTypeEnum.Monastery; break;
+			case 'n':
+			case 'N':
 			default: this.featureType = FeatureTypeEnum.None; break;
 		}
 		this.neighbors = new ArrayList<Node>();
