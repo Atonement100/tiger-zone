@@ -16,13 +16,14 @@ public class TileRetriever {
 			while((line = bufferedReader.readLine()) != null) {
 				String[] tokens = line.split("[ ]+");
 				int[] parameters = new int[tokens.length];
-				for (int Index = 0; Index < parameters.length; Index++){
+				for (int Index = 0; Index < parameters.length - 1; Index++){
 					parameters[Index] = Integer.parseInt(tokens[Index]);
 				}
+
 				for (int spawning = 0; spawning < parameters[0]; spawning++){
 					tiles.add(new Tile(parameters[1] == 1 ,parameters[2] == 1 ,parameters[3] == 1, parameters[4] == 1, //Monastery, Roads End, Independent Cities, Shielded
 								new int[]{parameters[5],parameters[6],parameters[7],parameters[8]}, //Array of edge values (city, plains, road)
-								(char)parameters[9])); //character identifier for easy comparison of tile equality
+								tokens[0].charAt(0))); //character identifier for easy comparison of tile equality
 				}
 			}
 			bufferedReader.close();

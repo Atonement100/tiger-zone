@@ -148,13 +148,40 @@ public class Tile {
 			}
 		}
 
-		
+		for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++){
+			for (int nodeIndex = 0; nodeIndex < NODES_PER_EDGE - 1; nodeIndex++) { //We can only loop for 1st two nodes on an edge. Third node needs to be handled specially
+				if (edges[edgeIndex].nodes[nodeIndex].featureType == edges[edgeIndex].nodes[nodeIndex + 1].featureType) {
+					edges[edgeIndex].nodes[nodeIndex].neighbors.add(edges[edgeIndex].nodes[nodeIndex + 1]);
+					edges[edgeIndex].nodes[nodeIndex + 1].neighbors.add(edges[edgeIndex].nodes[nodeIndex]);
+				}
+			}
 
+			//3rd node handler
+			if (this.citiesAreIndependent &&
+					edges[edgeIndex].nodes[2].featureType == FeatureTypeEnum.City &&
+					edges[(edgeIndex + 1) % edges.length].nodes[0].featureType == FeatureTypeEnum.City){
+				continue;
+			}
 
+			edges[edgeIndex].nodes[2].neighbors.add(edges[(edgeIndex + 1) % edges.length].nodes[0]);
+			edges[(edgeIndex + 1) % edges.length].nodes[0].neighbors.add(edges[edgeIndex].nodes[2]);
+		}
 
-
-
-
+		//Road handler
+		roadLoop:
+		if (numRoads == 2){
+			for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++){
+				if (edges[edgeIndex].nodes[1].featureType == FeatureTypeEnum.Road){
+					for (int targetEdgeIndex = edgeIndex; edgeIndex < edges.length; edgeIndex++){
+						if (edges[targetEdgeIndex].nodes[1].featureType == FeatureTypeEnum.Road){
+							edges[edgeIndex].nodes[1].neighbors.add(edges[targetEdgeIndex].nodes[1]);
+							edges[targetEdgeIndex].nodes[1].neighbors.add(edges[edgeIndex].nodes[1]);
+							break roadLoop;
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public void connectNodes(){
