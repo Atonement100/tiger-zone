@@ -12,23 +12,19 @@ public class TileRetriever {
 		try {
 			FileReader fileReader = new FileReader(path);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
-			int cnt = 0;
+
 			while((line = bufferedReader.readLine()) != null) {
-				
-				Edge[] edgesBuffer = new Edge[4];
-	            for(int e = 0; e < 4; e++){
-	                String edge = line;
-	                Node[] nodes = new Node[3];
-	                for(int n = 0; n < 3; n++){
-	                    Node buffer = new Node(edge.charAt(n));
-	                    nodes[n] = buffer;
-	                }
-	                edgesBuffer[e] = new Edge(nodes);
-	                line = bufferedReader.readLine();
-	            }
-	            Node middleBuffer = new Node(line.charAt(0));
-	            tiles.add(new Tile(edgesBuffer, middleBuffer));
-	            
+				String[] tokens = line.split("[ ]+");
+				int[] parameters = new int[tokens.length];
+				for (int Index = 0; Index < parameters.length - 1; Index++){
+					parameters[Index] = Integer.parseInt(tokens[Index]);
+				}
+
+				for (int spawning = 0; spawning < parameters[0]; spawning++){
+					tiles.add(new Tile(parameters[1] == 1 ,parameters[2] == 1 ,parameters[3] == 1, parameters[4] == 1, //Monastery, Roads End, Independent Cities, Shielded
+								new int[]{parameters[5],parameters[6],parameters[7],parameters[8]}, //Array of edge values (city, plains, road)
+								tokens[0].charAt(0))); //character identifier for easy comparison of tile equality
+				}
 			}
 			bufferedReader.close();
 		}
