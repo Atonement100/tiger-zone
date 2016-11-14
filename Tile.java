@@ -1,3 +1,4 @@
+import javax.smartcardio.TerminalFactory;
 import java.util.ArrayList;
 
 public class Tile {
@@ -90,8 +91,70 @@ public class Tile {
 			this.edges[edgeIndex] = new Edge(nodeBuffer);
 		}
 
+		//Now we need to handle city edge cases
+		//numCities == 1 case is already handled above
+		if (numCities == 2 && !this.citiesAreIndependent){ //Independent cities are already handled above
+			int firstCityLoc = cityLocations.get(0), secondCityLoc = cityLocations.get(1);
+			if (secondCityLoc - firstCityLoc == 2){ //In this case, the cities oppose each other on the tile
+				for (int nodeIndex = 0; nodeIndex < NODES_PER_EDGE; nodeIndex++){
+					int antiNodeIndex = NODES_PER_EDGE - 1 - nodeIndex; //Used to mirror the nodeIndex on edges opposite each other
+
+					if (nodeIndex != 1) { //Prevents the type of the middle node from being changed
+						edges[firstCityLoc].nodes[nodeIndex].featureType = FeatureTypeEnum.Wall;
+						edges[secondCityLoc].nodes[antiNodeIndex].featureType = FeatureTypeEnum.Wall;
+					}
+					//Then connect opposing nodes
+					edges[firstCityLoc].nodes[nodeIndex].neighbors.add( edges[secondCityLoc].nodes[antiNodeIndex] );
+					edges[secondCityLoc].nodes[antiNodeIndex].neighbors.add( edges[firstCityLoc].nodes[nodeIndex] );
+				}
+			}
+			else{ //Otherwise, the two city edges are adjacent on the tile
+				if (secondCityLoc - firstCityLoc == 3) { int swap = firstCityLoc; firstCityLoc = secondCityLoc; secondCityLoc = swap; }
+				//These [inner nodes] will be automatically linked later by the adjacency linker
+				edges[firstCityLoc].nodes[2].featureType = FeatureTypeEnum.InnerWall;
+				edges[secondCityLoc].nodes[0].featureType = FeatureTypeEnum.InnerWall;
+
+				//Outer node set up. Need to be linked here.
+				edges[firstCityLoc].nodes[0].featureType = FeatureTypeEnum.Wall;
+				edges[secondCityLoc].nodes[2].featureType = FeatureTypeEnum.Wall;
+
+				edges[firstCityLoc].nodes[0].neighbors.add( edges[secondCityLoc].nodes[2] );
+				edges[secondCityLoc].nodes[2].neighbors.add( edges[secondCityLoc].nodes[2] );
+			}
+		}
+		else if (numCities == 3){
+			for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++){
+				//This sets up the true wall neighboring the field
+				if(edges[edgeIndex].nodes[2].featureType == FeatureTypeEnum.City && edges[(edgeIndex + 1) % edges.length].nodes[2].featureType == FeatureTypeEnum.Field){
+					edges[edgeIndex].nodes[2].featureType = FeatureTypeEnum.Wall;
+					edges[(edgeIndex + 2) % edges.length].nodes[0].featureType = FeatureTypeEnum.Wall;
+
+					edges[edgeIndex].nodes[2].neighbors.add(edges[(edgeIndex + 2) % edges.length].nodes[0]);
+					edges[(edgeIndex + 2) % edges.length].nodes[0].neighbors.add(edges[edgeIndex].nodes[2]);
+				}
+
+				//This sets up the inner connections to be linked later
+				if((edgeValues[edgeIndex] == FeatureTypeEnum.City.toInt()) && edgeValues[(edgeIndex + 1) % edges.length] == FeatureTypeEnum.City.toInt()){
+					edges[edgeIndex].nodes[2].featureType = FeatureTypeEnum.InnerWall;
+					edges[(edgeIndex + 1) % edges.length].nodes[0].featureType = FeatureTypeEnum.InnerWall;
+				}
+			}
+		}
+		else if (numCities == 4){
+			//Will be linked later by adjacency linker
+			for (Edge edge : edges) {
+				edge.nodes[0].featureType = FeatureTypeEnum.InnerWall;
+				edge.nodes[2].featureType = FeatureTypeEnum.InnerWall;
+			}
+		}
 
 		
+
+
+
+
+
+
 	}
 	
 	public void connectNodes(){
