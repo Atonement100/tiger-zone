@@ -1,15 +1,41 @@
+import java.util.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 public class GameController {
 	//	   			  W, N, E,S
 	static int[] dx = {0,-1,0,1};
 	static int[] dy = {-1,0,1,0};
 	Tile[][] board;
-	
+
+	ArrayList<Tile> gameTiles;
 	ArrayList<Tile> player1Tiles;
 	ArrayList<Tile> player2Tiles;
 	
 	public GameController(int row, int col){
 		board = new Tile[row][col];
+	}
+
+	public GameController(){
+		this.gameTiles = retrieveGameTiles();
+		this.player1Tiles = this.gameTiles;
+
+		board = new Tile[gameTiles.size()][gameTiles.size()];
+	}
+
+	private ArrayList<Tile> retrieveGameTiles(){
+		Scanner scanner = new Scanner(System.in);
+		String filePath = scanner.next();
+		scanner.close();
+		return new TileRetriever(filePath).tiles;
+	}
+
+	ArrayList<Tile> getGameTiles(){
+		return this.gameTiles;
+	}
+
+	void placeStartingTile(Tile startingTile){
+		//Place starting tile forcibly at the middle of the board
+		board[ board.length/2 ][ board[board.length/2].length ] = startingTile;
 	}
 	
 	boolean placeTile(Tile toPlace, Location loc){
