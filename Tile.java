@@ -122,7 +122,7 @@ public class Tile {
 				edges[secondCityLoc].nodes[2].featureType = FeatureTypeEnum.Wall;
 
 				edges[firstCityLoc].nodes[0].neighbors.add( edges[secondCityLoc].nodes[2] );
-				edges[secondCityLoc].nodes[2].neighbors.add( edges[secondCityLoc].nodes[2] );
+				edges[secondCityLoc].nodes[2].neighbors.add( edges[firstCityLoc].nodes[0] );
 			}
 		}
 		else if (numCities == 3){
