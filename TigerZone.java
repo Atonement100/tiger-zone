@@ -16,6 +16,8 @@ public class TigerZone {
         
         game.placeTile(game.player1Tiles.remove(0), new Location(0,0));
         game.placeTile(game.player1Tiles.remove(0), new Location(1,0));
+        game.placeTile(game.player1Tiles.remove(0), new Location(1,1));
+        game.placeTile(game.player1Tiles.remove(0), new Location(0,1));
         
         /*
          * 

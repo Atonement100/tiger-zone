@@ -85,9 +85,47 @@ public class GameController {
 			}
 		}
 		
-		//if passed all compatibility checks, place tile
+		//if passed all compatibility checks, place tile, connect nodes
 		if(compatible){
 			board[row][col] = toPlace;
+			
+			for(int direction = 0; direction < 4; direction++){
+				
+				if(neighborTiles[direction] == null) continue;			//if there is no tile, no check is necessary, continue
+				
+				switch(direction){
+					case 0:										//check NORTH tile compatibility (north edge of this, south edge of other)
+						for(int i = 0; i < 3; i++){
+							toPlace.edges[direction].nodes[i].neighbors.add(neighborTiles[direction].edges[2].nodes[i]);
+							neighborTiles[direction].edges[2].nodes[i].neighbors.add(toPlace.edges[direction].nodes[i]);
+							//System.out.println("connected north edge with south edge of north tile");
+						}
+						
+						break;
+					case 1:										//check EAST tile compatibility (east edge of this, west edge of other)
+						for(int i = 0; i < 3; i++){
+							toPlace.edges[direction].nodes[i].neighbors.add(neighborTiles[direction].edges[3].nodes[i]);
+							neighborTiles[direction].edges[3].nodes[i].neighbors.add(toPlace.edges[direction].nodes[i]);
+							//System.out.println("connected east edge with west edge of east tile");
+						}
+						break;
+					case 2:										//check SOUTH tile compatibility (south edge of this, north edge of other)
+						for(int i = 0; i < 3; i++){
+							toPlace.edges[direction].nodes[i].neighbors.add(neighborTiles[direction].edges[0].nodes[i]);
+							neighborTiles[direction].edges[0].nodes[i].neighbors.add(toPlace.edges[direction].nodes[i]);
+							//System.out.println("connected south edge with north edge of south tile");
+						}
+						break;
+					case 3:										//check WEST tile compatibility (west edge of this, east edge of other)
+						for(int i = 0; i < 3; i++){
+							toPlace.edges[direction].nodes[i].neighbors.add(neighborTiles[direction].edges[1].nodes[i]);
+							neighborTiles[direction].edges[1].nodes[i].neighbors.add(toPlace.edges[direction].nodes[i]);
+							//System.out.println("connected west edge with east edge of west tile");
+						}
+						break;
+				}
+			}
+			
 			return true;
 		}
 		
