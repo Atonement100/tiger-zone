@@ -1,11 +1,14 @@
+import java.io.IOException;
 import java.util.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 public class GameController {
 	private static final char startingTileChar = 'S';
+	private static final int NUM_PLAYERS = 2;
 	private static int[] dx = {0,-1,0,1}; // W, N, E, S
 	private static int[] dy = {-1,0,1,0};
 	Tile[][] board;
+	PlayerController[] players = new PlayerController[2];
 
 	private ArrayList<Tile> gameTileReference; // Don't modify this one after constructor. Can be indexed in to with tile.ID.
 	ArrayList<Tile> gameTiles;
@@ -16,7 +19,16 @@ public class GameController {
 		board = new Tile[row][col];
 	}
 
-	public GameController(){
+	public GameController(int numHumanPlayers){
+		for (int numCreated = 0; numCreated < NUM_PLAYERS; numCreated++){
+			if (numCreated < numHumanPlayers){
+				players[numCreated] = new HumanPlayerController();
+			}
+			else{
+				players[numCreated] = new ComputerPlayerController();
+			}
+		}
+
 		this.gameTiles = retrieveGameTiles();
 		this.gameTileReference = this.gameTiles;
 		board = new Tile[gameTiles.size()][gameTiles.size()];
@@ -43,7 +55,10 @@ public class GameController {
 	}
 
 	void handleMove(Tile tileForPlayer){
-		System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
+		//System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
+		//Scanner scanner = new Scanner(System.in);
+		//scanner.next();
+		players[currentPlayer].processMove();
 
 		switchPlayerControl();
 		return;
@@ -75,7 +90,6 @@ public class GameController {
 	private ArrayList<Tile> retrieveGameTiles(){
 		Scanner scanner = new Scanner(System.in);
 		String filePath = scanner.next();
-		scanner.close();
 		return new TileRetriever(filePath).tiles;
 	}
 

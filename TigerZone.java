@@ -4,8 +4,10 @@ public class TigerZone {
 
 
 	public static void main(String[] args){
-
-		GameController game = new GameController();
+		System.out.print("Enter number of human players: ");
+		Scanner scanner = new Scanner(System.in);
+		int numPlayers = scanner.nextInt();
+		GameController game = new GameController(numPlayers);
 
 		game.gameLoop();
 
