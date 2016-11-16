@@ -1,9 +1,9 @@
 public class PlayerController {
     private Meeple[] meeples;
 
-    Location processMove(){
+    MoveInformation processMove(){
         System.out.println("PlayerController processMove() not overridden");
-        return new Location(-1, -1);
+        return new MoveInformation(new Location(-1, -1), -1, -1);
     }
 
 }

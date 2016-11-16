@@ -1,8 +1,8 @@
 public class ComputerPlayerController extends PlayerController {
 
     @Override
-    Location processMove(){
+    MoveInformation processMove(){
         System.out.println("computer processing move");
-        return new Location(1,1);
+        return new MoveInformation(new Location(2, 2), 0, -1);
     }
 }
