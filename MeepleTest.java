@@ -5,7 +5,7 @@ import org.junit.Test;
 public class MeepleTest {
 	
 	@Test
-	public void testMeeple() {
+	public void testMeeple() throws Exception {
 		Meeple m = new Meeple();
 		assertEquals(-1, m.owner);
 		assertEquals(-1, m.coordX);
@@ -14,7 +14,7 @@ public class MeepleTest {
 	}
 
 	@Test
-	public void testMeepleInt() {
+	public void testMeepleInt() throws Exception {
 		Meeple m = new Meeple(1);
 		assertEquals(1, m.owner);
 		assertEquals(-1, m.coordX);
@@ -23,7 +23,7 @@ public class MeepleTest {
 	}
 
 	@Test
-	public void testUpdateLocation() {
+	public void testUpdateLocation() throws Exception {
 		Meeple m = new Meeple(1);
 		m.updateLocation(1, 1);
 		assertEquals(1, m.coordX);
@@ -31,7 +31,7 @@ public class MeepleTest {
 	}
 
 	@Test
-	public void testUpdateStatus() {
+	public void testUpdateStatus() throws Exception {
 		Meeple m = new Meeple(1);
 		m.updateStatus(1);
 		assertEquals(1, m.status);
