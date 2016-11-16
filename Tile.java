@@ -1,6 +1,8 @@
 import com.sun.org.apache.xalan.internal.utils.FeatureManager;
+import javafx.scene.transform.Rotate;
 
 import javax.smartcardio.TerminalFactory;
+import java.util.*;
 import java.util.ArrayList;
 
 public class Tile {
@@ -10,8 +12,8 @@ public class Tile {
 	private static int identify = 0;
 	
 	int ID,
-		rotations;
-	int[] edgeValues;
+		rotations = 0;
+	Integer[] edgeValues;
 	Edge[] edges = new Edge[EDGES_PER_TILE];
 	Node middle;
 	char tileType;
@@ -28,7 +30,7 @@ public class Tile {
 		this.ID = ++identify;
 	}*/
 
-	public Tile(boolean hasMonastery, boolean roadsEnd, boolean citiesAreIndependent, int animalType, int[] edgeValues, char tileType){
+	public Tile(boolean hasMonastery, boolean roadsEnd, boolean citiesAreIndependent, int animalType, Integer[] edgeValues, char tileType){
 		this.hasMonastery = hasMonastery;
 		this.roadsEnd = roadsEnd;
 		this.citiesAreIndependent = citiesAreIndependent;
@@ -200,14 +202,26 @@ public class Tile {
 			
 			System.out.println("YES");
 		}
-		
-		
-		
-	}
-	
-	/*
-	public void rotate(int cnt){
+
 		
 	}
-	*/
+
+	public boolean isEqual(Tile other){
+		//More robust checks do not need to be implemented as long as we control tileset input.
+		return this.tileType == other.tileType;
+	}
+
+
+	public void rotateClockwise(int rotations){
+		rotations %= EDGES_PER_TILE;
+		if (rotations == 0) return;
+		else if (rotations < 0) rotations += EDGES_PER_TILE;
+
+		this.rotations = (this.rotations + rotations) % EDGES_PER_TILE;
+
+		Collections.rotate(Arrays.asList(edges), rotations);
+		Collections.rotate(Arrays.asList(edgeValues), rotations);
+		return;
+	}
+
 }

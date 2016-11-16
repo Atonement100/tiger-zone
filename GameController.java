@@ -2,11 +2,13 @@ import java.util.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 public class GameController {
+	private static final char startingTileChar = 'S';
 	//	   			  W, N, E,S
-	static int[] dx = {0,-1,0,1};
-	static int[] dy = {-1,0,1,0};
+	private static int[] dx = {0,-1,0,1};
+	private static int[] dy = {-1,0,1,0};
 	Tile[][] board;
 
+	private ArrayList<Tile> gameTileReference; // Don't modify this one after constructor. Can be indexed in to with tile.ID.
 	ArrayList<Tile> gameTiles;
 	ArrayList<Tile> player1Tiles;
 	ArrayList<Tile> player2Tiles;
@@ -17,9 +19,29 @@ public class GameController {
 
 	public GameController(){
 		this.gameTiles = retrieveGameTiles();
-		this.player1Tiles = this.gameTiles;
-
+		this.gameTileReference = this.gameTiles;
 		board = new Tile[gameTiles.size()][gameTiles.size()];
+
+		Tile startingTile = prepareTiles();
+		placeStartingTile(startingTile);
+
+		
+	}
+
+	private Tile prepareTiles(){	//Returns instance of starting tile
+		Tile startingTile = null;
+		for (int index = 0; index < gameTiles.size(); index++){
+			if (gameTiles.get(index).tileType == startingTileChar){
+				Collections.swap(gameTiles, index, gameTiles.size()-1);
+				startingTile = gameTiles.get(gameTiles.size()-1);
+				gameTiles.remove(gameTiles.size()-1);
+			}
+		}
+
+		Collections.shuffle(gameTiles, new Random(System.nanoTime()));
+
+		if (startingTile == null) System.out.println("Starting tile not found in the imported deck.");
+		return startingTile;
 	}
 
 	private ArrayList<Tile> retrieveGameTiles(){

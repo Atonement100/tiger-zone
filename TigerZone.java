@@ -7,10 +7,10 @@ public class TigerZone {
 
 		GameController game = new GameController();
 
-		game.placeTile(game.player1Tiles.get(0), new Location(0,0));
-		game.placeTile(game.player1Tiles.get(1), new Location(1,0));
-		game.placeTile(game.player1Tiles.get(5), new Location(1,1));
-		game.placeTile(game.player1Tiles.get(6), new Location(10,10));
+		game.placeTile(game.gameTiles.get(0), new Location(0,0));
+		game.placeTile(game.gameTiles.get(1), new Location(1,0));
+		game.placeTile(game.gameTiles.get(5), new Location(1,1));
+		game.placeTile(game.gameTiles.get(6), new Location(10,10));
 
 		for(int row = 0; row < 20; row++){
 			for(int col = 0; col < 20; col++){
