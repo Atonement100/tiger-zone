@@ -172,17 +172,31 @@ public class Tile {
 		if (numRoads == 2){
 			for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++){
 				if (edges[edgeIndex].nodes[1].featureType == FeatureTypeEnum.Road){
-					for (int targetEdgeIndex = edgeIndex; edgeIndex < edges.length; edgeIndex++){
+					for (int targetEdgeIndex = edgeIndex + 1; targetEdgeIndex < edges.length; targetEdgeIndex++){
 						if (edges[targetEdgeIndex].nodes[1].featureType == FeatureTypeEnum.Road){
 							//Connect the roads
 							addEachNodeAsNeighbor(edges[edgeIndex].nodes[1], edges[targetEdgeIndex].nodes[1]);
-							//Connect the outside fields
-							addEachNodeAsNeighbor(edges[edgeIndex].nodes[0], edges[targetEdgeIndex].nodes[2]);
+							//Consider fields next to road for connections
+							if (numCities == 1){
+								int lowerIndex = cityLocations.get(0) - 1;
+								if (lowerIndex < 0) lowerIndex += EDGES_PER_TILE;
+								addEachNodeAsNeighbor(edges[lowerIndex].nodes[2], edges[(cityLocations.get(0) + 1) % EDGES_PER_TILE].nodes[0]);
+							}
+							else if (numCities == 2){
+								int lowerIndex = cityLocations.get(0) - 1;
+								if (lowerIndex < 0) lowerIndex += EDGES_PER_TILE;
+								addEachNodeAsNeighbor(edges[lowerIndex].nodes[2], edges[(cityLocations.get(1) + 1) % EDGES_PER_TILE].nodes[0]);
+							}
 							break roadLoop;
 						}
 					}
 				}
 			}
+		}
+		else if (numRoads == 3 && numCities > 0){
+			int lowerIndex = cityLocations.get(0) - 1;
+			if (lowerIndex < 0) lowerIndex += EDGES_PER_TILE;
+			addEachNodeAsNeighbor(edges[lowerIndex].nodes[2], edges[(cityLocations.get(0) + 1) % EDGES_PER_TILE].nodes[0]);
 		}
 	}
 
