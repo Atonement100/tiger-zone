@@ -24,8 +24,12 @@ public class GameController {
 
 		Tile startingTile = prepareTiles();
 		placeStartingTile(startingTile);
+	}
 
-		
+	Tile drawTile(){
+		Tile nextTile = gameTiles.get(gameTiles.size()-1);
+		gameTiles.remove(gameTiles.size()-1);
+		return nextTile;
 	}
 
 	private Tile prepareTiles(){	//Returns instance of starting tile
@@ -49,10 +53,6 @@ public class GameController {
 		String filePath = scanner.next();
 		scanner.close();
 		return new TileRetriever(filePath).tiles;
-	}
-
-	ArrayList<Tile> getGameTiles(){
-		return this.gameTiles;
 	}
 
 	void placeStartingTile(Tile startingTile){
