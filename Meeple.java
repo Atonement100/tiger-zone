@@ -2,26 +2,22 @@
 public class Meeple {
 	int owner;
 	int status;
-	int coordX;
-	int coordY;
+	Location location;
 	
 	public Meeple(){
-		owner = -1;
-		status = -1;
-		coordX = -1;
-		coordY = -1;
+		this.owner = -1;
+		this.status = -1;
+		this.location = new Location(-1,-1);
 	}
 	
 	public Meeple(int owner){
 		this.owner = owner;
-		status = 0;
-		coordX = -1;
-		coordY = -1;
+		this.status = 0;
+		this.location = new Location(-1, -1);
 	}
 	
-	void updateLocation(int x, int y){
-		coordX = x;
-		coordY = y;
+	void updateLocation(Location location){
+		this.location = location;
 	}
 	
 	void updateStatus(int status){
@@ -32,13 +28,7 @@ public class Meeple {
 		return owner;
 	}
 	
-	int getX(){
-		return coordX;
-	}
-	
-	int getY(){
-		return coordY;
-	}
+	Location getLocation() { return location; }
 	
 	int getStatus(){
 		return status;
