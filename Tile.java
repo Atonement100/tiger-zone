@@ -168,8 +168,10 @@ public class Tile {
 				continue;
 			}
 
-			edges[edgeIndex].nodes[2].neighbors.add(edges[(edgeIndex + 1) % edges.length].nodes[0]);
-			edges[(edgeIndex + 1) % edges.length].nodes[0].neighbors.add(edges[edgeIndex].nodes[2]);
+			if (edges[edgeIndex].nodes[2].featureType == edges[(edgeIndex + 1) % edges.length].nodes[0].featureType) {
+				edges[edgeIndex].nodes[2].neighbors.add(edges[(edgeIndex + 1) % edges.length].nodes[0]);
+				edges[(edgeIndex + 1) % edges.length].nodes[0].neighbors.add(edges[edgeIndex].nodes[2]);
+			}
 		}
 
 		//Road handler
