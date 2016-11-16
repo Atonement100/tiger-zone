@@ -93,23 +93,32 @@ public class TileTest {
     public void nodeConnectionTileTypeK() throws Exception {
         Tile tile = new Tile(false, false, false, 0, new Integer[]{2,0,2,0}, 'K');
         Edge[] edges = tile.edges;
-
+        
         assertSame(edges[0].nodes[0].neighbors.get(0), edges[2].nodes[2]);
+        assertSame(edges[0].nodes[0].neighbors.get(1), edges[3].nodes[2]);
         assertSame(edges[0].nodes[1].neighbors.get(0), edges[2].nodes[1]);
         assertSame(edges[0].nodes[2].neighbors.get(0), edges[2].nodes[0]);
+        assertSame(edges[0].nodes[2].neighbors.get(1), edges[1].nodes[0]);
 
-        assertSame(edges[1].nodes[0].neighbors.get(0), edges[1].nodes[1]);
+        assertSame(edges[1].nodes[0].neighbors.get(0), edges[0].nodes[2]);
+        assertSame(edges[1].nodes[0].neighbors.get(1), edges[1].nodes[1]);
         assertSame(edges[1].nodes[1].neighbors.get(0), edges[1].nodes[0]);
         assertSame(edges[1].nodes[1].neighbors.get(1), edges[1].nodes[2]);
         assertSame(edges[1].nodes[2].neighbors.get(0), edges[1].nodes[1]);
+        assertSame(edges[1].nodes[2].neighbors.get(1), edges[2].nodes[0]);
 
         assertSame(edges[2].nodes[0].neighbors.get(0), edges[0].nodes[2]);
+        assertSame(edges[2].nodes[0].neighbors.get(1), edges[1].nodes[2]);
         assertSame(edges[2].nodes[1].neighbors.get(0), edges[0].nodes[1]);
         assertSame(edges[2].nodes[2].neighbors.get(0), edges[0].nodes[0]);
+        assertSame(edges[2].nodes[2].neighbors.get(1), edges[3].nodes[0]);
 
-        assertSame(edges[3].nodes[0].neighbors.get(0), edges[3].nodes[1]);
+        assertSame(edges[3].nodes[0].neighbors.get(0), edges[2].nodes[2]);
+        assertSame(edges[3].nodes[0].neighbors.get(1), edges[3].nodes[1]);
         assertSame(edges[3].nodes[1].neighbors.get(0), edges[3].nodes[0]);
         assertSame(edges[3].nodes[1].neighbors.get(1), edges[3].nodes[2]);
         assertSame(edges[3].nodes[2].neighbors.get(0), edges[3].nodes[1]);
+        assertSame(edges[3].nodes[2].neighbors.get(1), edges[0].nodes[0]);
+
     }
 }
