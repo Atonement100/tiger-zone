@@ -8,8 +8,7 @@ public class MeepleTest {
 	public void testMeeple() throws Exception {
 		Meeple m = new Meeple();
 		assertEquals(-1, m.owner);
-		assertEquals(-1, m.coordX);
-		assertEquals(-1, m.coordY);
+		assertTrue(m.location.isEqual(new Location(-1,-1)));
 		assertEquals(-1, m.status);
 	}
 
@@ -17,17 +16,15 @@ public class MeepleTest {
 	public void testMeepleInt() throws Exception {
 		Meeple m = new Meeple(1);
 		assertEquals(1, m.owner);
-		assertEquals(-1, m.coordX);
-		assertEquals(-1, m.coordY);
+		assertTrue(m.location.isEqual(new Location(-1,-1)));
 		assertEquals(0, m.status);
 	}
 
 	@Test
 	public void testUpdateLocation() throws Exception {
 		Meeple m = new Meeple(1);
-		m.updateLocation(1, 1);
-		assertEquals(1, m.coordX);
-		assertEquals(1, m.coordY);
+		m.updateLocation(new Location(1,1));
+		assertTrue(m.location.isEqual(new Location(1,1)));
 	}
 
 	@Test
