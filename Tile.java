@@ -168,10 +168,9 @@ public class Tile {
 				continue;
 			}
 
-			if (edges[edgeIndex].nodes[2].featureType == edges[(edgeIndex + 1) % edges.length].nodes[0].featureType) {
-				edges[edgeIndex].nodes[2].neighbors.add(edges[(edgeIndex + 1) % edges.length].nodes[0]);
-				edges[(edgeIndex + 1) % edges.length].nodes[0].neighbors.add(edges[edgeIndex].nodes[2]);
-			}
+			edges[edgeIndex].nodes[2].neighbors.add(edges[(edgeIndex + 1) % edges.length].nodes[0]);
+			edges[(edgeIndex + 1) % edges.length].nodes[0].neighbors.add(edges[edgeIndex].nodes[2]);
+
 		}
 
 		//Road handler
@@ -181,8 +180,12 @@ public class Tile {
 				if (edges[edgeIndex].nodes[1].featureType == FeatureTypeEnum.Road){
 					for (int targetEdgeIndex = edgeIndex; edgeIndex < edges.length; edgeIndex++){
 						if (edges[targetEdgeIndex].nodes[1].featureType == FeatureTypeEnum.Road){
+							//Connect the roads
 							edges[edgeIndex].nodes[1].neighbors.add(edges[targetEdgeIndex].nodes[1]);
 							edges[targetEdgeIndex].nodes[1].neighbors.add(edges[edgeIndex].nodes[1]);
+							//Connect the outside fields
+							edges[edgeIndex].nodes[0].neighbors.add(edges[targetEdgeIndex].nodes[2]);
+							edges[targetEdgeIndex].nodes[2].neighbors.add(edges[edgeIndex].nodes[0]);
 							break roadLoop;
 						}
 					}
@@ -190,7 +193,12 @@ public class Tile {
 			}
 		}
 	}
-	
+
+	private void addEachNodeAsNeighbor(Node nodeA, Node nodeB){
+		nodeA.neighbors.add(nodeB);
+		nodeB.neighbors.add(nodeA);
+	}
+
 	public void connectNodes(){
 		
 		if(this.edges[0].nodes[1].featureType == FeatureTypeEnum.Road && this.edges[2].nodes[1].featureType == FeatureTypeEnum.Road && this.middle.featureType == FeatureTypeEnum.Road){
