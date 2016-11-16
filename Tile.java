@@ -109,8 +109,7 @@ public class Tile {
 						edges[secondCityLoc].nodes[antiNodeIndex].featureType = FeatureTypeEnum.Wall;
 					}
 					//Then connect opposing nodes
-					edges[firstCityLoc].nodes[nodeIndex].neighbors.add( edges[secondCityLoc].nodes[antiNodeIndex] );
-					edges[secondCityLoc].nodes[antiNodeIndex].neighbors.add( edges[firstCityLoc].nodes[nodeIndex] );
+					addEachNodeAsNeighbor(edges[firstCityLoc].nodes[nodeIndex], edges[secondCityLoc].nodes[antiNodeIndex]);
 				}
 			}
 			else{ //Otherwise, the two city edges are adjacent on the tile
@@ -123,8 +122,7 @@ public class Tile {
 				edges[firstCityLoc].nodes[0].featureType = FeatureTypeEnum.Wall;
 				edges[secondCityLoc].nodes[2].featureType = FeatureTypeEnum.Wall;
 
-				edges[firstCityLoc].nodes[0].neighbors.add( edges[secondCityLoc].nodes[2] );
-				edges[secondCityLoc].nodes[2].neighbors.add( edges[firstCityLoc].nodes[0] );
+				addEachNodeAsNeighbor(edges[firstCityLoc].nodes[0], edges[secondCityLoc].nodes[2]);
 			}
 		}
 		else if (numCities == 3){
@@ -134,8 +132,7 @@ public class Tile {
 					edges[edgeIndex].nodes[2].featureType = FeatureTypeEnum.Wall;
 					edges[(edgeIndex + 2) % edges.length].nodes[0].featureType = FeatureTypeEnum.Wall;
 
-					edges[edgeIndex].nodes[2].neighbors.add(edges[(edgeIndex + 2) % edges.length].nodes[0]);
-					edges[(edgeIndex + 2) % edges.length].nodes[0].neighbors.add(edges[edgeIndex].nodes[2]);
+					addEachNodeAsNeighbor(edges[edgeIndex].nodes[2], edges[(edgeIndex + 2) % edges.length].nodes[0]);
 				}
 
 				//This sets up the inner connections to be linked later
@@ -156,8 +153,7 @@ public class Tile {
 		for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++){
 			for (int nodeIndex = 0; nodeIndex < NODES_PER_EDGE - 1; nodeIndex++) { //We can only loop for 1st two nodes on an edge. Third node needs to be handled specially
 				if (edges[edgeIndex].nodes[nodeIndex].featureType == edges[edgeIndex].nodes[nodeIndex + 1].featureType) {
-					edges[edgeIndex].nodes[nodeIndex].neighbors.add(edges[edgeIndex].nodes[nodeIndex + 1]);
-					edges[edgeIndex].nodes[nodeIndex + 1].neighbors.add(edges[edgeIndex].nodes[nodeIndex]);
+					addEachNodeAsNeighbor(edges[edgeIndex].nodes[nodeIndex], edges[edgeIndex].nodes[nodeIndex + 1]);
 				}
 			}
 
@@ -168,9 +164,7 @@ public class Tile {
 				continue;
 			}
 
-			edges[edgeIndex].nodes[2].neighbors.add(edges[(edgeIndex + 1) % edges.length].nodes[0]);
-			edges[(edgeIndex + 1) % edges.length].nodes[0].neighbors.add(edges[edgeIndex].nodes[2]);
-
+			addEachNodeAsNeighbor(edges[edgeIndex].nodes[2], edges[(edgeIndex + 1) % edges.length].nodes[0]);
 		}
 
 		//Road handler
@@ -181,11 +175,9 @@ public class Tile {
 					for (int targetEdgeIndex = edgeIndex; edgeIndex < edges.length; edgeIndex++){
 						if (edges[targetEdgeIndex].nodes[1].featureType == FeatureTypeEnum.Road){
 							//Connect the roads
-							edges[edgeIndex].nodes[1].neighbors.add(edges[targetEdgeIndex].nodes[1]);
-							edges[targetEdgeIndex].nodes[1].neighbors.add(edges[edgeIndex].nodes[1]);
+							addEachNodeAsNeighbor(edges[edgeIndex].nodes[1], edges[targetEdgeIndex].nodes[1]);
 							//Connect the outside fields
-							edges[edgeIndex].nodes[0].neighbors.add(edges[targetEdgeIndex].nodes[2]);
-							edges[targetEdgeIndex].nodes[2].neighbors.add(edges[edgeIndex].nodes[0]);
+							addEachNodeAsNeighbor(edges[edgeIndex].nodes[0], edges[targetEdgeIndex].nodes[2]);
 							break roadLoop;
 						}
 					}
@@ -234,4 +226,14 @@ public class Tile {
 		return;
 	}
 
+	public void printNodeHashes(){
+		for (Edge edge : this.edges){
+			for (Node node : edge.nodes){
+				System.out.print("\n" + node.hashCode() + ": ");
+				for (Node neighbor : node.neighbors){
+					System.out.print(neighbor.hashCode() + ", ");
+				}
+			}
+		}
+	}
 }
