@@ -32,6 +32,16 @@ public class GameController {
 		return nextTile;
 	}
 
+	int gameLoop(){
+		Tile currentTile;
+		while(!gameTiles.isEmpty()){
+			currentTile = drawTile();
+			System.out.println(currentTile.hashCode());
+		}
+
+		return 0;
+	}
+
 	private Tile prepareTiles(){	//Returns instance of starting tile
 		Tile startingTile = null;
 		for (int index = 0; index < gameTiles.size(); index++){
@@ -39,12 +49,15 @@ public class GameController {
 				Collections.swap(gameTiles, index, gameTiles.size()-1);
 				startingTile = gameTiles.get(gameTiles.size()-1);
 				gameTiles.remove(gameTiles.size()-1);
+				break;
 			}
 		}
 
 		Collections.shuffle(gameTiles, new Random(System.nanoTime()));
 
-		if (startingTile == null) System.out.println("Starting tile not found in the imported deck.");
+		if (startingTile == null) {
+			System.out.println("Starting tile not found in the imported deck.");
+		}
 		return startingTile;
 	}
 
@@ -57,7 +70,7 @@ public class GameController {
 
 	void placeStartingTile(Tile startingTile){
 		//Place starting tile forcibly at the middle of the board
-		board[ board.length/2 ][ board[board.length/2].length ] = startingTile;
+		board[ board.length/2 ][ board[board.length/2].length/2 ] = startingTile;
 	}
 	
 	boolean placeTile(Tile toPlace, Location loc){

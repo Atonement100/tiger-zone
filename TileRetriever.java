@@ -23,7 +23,7 @@ public class TileRetriever {
 				for (int spawning = 0; spawning < parameters[0]; spawning++){
 					tiles.add(new Tile(parameters[1] == 1 ,parameters[2] == 1 ,parameters[3] == 1, parameters[4], //Monastery, Roads End, Independent Cities, Animal type
 								new Integer[]{parameters[5],parameters[6],parameters[7],parameters[8]}, //Array of edge values (city, plains, road)
-								tokens[0].charAt(0))); //character identifier for easy comparison of tile equality
+								tokens[tokens.length-1].charAt(0))); //character identifier for easy comparison of tile equality
 				}
 			}
 			bufferedReader.close();
