@@ -5,10 +5,12 @@ import java.util.ArrayList;
 public class GameController {
 	private static final char startingTileChar = 'S';
 	private static final int NUM_PLAYERS = 2;
+	private static final int NUM_MEEPLES = 7;
 	private static int[] dx = {0,-1,0,1}; // W, N, E, S
 	private static int[] dy = {-1,0,1,0};
 	Tile[][] board;
-	PlayerController[] players = new PlayerController[2];
+	PlayerController[] players = new PlayerController[NUM_PLAYERS];
+	Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
 
 	private ArrayList<Tile> gameTileReference; // Don't modify this one after constructor. Can be indexed in to with tile.ID.
 	ArrayList<Tile> gameTiles;
@@ -26,6 +28,12 @@ public class GameController {
 			}
 			else{
 				players[numCreated] = new ComputerPlayerController();
+			}
+		}
+
+		for (int playerIndex = 0; playerIndex < NUM_PLAYERS; playerIndex++){
+			for (int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
+				playerMeeples[playerIndex][meepleIndex] = new Meeple(playerIndex);
 			}
 		}
 
