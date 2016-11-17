@@ -165,8 +165,8 @@ public class Tile {
 
 			//3rd node handler
 			if (this.citiesAreIndependent &&
-					edges[edgeIndex].nodes[2].featureType == FeatureTypeEnum.City &&
-					edges[(edgeIndex + 1) % edges.length].nodes[0].featureType == FeatureTypeEnum.City){
+					edges[edgeIndex].nodes[2].featureType == FeatureTypeEnum.Wall &&
+					edges[(edgeIndex + 1) % edges.length].nodes[0].featureType == FeatureTypeEnum.Wall){
 				continue;
 			}
 
