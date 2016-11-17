@@ -12,12 +12,35 @@ public class ScoreController {
     
     public void attemptScoring(Tile toCheck){
         
-        ArrayList<Node> roadCycle = getRoadCycleNodes(toCheck.edges[0].nodes[1]);
-        for(int i = 0; i < roadCycle.size(); i++){
-            System.out.println(roadCycle.get(i).featureType.toChar());
+        ArrayList<Node> cycleBuffer;
+        
+        //WALL CYCLES
+        for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
+            for(int cornerNodeIndex = 0; cornerNodeIndex < toCheck.edges[edgeIndex].nodes.length; cornerNodeIndex += 2){
+                cycleBuffer = getWallCycleNodes(toCheck.edges[edgeIndex].nodes[cornerNodeIndex]);
+                System.out.println("NODES IN WALL CYCLE " + cycleBuffer.size());
+                
+                //FOR TESTING *******************************
+                while(!cycleBuffer.isEmpty()){
+                    cycleBuffer.remove(0).visited = false;
+                }
+                //*******************************************
+                System.out.println("");
+            }
         }
         
-        
+        //ROAD CYCLES
+        for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
+            cycleBuffer = getRoadCycleNodes(toCheck.edges[edgeIndex].nodes[1]);
+            System.out.println("NODES IN ROAD CYCLE " + cycleBuffer.size());
+            
+            //FOR TESTING *******************************
+            while(!cycleBuffer.isEmpty()){
+                cycleBuffer.remove(0).visited = false;
+            }
+            //*******************************************
+            System.out.println("");
+        }
     }
     
     public ArrayList<Node> getWallCycleNodes(Node start){
@@ -28,6 +51,7 @@ public class ScoreController {
         //first mark start as visited, and add it in the cycle list
         start.visited = true;
         nodesInCycle.add(start);
+        System.out.println("START\n" + start.featureType.toChar() + " " + start.owningTileId + " " + start.hashCode());
         
         //get one of start node's neighbors of the same feature type and add it in the cycle list
         for(int neighborIndex = 0; neighborIndex < start.neighbors.size(); neighborIndex++)
@@ -35,6 +59,7 @@ public class ScoreController {
             if(start.neighbors.get(neighborIndex).featureType.toChar() == 'W' || start.neighbors.get(neighborIndex).featureType.toChar() == 'I')
             {
                 nodesInCycle.add(start.neighbors.get(neighborIndex));
+                System.out.println(start.neighbors.get(neighborIndex).featureType.toChar() + " " + start.neighbors.get(neighborIndex).owningTileId + " " + start.neighbors.get(neighborIndex).hashCode());
                 start.neighbors.get(neighborIndex).visited = true;
                 break;
             }
@@ -88,6 +113,7 @@ public class ScoreController {
             Node buffer = queue.poll();
             buffer.visited = true;
             nodesInCycle.add(buffer);
+            System.out.println(buffer.featureType.toChar() + " "+ buffer.owningTileId + " " + buffer.hashCode());
             for(int i = 0; i < buffer.neighbors.size(); i++){
                 if(buffer.neighbors.get(i).visited && buffer.neighbors.get(i) == start)
                 {
@@ -106,6 +132,24 @@ public class ScoreController {
                 nodesInCycle.remove(0).visited = false;
             }
         }
+        
+        //INNER WALL CYCLE EDGE CASE BEGIN ******************************************************************
+        boolean innerWallCycle = true;
+        if(cycle){
+            for(int nodeIndex = 0; nodeIndex < nodesInCycle.size(); nodeIndex++){
+                if(nodesInCycle.get(nodeIndex).featureType.toChar() !='I'){
+                    innerWallCycle = false;
+                    break;
+                }
+            }
+        }
+        if(innerWallCycle){
+            System.out.println("INNER WALL CYCLE DETECTED");
+            while(!nodesInCycle.isEmpty()){
+                nodesInCycle.remove(0).visited = false;
+            }
+        }
+        //INNER WALL CYCLE EDGE CASE END ******************************************************************
         
         return nodesInCycle;		//actual cycle;
         
@@ -192,7 +236,6 @@ public class ScoreController {
                 nodesInCycle.remove(0).visited = false;
             }
         }
-        
         return nodesInCycle;
     }
 }
