@@ -112,6 +112,12 @@ public class GameController {
 	}
 
 	private void placeTile(Tile tileToPlace, Location targetLocation, int rotations){
+		//NEED TO ADD WHEN PLACING A TILE A CHECK TO SEE IF A MEEPLE HAS BEEN PLACED ON THE FEATURE BEING CONNECTED
+		//IF A MEEPLE HAS BEEN PLACED ON THE CONNECTING FEATURE UPDATE THE TILE TO "HAS MEEPLE" AND ADD THE MEEPLE BEING PLACED
+		//IF THERE ARE MULTIPLE MEEPLES BECAUSE OF CONNECTION NEED TO KEEP TRACK OF MEEPLE COUNT
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		
+		
 		tileToPlace.rotateClockwise(rotations);
 		board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
 
@@ -170,18 +176,21 @@ public class GameController {
 		//finds the feature that the meeple is being placed in
 		feature = tileToPlace.edges[edge].nodes[node].featureType;
 		
-		//sets meeplePlacedInFeature to true
-		tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature = true;
-		
-		//NEED TO PUT AN UPDATE ALL NODES IN THE FEATURE TO MEEPLEPLACEDINFEATURE = TRUE
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		
 		//finds next free meeple in array and updates that meeple's status and location values
 		for(int i = 0; i < NUM_MEEPLES; i++){
 			if (playerMeeples[currentPlayer][i].status == 0){
+				//sets meeplePlacedInFeature to true
+				tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature = true;
+				
 				//places meeple on the tile node
 				tileToPlace.edges[edge].nodes[node].meeple = playerMeeples[currentPlayer][i];
+				
+				
+				//NEED TO PUT AN UPDATE ALL NODES IN THE FEATURE TO MEEPLEPLACEDINFEATURE = TRUE
+				//NEED TO PUT AN UPDATE ALL NODES IN THE FEATURE TO MEEPLE = PLAYERMEEPLES[CURR][I]
+				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				
 				
 				//updates location of meeple
 				playerMeeples[currentPlayer][i].location.Row = targetLocation.Row;
