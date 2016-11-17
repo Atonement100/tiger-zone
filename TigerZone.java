@@ -16,7 +16,7 @@ public class TigerZone {
 //		game.placeTile(game.gameTiles.get(5), new Location(1,1));
 //		game.placeTile(game.gameTiles.get(6), new Location(10,10));
 		//just change this to true if you want to see the board
-		if(false) {
+		/*if(false) {
 			for (int row = 0; row < 20; row++) {
 				for (int col = 0; col < 20; col++) {
 
@@ -68,6 +68,6 @@ public class TigerZone {
 				}
 				System.out.println("");
 			}
-		}
+		}*/
 	}
 }

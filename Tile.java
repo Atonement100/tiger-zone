@@ -6,15 +6,16 @@ import java.util.*;
 import java.util.ArrayList;
 
 public class Tile {
-
-	private static final int EDGES_PER_TILE = 4;
-	private static final int NODES_PER_EDGE = 3;
+	public static final int EDGES_PER_TILE = 4;
+	public static final int NODES_PER_EDGE = 3;
+	public static final int NODES_PER_TILE = EDGES_PER_TILE * NODES_PER_EDGE + 1;
 	private static int identify = 0;
 	
 	int ID,
 		rotations = 0;
 	Integer[] edgeValues;
-	Edge[] edges = new Edge[EDGES_PER_TILE];
+	Edge[] edges = new Edge[
+			EDGES_PER_TILE];
 	Node middle;
 	char tileType;
 	boolean hasMonastery,
@@ -155,7 +156,8 @@ public class Tile {
 		}
 
 		for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++){
-			for (int nodeIndex = 0; nodeIndex < NODES_PER_EDGE - 1; nodeIndex++) { //We can only loop for 1st two nodes on an edge. Third node needs to be handled specially
+			for (int nodeIndex = 0; nodeIndex <
+					NODES_PER_EDGE - 1; nodeIndex++) { //We can only loop for 1st two nodes on an edge. Third node needs to be handled specially
 				if (edges[edgeIndex].nodes[nodeIndex].featureType == edges[edgeIndex].nodes[nodeIndex + 1].featureType) {
 					addEachNodeAsNeighbor(edges[edgeIndex].nodes[nodeIndex], edges[edgeIndex].nodes[nodeIndex + 1]);
 				}

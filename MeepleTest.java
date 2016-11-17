@@ -30,7 +30,7 @@ public class MeepleTest {
 	@Test
 	public void testUpdateStatus() throws Exception {
 		Meeple m = new Meeple(1);
-		m.updateStatus(1);
+		m.setStatus(1);
 		assertEquals(1, m.status);
 	}
 

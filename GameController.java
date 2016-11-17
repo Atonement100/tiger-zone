@@ -2,13 +2,11 @@ import java.util.*;
 import java.util.ArrayList;
 public class GameController {
 	private static final char startingTileChar = 'S';
-	private static final int NUM_PLAYERS = 2;
-	private static final int NUM_MEEPLES = 7;
-	private static int[] dx = {0,-1,0,1}; // W, N, E, S
-	private static int[] dy = {-1,0,1,0};
-	private Tile[][] board;
+	public static final int NUM_PLAYERS = 2;
+	public static final int NUM_MEEPLES = 7;
+	private GameBoard board;
 	private PlayerController[] players = new PlayerController[NUM_PLAYERS];
-	private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
+//	private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
 
 	private ArrayList<Tile> gameTileReference; // Don't modify this one after constructor. Can be indexed in to with tile.ID.
 	ArrayList<Tile> gameTiles;
@@ -16,7 +14,7 @@ public class GameController {
 	int currentPlayer = 0;
 
 	public GameController(int row, int col){
-		board = new Tile[row][col];
+		board = new GameBoard(row, col);
 	}
 
 	public GameController(int numHumanPlayers){
@@ -29,18 +27,13 @@ public class GameController {
 			}
 		}
 
-		for (int playerIndex = 0; playerIndex < NUM_PLAYERS; playerIndex++){
-			for (int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
-				playerMeeples[playerIndex][meepleIndex] = new Meeple(playerIndex);
-			}
-		}
-
 		this.gameTiles = retrieveGameTiles();
 		this.gameTileReference = this.gameTiles;
-		board = new Tile[gameTiles.size()][gameTiles.size()];
+		board = new GameBoard(gameTiles.size(), gameTiles.size());
 
 		Tile startingTile = prepareTiles();
-		placeTile(startingTile, new Location( board.length/2, board[ board.length/2 ].length/2), 0);
+		Location boardDimensions = board.getBoardDimensions();
+		board.placeTile(startingTile, new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
 	}
 
 	private Tile drawTile(){
@@ -67,12 +60,15 @@ public class GameController {
 		MoveInformation playerMoveInfo;
 		do {
 			playerMoveInfo = players[currentPlayer].processPlayerMove(tileForPlayer);
-		} while (!verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation) || !verifyMeeplePlacement(tileForPlayer, playerMoveInfo.meepleLocation));
+		} while (!board.verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation));
 
 		System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation);
 
-		placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
-		placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation);
+		board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
+
+		if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.meepleLocation, currentPlayer) ) {
+			board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
+		}
 
 		for (PlayerController playerController : players){
 			playerController.processConfirmedMove(tileForPlayer, playerMoveInfo);
@@ -111,170 +107,4 @@ public class GameController {
 		return new TileRetriever(filePath).tiles;
 	}
 
-	private void placeTile(Tile tileToPlace, Location targetLocation, int rotations){
-		//NEED TO ADD WHEN PLACING A TILE A CHECK TO SEE IF A MEEPLE HAS BEEN PLACED ON THE FEATURE BEING CONNECTED
-		//IF A MEEPLE HAS BEEN PLACED ON THE CONNECTING FEATURE UPDATE THE TILE TO "HAS MEEPLE" AND ADD THE MEEPLE BEING PLACED
-		//IF THERE ARE MULTIPLE MEEPLES BECAUSE OF CONNECTION NEED TO KEEP TRACK OF MEEPLE COUNT
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		tileToPlace.rotateClockwise(rotations);
-		board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
-
-
-		for(int direction = 0; direction < 4; direction++){
-			Tile[] neighborTiles = getNeighboringTiles(targetLocation);
-
-			if(neighborTiles[direction] == null) continue;			//if there is no tile, no check is necessary, continue
-
-			for (int nodeIndex = 0; nodeIndex < tileToPlace.edges.length; nodeIndex++){
-				tileToPlace.edges[direction].nodes[nodeIndex].neighbors.add(neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex]);
-				neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex].neighbors.add(tileToPlace.edges[direction].nodes[nodeIndex]);
-			}
-		}
-	}
-	
-	//places a meeple in the valid position
-	private void placeMeeple(Tile tileToPlace, Location targetLocation, int placement){
-		int edge = placement / 3;
-		int node = placement % 3;
-		FeatureTypeEnum feature;
-		MeepleStatusEnum statusVal;
-		
-		//finds the feature that the meeple is being placed in
-		feature = tileToPlace.edges[edge].nodes[node].featureType;
-		
-		//finds next free meeple in array and updates that meeple's status and location values
-		for(int i = 0; i < NUM_MEEPLES; i++){
-			if (playerMeeples[currentPlayer][i].status == MeepleStatusEnum.onNone){
-				//sets meeplePlacedInFeature to true
-				tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature = true;
-				
-				//places meeple on the tile node
-				tileToPlace.edges[edge].nodes[node].meeple = playerMeeples[currentPlayer][i];
-				
-				
-				//NEED TO PUT AN UPDATE ALL NODES IN THE FEATURE TO MEEPLEPLACEDINFEATURE = TRUE
-				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				
-				
-				//updates location of meeple
-				playerMeeples[currentPlayer][i].location.Row = targetLocation.Row;
-				playerMeeples[currentPlayer][i].location.Col = targetLocation.Col;
-				
-				//updates status of meeple
-				switch(feature) {
-					case Field:
-						statusVal = MeepleStatusEnum.onField;
-						break;
-					case City:
-					case Wall:
-					case InnerWall:
-						statusVal = MeepleStatusEnum.onCity;
-						break;
-					case Road:
-					case RoadEnd:
-						statusVal = MeepleStatusEnum.onRoad;
-						break;
-					case Monastery:
-						statusVal = MeepleStatusEnum.onMonastery;
-						break;
-					default:
-						throw new IllegalStateException();
-				}
-				
-				playerMeeples[currentPlayer][i].setStatus(statusVal);
-				
-				break;
-			}
-		}
-	}
-	
-	private boolean verifyTilePlacement(Tile tileToPlace, Location targetLocation, int rotations){
-		tileToPlace.rotateClockwise(rotations);
-
-		int row = targetLocation.Row;
-		int col = targetLocation.Col;
-
-		int rowBoundary = board.length;
-		int colBoundary = board[0].length;
-		
-		//****************************************************************************************
-		//logic(simple) CHECKS
-		
-		if(row < 0 || row >= rowBoundary || col < 0 || col >= colBoundary){
-			
-			return false;			//placement out of bounds;
-		}
-		
-		if(board[row][col] != null){
-			return false;			//if tile exists at loc
-		}
-		
-		
-		//****************************************************************************************
-		//game rules CHECKS
-		
-		//start out optimistic
-		boolean isCompatible = true;
-		//get all neighboring tiles
-
-		boolean noNeighboringTile = false; //CHANGE THIS TO FALSE/TRUE FOR TESTING PURPOSES
-		Tile[] neighborTiles = getNeighboringTiles(targetLocation);
-		for (Tile nTile : neighborTiles){
-			if (nTile != null){
-				noNeighboringTile = false;
-			}
-		}
-		if (noNeighboringTile) return false;
-
-		//check compatibility with neighboring tiles
-		for(int direction = 0; direction < 4; direction++){
-
-			if (neighborTiles[direction] != null){
-				if(!tileToPlace.edges[direction].isCompatible(neighborTiles[direction].edges[(direction + 2) % 4])){ //Could change 4 to constant - EDGES_PER_TILE. 2 is EDGES_PER_TILE / 2
-					isCompatible = false;
-					break;
-				}
-			}
-		}
-
-		return isCompatible;
-	}
-
-	//checks if a meeple can be placed at the spot indicated
-	private boolean verifyMeeplePlacement(Tile tileToPlace, int placement){
-		//initializes necessary values
-		boolean isCompatible = false;
-		int edge = placement / 3;
-		int node = placement % 3;
-		
-		//checks if there is already a meeple on the feature that the player is trying to place a meeple on
-		if(tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature){
-			return false;
-		}
-		
-		//checks if the player has any meeples to place
-		for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
-			if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
-				isCompatible = true;
-				break;
-			}
-		}
-
-		return isCompatible;
-	}
-	
-	private Tile[] getNeighboringTiles(Location tileLocation){
-		int row = tileLocation.Row;
-		int col = tileLocation.Col;
-
-		Tile[] neighborTiles = new Tile[4];		//N, E, S, W
-		for(int direction = 0; direction < 4; direction++){
-			if(row + dx[direction] >= 0 && row + dx[direction] < board.length && col + dy[direction] >= 0 && col + dy[direction] < board[0].length){ //Checks within board boundary
-				neighborTiles[direction] = board[row + dx[direction]][col + dy[direction]];
-			}
-		}
-
-		return neighborTiles;
-	}
 }
