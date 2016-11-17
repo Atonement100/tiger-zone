@@ -72,6 +72,7 @@ public class GameController {
 		System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation);
 
 		placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
+		placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation);
 
 		for (PlayerController playerController : players){
 			playerController.processConfirmedMove(tileForPlayer, playerMoveInfo);
@@ -157,8 +158,57 @@ public class GameController {
 			}
 			*/
 		}
-
-
+	}
+	
+	//places a meeple in the valid position
+	private void placeMeeple(Tile tileToPlace, Location targetLocation, int placement){
+		int edge = placement / 3;
+		int node = placement % 3;
+		FeatureTypeEnum feature;
+		int statusVal = 0;
+		
+		//finds the feature that the meeple is being placed in
+		feature = tileToPlace.edges[edge].nodes[node].featureType;
+		
+		//sets meeplePlacedInFeature to true
+		tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature = true;
+		
+		//NEED TO PUT AN UPDATE ALL NODES IN THE FEATURE TO MEEPLEPLACEDINFEATURE = TRUE
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		
+		//finds next free meeple in array and updates that meeple's status and location values
+		for(int i = 0; i < NUM_MEEPLES; i++){
+			if (playerMeeples[currentPlayer][i].status == 0){
+				//places meeple on the tile node
+				tileToPlace.edges[edge].nodes[node].meeple = playerMeeples[currentPlayer][i];
+				
+				//updates location of meeple
+				playerMeeples[currentPlayer][i].location.Row = targetLocation.Row;
+				playerMeeples[currentPlayer][i].location.Col = targetLocation.Col;
+				
+				//updates status of meeple
+				switch(feature){
+				case Field : statusVal = 1;
+							break;
+				case City:
+				case Wall:
+				case InnerWall: statusVal = 2;
+							break;
+				case Road:
+				case RoadEnd: statusVal = 3;
+							break;
+				case Monastery: statusVal = 4;
+							break;
+				default:
+					break;
+				}
+				
+				playerMeeples[currentPlayer][i].status = statusVal;
+				
+				break;
+			}
+		}
 	}
 	
 	private boolean verifyTilePlacement(Tile tileToPlace, Location targetLocation, int rotations){
@@ -258,9 +308,30 @@ public class GameController {
 		return isCompatible;
 	}
 
+	//checks if a meeple can be placed at the spot indicated
 	private boolean verifyMeeplePlacement(Tile tileToPlace, int placement){
-		//checks if the meeple can be placed at the spot that the player indicated
+		//initializes necessary values
 		boolean isCompatible = true;
+		int edge = placement / 3;
+		int node = placement % 3;
+		int meepleNum = 0;
+		
+		//checks if there is already a meeple on the feature that the player is trying to place a meeple on
+		if(tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature){
+			return false;
+		}
+		
+		//checks if the player has any meeples to place
+		for(int i = 0; i < NUM_MEEPLES; i++){
+			if (playerMeeples[currentPlayer][i].status == 0){
+				meepleNum++;
+				break;
+			}
+		}
+		
+		if (meepleNum == 0){
+			return false;
+		}
 		
 		return isCompatible;
 	}

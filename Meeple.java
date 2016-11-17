@@ -4,6 +4,12 @@ public class Meeple {
 	int status;
 	Location location;
 	
+	//status = 0 : meeple is not on the board
+	//status = 1 : meeple is on a field
+	//status = 2 : meeple is on a city
+	//status = 3 : meeple is on a road
+	//status = 4 : meeple in on a monestary
+	
 	public Meeple(){
 		this.owner = -1;
 		this.status = -1;
