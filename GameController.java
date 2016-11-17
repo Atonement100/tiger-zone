@@ -24,7 +24,7 @@ public class GameController {
 			if (numCreated < numHumanPlayers){
 				players[numCreated] = new HumanPlayerController();
 			}
-			else{
+			else {
 				players[numCreated] = new ComputerPlayerController();
 			}
 		}
@@ -67,7 +67,7 @@ public class GameController {
 		MoveInformation playerMoveInfo;
 		do {
 			playerMoveInfo = players[currentPlayer].processPlayerMove(tileForPlayer);
-		} while (!verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation));
+		} while (!verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation) || !verifyMeeplePlacement(tileForPlayer, playerMoveInfo.meepleLocation));
 
 		System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation);
 
@@ -258,6 +258,13 @@ public class GameController {
 		return isCompatible;
 	}
 
+	private boolean verifyMeeplePlacement(Tile tileToPlace, int placement){
+		//checks if the meeple can be placed at the spot that the player indicated
+		boolean isCompatible = true;
+		
+		return isCompatible;
+	}
+	
 	private Tile[] getNeighboringTiles(Location tileLocation){
 		int row = tileLocation.Row;
 		int col = tileLocation.Col;
