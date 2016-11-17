@@ -116,8 +116,6 @@ public class GameController {
 		//IF A MEEPLE HAS BEEN PLACED ON THE CONNECTING FEATURE UPDATE THE TILE TO "HAS MEEPLE" AND ADD THE MEEPLE BEING PLACED
 		//IF THERE ARE MULTIPLE MEEPLES BECAUSE OF CONNECTION NEED TO KEEP TRACK OF MEEPLE COUNT
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		
-		
 		tileToPlace.rotateClockwise(rotations);
 		board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
 
@@ -131,38 +129,6 @@ public class GameController {
 				tileToPlace.edges[direction].nodes[nodeIndex].neighbors.add(neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex]);
 				neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex].neighbors.add(tileToPlace.edges[direction].nodes[nodeIndex]);
 			}
-
-			//Place starting tile forcibly at the middle of the board
-
-			/*
-			switch(direction){
-				case 0:										//(west edge of this, east edge of other)
-					for(int i = 0; i < 3; i++){
-						toPlace.edges[direction].nodes[i].neighbors.add(neighborTiles[direction].edges[2].nodes[i]);
-						neighborTiles[direction].edges[2].nodes[i].neighbors.add(toPlace.edges[direction].nodes[i]);
-					}
-
-					break;
-				case 1:										//(north edge of this, south edge of other)
-					for(int i = 0; i < 3; i++){
-						toPlace.edges[direction].nodes[i].neighbors.add(neighborTiles[direction].edges[3].nodes[i]);
-						neighborTiles[direction].edges[3].nodes[i].neighbors.add(toPlace.edges[direction].nodes[i]);
-					}
-					break;
-				case 2:										//(east edge of this, west edge of other)
-					for(int i = 0; i < 3; i++){
-						toPlace.edges[direction].nodes[i].neighbors.add(neighborTiles[direction].edges[0].nodes[i]);
-						neighborTiles[direction].edges[0].nodes[i].neighbors.add(toPlace.edges[direction].nodes[i]);
-					}
-					break;
-				case 3:										//(south edge of this, north edge of other)
-					for(int i = 0; i < 3; i++){
-						toPlace.edges[direction].nodes[i].neighbors.add(neighborTiles[direction].edges[1].nodes[i]);
-						neighborTiles[direction].edges[1].nodes[i].neighbors.add(toPlace.edges[direction].nodes[i]);
-					}
-					break;
-			}
-			*/
 		}
 	}
 	
@@ -171,14 +137,14 @@ public class GameController {
 		int edge = placement / 3;
 		int node = placement % 3;
 		FeatureTypeEnum feature;
-		int statusVal = 0;
+		MeepleStatusEnum statusVal;
 		
 		//finds the feature that the meeple is being placed in
 		feature = tileToPlace.edges[edge].nodes[node].featureType;
 		
 		//finds next free meeple in array and updates that meeple's status and location values
 		for(int i = 0; i < NUM_MEEPLES; i++){
-			if (playerMeeples[currentPlayer][i].status == 0){
+			if (playerMeeples[currentPlayer][i].status == MeepleStatusEnum.onNone){
 				//sets meeplePlacedInFeature to true
 				tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature = true;
 				
@@ -187,7 +153,6 @@ public class GameController {
 				
 				
 				//NEED TO PUT AN UPDATE ALL NODES IN THE FEATURE TO MEEPLEPLACEDINFEATURE = TRUE
-				//NEED TO PUT AN UPDATE ALL NODES IN THE FEATURE TO MEEPLE = PLAYERMEEPLES[CURR][I]
 				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				
@@ -197,23 +162,27 @@ public class GameController {
 				playerMeeples[currentPlayer][i].location.Col = targetLocation.Col;
 				
 				//updates status of meeple
-				switch(feature){
-				case Field : statusVal = 1;
-							break;
-				case City:
-				case Wall:
-				case InnerWall: statusVal = 2;
-							break;
-				case Road:
-				case RoadEnd: statusVal = 3;
-							break;
-				case Monastery: statusVal = 4;
-							break;
-				default:
-					break;
+				switch(feature) {
+					case Field:
+						statusVal = MeepleStatusEnum.onField;
+						break;
+					case City:
+					case Wall:
+					case InnerWall:
+						statusVal = MeepleStatusEnum.onCity;
+						break;
+					case Road:
+					case RoadEnd:
+						statusVal = MeepleStatusEnum.onRoad;
+						break;
+					case Monastery:
+						statusVal = MeepleStatusEnum.onMonastery;
+						break;
+					default:
+						throw new IllegalStateException();
 				}
 				
-				playerMeeples[currentPlayer][i].status = statusVal;
+				playerMeeples[currentPlayer][i].setStatus(statusVal);
 				
 				break;
 			}
@@ -258,24 +227,6 @@ public class GameController {
 		}
 		if (noNeighboringTile) return false;
 
-		/*
-		boolean noNeighboringTile = false;		//CHANGE THIS TO FALSE/TRUE FOR TESTING PURPOSES
-		Tile[] neighborTiles = new Tile[4];		//N, E, S, W
-		for(int direction = 0; direction < 4; direction++){
-			if(row + dx[direction] >= 0 && row + dx[direction] < rowBoundary && col + dy[direction] >= 0 && col + dy[direction] < colBoundary){
-				neighborTiles[direction] = board[row + dx[direction]][col + dy[direction]];
-				if(neighborTiles[direction] != null){
-					noNeighboringTile = false;
-				}
-			}
-		}
-		
-		//if there is no neighboring tile, it's an invalid placement
-		if(noNeighboringTile){
-			return false;
-		}
-		*/
-
 		//check compatibility with neighboring tiles
 		for(int direction = 0; direction < 4; direction++){
 
@@ -285,33 +236,6 @@ public class GameController {
 					break;
 				}
 			}
-
-			/*
-			if(neighborTiles[direction] == null) continue;			//if there is no tile, no check is necessary, continue
-
-			switch(direction){
-				case 0:										//check WEST tile compatibility (north edge of this, south edge of other)
-					if(!tileToPlace.edges[direction].isCompatible(neighborTiles[direction].edges[2])){
-						isCompatible = false;
-					}
-					break;
-				case 1:										//check NORTH tile compatibility (east edge of this, west edge of other)
-					if(!tileToPlace.edges[direction].isCompatible(neighborTiles[direction].edges[3])){
-						isCompatible = false;
-					}
-					break;
-				case 2:										//check EAST tile compatibility (south edge of this, north edge of other)
-					if(!tileToPlace.edges[direction].isCompatible(neighborTiles[direction].edges[0])){
-						isCompatible = false;
-					}
-					break;
-				case 3:										//check SOUTH tile compatibility (west edge of this, east edge of other)
-					if(!tileToPlace.edges[direction].isCompatible(neighborTiles[direction].edges[1])){
-						isCompatible = false;
-					}
-					break;
-			}
-			*/
 		}
 
 		return isCompatible;
@@ -320,10 +244,9 @@ public class GameController {
 	//checks if a meeple can be placed at the spot indicated
 	private boolean verifyMeeplePlacement(Tile tileToPlace, int placement){
 		//initializes necessary values
-		boolean isCompatible = true;
+		boolean isCompatible = false;
 		int edge = placement / 3;
 		int node = placement % 3;
-		int meepleNum = 0;
 		
 		//checks if there is already a meeple on the feature that the player is trying to place a meeple on
 		if(tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature){
@@ -331,17 +254,13 @@ public class GameController {
 		}
 		
 		//checks if the player has any meeples to place
-		for(int i = 0; i < NUM_MEEPLES; i++){
-			if (playerMeeples[currentPlayer][i].status == 0){
-				meepleNum++;
+		for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
+			if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
+				isCompatible = true;
 				break;
 			}
 		}
-		
-		if (meepleNum == 0){
-			return false;
-		}
-		
+
 		return isCompatible;
 	}
 	
