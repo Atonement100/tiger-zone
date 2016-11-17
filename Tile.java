@@ -22,13 +22,17 @@ public class Tile {
 			citiesAreIndependent;
 	int animalType;
 
-
-	/*public Tile(Edge[] edges, Node middle){
-		this.edges = edges;
-		this.middle = middle;
-		this.connectNodes();
-		this.ID = ++identify;
-	}*/
+	public Tile(Tile tileToCopy){
+		Tile newTile = new Tile(tileToCopy.hasMonastery, tileToCopy.roadsEnd, tileToCopy.citiesAreIndependent, tileToCopy.animalType, tileToCopy.edgeValues, tileToCopy.tileType);
+		this.hasMonastery = newTile.hasMonastery;
+		this.roadsEnd = newTile.roadsEnd;
+		this.citiesAreIndependent = newTile.citiesAreIndependent;
+		this.tileType = newTile.tileType;
+		this.rotations = newTile.rotations;
+		this.edgeValues = newTile.edgeValues;
+		this.animalType = newTile.animalType;
+		this.edges = newTile.edges;
+	}
 
 	public Tile(boolean hasMonastery, boolean roadsEnd, boolean citiesAreIndependent, int animalType, Integer[] edgeValues, char tileType){
 		this.hasMonastery = hasMonastery;

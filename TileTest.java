@@ -1,5 +1,7 @@
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class TileTest {
@@ -120,4 +122,19 @@ public class TileTest {
         assertSame(edges[3].nodes[2].neighbors.get(0), edges[3].nodes[1]);
         assertSame(edges[3].nodes[2].neighbors.get(1), edges[0].nodes[0]);
     }
+
+    /* These may safely be deleted, they were used only to test java functionality
+    @Test
+    public void copyConstructor() throws Exception {
+        Tile tileToCopy = new Tile(false, false, false, 0, new Integer[]{0, 1, 2, 2}, 'K');
+
+        rotate(tileToCopy, 1);
+
+        assertArrayEquals(new Integer[]{0, 1, 2, 2}, tileToCopy.edgeValues);
+    }
+
+    void rotate(Tile tile, int rotations){
+        tile.rotateClockwise(rotations);
+    }
+    */
 }
