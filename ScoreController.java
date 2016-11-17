@@ -12,9 +12,9 @@ public class ScoreController {
     
     public void attemptScoring(Tile toCheck){
         
-        ArrayList<Node> wallCycle = getWallCycleNodes(toCheck.edges[0].nodes[0]);
-        for(int i = 0; i < wallCycle.size(); i++){
-            System.out.println(wallCycle.get(i));
+        ArrayList<Node> roadCycle = getRoadCycleNodes(toCheck.edges[0].nodes[1]);
+        for(int i = 0; i < roadCycle.size(); i++){
+            System.out.println(roadCycle.get(i).featureType.toChar());
         }
         
         
@@ -84,7 +84,7 @@ public class ScoreController {
         queue.add(twoLevelDepthNode);
         
         boolean cycle = false;
-        while(!queue.isEmpty() && !cycle){
+        while(!queue.isEmpty()){
             Node buffer = queue.poll();
             buffer.visited = true;
             nodesInCycle.add(buffer);
@@ -98,6 +98,12 @@ public class ScoreController {
                 {
                     queue.add(buffer.neighbors.get(i));
                 }
+            }
+        }
+        
+        if(!cycle){
+            while(!nodesInCycle.isEmpty()){
+                nodesInCycle.remove(0).visited = false;
             }
         }
         
@@ -167,7 +173,7 @@ public class ScoreController {
         queue.add(twoLevelDepthNode);
         
         boolean cycle = false;
-        while(!queue.isEmpty() && !cycle){
+        while(!queue.isEmpty()){
             Node buffer = queue.poll();
             buffer.visited = true;
             nodesInCycle.add(buffer);
@@ -181,9 +187,12 @@ public class ScoreController {
             }
         }
         
-        return nodesInCycle;		//actual cycle;
+        if(!cycle){
+            while(!nodesInCycle.isEmpty()){
+                nodesInCycle.remove(0).visited = false;
+            }
+        }
+        
+        return nodesInCycle;
     }
-    
-    
-    
 }
