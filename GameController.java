@@ -2,16 +2,15 @@ import java.util.*;
 import java.util.ArrayList;
 public class GameController {
 	private static final char startingTileChar = 'S';
-	public static final int NUM_PLAYERS = 2;
-	public static final int NUM_MEEPLES = 7;
-	private GameBoard board;
+	static final int NUM_PLAYERS = 2;
+	static final int NUM_MEEPLES = 7;
+	GameBoard board;
 	private PlayerController[] players = new PlayerController[NUM_PLAYERS];
 //	private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
 
 	private ArrayList<Tile> gameTileReference; // Don't modify this one after constructor. Can be indexed in to with tile.ID.
-	ArrayList<Tile> gameTiles;
-
-	int currentPlayer = 0;
+	private ArrayList<Tile> gameTiles;
+	private int currentPlayer = 0;
 
 	public GameController(int row, int col){
 		board = new GameBoard(row, col);
@@ -54,9 +53,8 @@ public class GameController {
 	}
 
 	private void handleMove(Tile tileForPlayer){
-		//System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
-		//Scanner scanner = new Scanner(System.in);
-		//scanner.next();
+		System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
+
 		MoveInformation playerMoveInfo;
 		do {
 			playerMoveInfo = players[currentPlayer].processPlayerMove(tileForPlayer);

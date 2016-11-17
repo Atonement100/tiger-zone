@@ -1,18 +1,17 @@
 public class PlayerController {
     protected Meeple[] localMeeples;
-    protected Tile[][] localGameBoard;
+    protected GameBoard localGameBoard;
 
     PlayerController(){
         this.localMeeples = new Meeple[7];
-        this.localGameBoard = new Tile[77][77];
+        this.localGameBoard = new GameBoard(77,77);
     }
 
     void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo){
         confirmedTile.rotateClockwise(moveInfo.tileRotation);
 
         //need to locally update meeple
-
-        localGameBoard[moveInfo.tileLocation.Row][moveInfo.tileLocation.Col] = confirmedTile;
+        localGameBoard.placeTile(confirmedTile, moveInfo.tileLocation, moveInfo.tileRotation);
     }
 
     MoveInformation processPlayerMove(Tile currentTile){
