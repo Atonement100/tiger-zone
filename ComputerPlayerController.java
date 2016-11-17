@@ -13,4 +13,11 @@ public class ComputerPlayerController extends PlayerController {
 
     }
 
+    @Override
+    void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo) {
+        super.processConfirmedMove(confirmedTile, moveInfo);
+
+        System.out.println("Computer player has confirmed the recent move Row: " + moveInfo.tileLocation.Row + " Col: " + moveInfo.tileLocation.Col + " Rotation: " + moveInfo.tileRotation);
+    }
+
 }

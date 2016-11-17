@@ -6,9 +6,9 @@ public class GameController {
 	private static final int NUM_MEEPLES = 7;
 	private static int[] dx = {0,-1,0,1}; // W, N, E, S
 	private static int[] dy = {-1,0,1,0};
-	Tile[][] board;
-	PlayerController[] players = new PlayerController[NUM_PLAYERS];
-	Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
+	private Tile[][] board;
+	private PlayerController[] players = new PlayerController[NUM_PLAYERS];
+	private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
 
 	private ArrayList<Tile> gameTileReference; // Don't modify this one after constructor. Can be indexed in to with tile.ID.
 	ArrayList<Tile> gameTiles;
@@ -43,7 +43,7 @@ public class GameController {
 		placeTile(startingTile, new Location( board.length/2, board[ board.length/2 ].length/2), 0);
 	}
 
-	Tile drawTile(){
+	private Tile drawTile(){
 		Tile nextTile = gameTiles.get(gameTiles.size()-1);
 		gameTiles.remove(gameTiles.size()-1);
 		return nextTile;
@@ -60,7 +60,7 @@ public class GameController {
 		return 0;
 	}
 
-	void handleMove(Tile tileForPlayer){
+	private void handleMove(Tile tileForPlayer){
 		//System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
 		//Scanner scanner = new Scanner(System.in);
 		//scanner.next();
@@ -69,17 +69,19 @@ public class GameController {
 			playerMoveInfo = players[currentPlayer].processPlayerMove(tileForPlayer);
 		} while (!verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation));
 
+		System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation);
+
 		placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
 
-
-		//Verify move, send appropriate message back
-		//Send both players a move
+		for (PlayerController playerController : players){
+			playerController.processConfirmedMove(tileForPlayer, playerMoveInfo);
+		}
 
 		switchPlayerControl();
 		return;
 	}
 
-	void switchPlayerControl(){
+	private void switchPlayerControl(){
 		currentPlayer = (currentPlayer + 1) % NUM_PLAYERS;
 	}
 
@@ -108,7 +110,7 @@ public class GameController {
 		return new TileRetriever(filePath).tiles;
 	}
 
-	void placeTile(Tile tileToPlace, Location targetLocation, int rotations){
+	private void placeTile(Tile tileToPlace, Location targetLocation, int rotations){
 		tileToPlace.rotateClockwise(rotations);
 		board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
 
