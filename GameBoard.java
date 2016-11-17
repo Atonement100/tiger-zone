@@ -43,10 +43,10 @@ public class GameBoard {
             }
         }
 
-        updateMeepleInformationForConnectedNodes(targetLocation);
+        updateMeepleInfoForNewTile(targetLocation);
     }
 
-    private void updateMeepleInformationForConnectedNodes(Location tileLocation){
+    private void updateMeepleInfoForNewTile(Location tileLocation){
         Tile tileToUpdate = board[tileLocation.Row][tileLocation.Col];
 
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
@@ -87,6 +87,63 @@ public class GameBoard {
         }
     }
 
+    private void updateMeepleInfoForNewMeeple(Location targetLocation, int meepleLocation){
+        if (meepleLocation == 12) return;
+
+        int edge = meepleLocation / 3; //Nodes per edge
+        int node = meepleLocation % 3;
+        Tile tile = board[targetLocation.Row][targetLocation.Col];
+
+        if (tile == null) return;
+
+        ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
+        ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
+        nodeQueue.add(tile.edges[edge].nodes[node]);
+        while (!nodeQueue.isEmpty()){
+            Node currNode = nodeQueue.removeFirst();
+            visitedQueue.add(currNode);
+            for (Node neighbor : currNode.neighbors){
+                if (!neighbor.meeplePlacedInFeature && !visitedQueue.contains(neighbor)){
+                    neighbor.meeplePlacedInFeature = true;
+                    nodeQueue.add(neighbor);
+                }
+            }
+        }
+    }
+
+    private boolean isValidMeeplePlacementOnNode(Location targetLocation, int meepleLocation){
+        if (meepleLocation == 12) return true;
+
+        int edge = meepleLocation / 3; //Nodes per edge
+        int node = meepleLocation % 3;
+        Tile tile = board[targetLocation.Row][targetLocation.Col];
+
+        if (tile == null) return false;
+
+        Node startingNode = tile.edges[edge].nodes[node];
+        if (startingNode.meeplePlacedInFeature) return false;
+
+
+        ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
+        ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
+        nodeQueue.add(startingNode);
+        while (!nodeQueue.isEmpty()){
+            Node currNode = nodeQueue.removeFirst();
+            visitedQueue.add(currNode);
+            for (Node neighbor : currNode.neighbors){
+                if (neighbor.meeplePlacedInFeature){
+                    System.out.println("Potential error from isValidMeeplePlacementOnNode - starting node should be marked true when the tile is placed");
+                    return false;
+                }
+                else if (!visitedQueue.contains(neighbor)){
+                    nodeQueue.add(neighbor);
+                }
+            }
+        }
+
+        return true;
+    }
+
     //places a meeple in the valid position
     void placeMeeple(Tile tileToPlace, Location targetLocation, int placement, int currentPlayer){
         int edge = placement / 3; //Nodes per edge
@@ -112,11 +169,9 @@ public class GameBoard {
                 else{
                     board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].meeplePlacedInFeature = true;
                     board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].meeple = playerMeeples[currentPlayer][meepleIndex];
+                    updateMeepleInfoForNewMeeple(targetLocation, placement);    //No need to propagate changes for monastery, only do it here
                 }
 
-                //NEED TO PUT AN UPDATE ALL NODES IN THE FEATURE TO MEEPLEPLACEDINFEATURE = TRUE
-                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
                 //Updates location and status of meeple
@@ -182,19 +237,21 @@ public class GameBoard {
     }
 
     //checks if a meeple can be placed at the spot indicated
-    boolean verifyMeeplePlacement(Tile tileToPlace, int placement, int currentPlayer){
-        if (placement < 0 || placement > 11){
-            return (placement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None); //It can be larger than 11 only if it is 12, which must also be a monastery placement
+    boolean verifyMeeplePlacement(Tile tileToPlace, Location tilePlacement, int meeplePlacement, int currentPlayer){
+        if (meeplePlacement < 0 || meeplePlacement > 11){
+            return (meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None); //It can be larger than 11 only if it is 12, which must also be a monastery placement
             //Monasteries are also not connected to anything, so they don't need to be verified for adjacency.
         }
         //initializes necessary values
-        int edge = placement / 3;
-        int node = placement % 3;
+        int edge = meeplePlacement / 3;
+        int node = meeplePlacement % 3;
 
         //checks if there is already a meeple on the feature that the player is trying to place a meeple on
         if(tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature){
             return false;
         }
+
+        isValidMeeplePlacementOnNode(tilePlacement, meeplePlacement);
 
         //checks if the player has any meeples to place
         for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
