@@ -37,7 +37,7 @@ public class GameBoard {
 
             if(neighborTiles[direction] == null) continue;			//if there is no tile, no check is necessary, continue
 
-            for (int nodeIndex = 0; nodeIndex < tileToPlace.edges.length; nodeIndex++){
+            for (int nodeIndex = 0; nodeIndex < tileToPlace.edges[direction].nodes.length; nodeIndex++){
                 tileToPlace.edges[direction].nodes[nodeIndex].neighbors.add(neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex]);
                 neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex].neighbors.add(tileToPlace.edges[direction].nodes[nodeIndex]);
             }
