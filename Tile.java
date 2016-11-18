@@ -128,6 +128,7 @@ public class Tile {
 				edges[secondCityLoc].nodes[2].featureType = FeatureTypeEnum.Wall;
 
 				addEachNodeAsNeighbor(edges[firstCityLoc].nodes[0], edges[secondCityLoc].nodes[2]);
+				addEachNodeAsNeighbor(edges[firstCityLoc].nodes[1], edges[secondCityLoc].nodes[1]);
 			}
 		}
 		else if (numCities == 3){
@@ -138,6 +139,11 @@ public class Tile {
 					edges[(edgeIndex + 2) % edges.length].nodes[0].featureType = FeatureTypeEnum.Wall;
 
 					addEachNodeAsNeighbor(edges[edgeIndex].nodes[2], edges[(edgeIndex + 2) % edges.length].nodes[0]);
+
+					//Connects inner city nodes
+					addEachNodeAsNeighbor(edges[edgeIndex].nodes[1], edges[(edgeIndex + 2) % edges.length].nodes[1]);
+					addEachNodeAsNeighbor(edges[edgeIndex].nodes[1], edges[(edgeIndex + 3) % edges.length].nodes[1]);
+					addEachNodeAsNeighbor(edges[(edgeIndex + 3) % edges.length].nodes[1], edges[(edgeIndex + 2) % edges.length].nodes[1]);
 				}
 
 				//This sets up the inner connections to be linked later
@@ -149,16 +155,19 @@ public class Tile {
 		}
 		else if (numCities == 4){
 			//Will be linked later by adjacency linker
-			for (Edge edge : edges) {
-				edge.nodes[0].featureType = FeatureTypeEnum.InnerWall;
-				edge.nodes[2].featureType = FeatureTypeEnum.InnerWall;
+			for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++) {
+				edges[edgeIndex].nodes[0].featureType = FeatureTypeEnum.InnerWall;
+				edges[edgeIndex].nodes[2].featureType = FeatureTypeEnum.InnerWall;
+
+				addEachNodeAsNeighbor(edges[edgeIndex].nodes[1], (edges[(edgeIndex + 1) % EDGES_PER_TILE]).nodes[1]);
 			}
 		}
 
 		for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++){
 			for (int nodeIndex = 0; nodeIndex <
 					NODES_PER_EDGE - 1; nodeIndex++) { //We can only loop for 1st two nodes on an edge. Third node needs to be handled specially
-				if (edges[edgeIndex].nodes[nodeIndex].featureType == edges[edgeIndex].nodes[nodeIndex + 1].featureType) {
+				if (edges[edgeIndex].nodes[nodeIndex].featureType == edges[edgeIndex].nodes[nodeIndex + 1].featureType || 					//If same feature type
+						edges[edgeIndex].nodes[nodeIndex].featureType.isWallToCity(edges[edgeIndex].nodes[nodeIndex + 1].featureType)) {	//Or a wall to city connection
 					addEachNodeAsNeighbor(edges[edgeIndex].nodes[nodeIndex], edges[edgeIndex].nodes[nodeIndex + 1]);
 				}
 			}
@@ -212,7 +221,6 @@ public class Tile {
 	}
 
 	public void connectNodes(){
-		
 		if(this.edges[0].nodes[1].featureType == FeatureTypeEnum.Road && this.edges[2].nodes[1].featureType == FeatureTypeEnum.Road && this.middle.featureType == FeatureTypeEnum.Road){
 			
 			this.edges[0].nodes[1].neighbors.add(this.middle);
@@ -249,9 +257,9 @@ public class Tile {
 	public void printNodeHashes(){
 		for (Edge edge : this.edges){
 			for (Node node : edge.nodes){
-				System.out.print("\n" + node.hashCode() + ": ");
+				System.out.print("\n" + node.hashCode() + "(" + node.featureType + "): ");
 				for (Node neighbor : node.neighbors){
-					System.out.print(neighbor.hashCode() + ", ");
+					System.out.print(neighbor.hashCode() + "(" + neighbor.featureType + "), ");
 				}
 			}
 		}

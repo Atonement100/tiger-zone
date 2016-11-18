@@ -1,4 +1,4 @@
-public enum FeatureTypeEnum {
+enum FeatureTypeEnum {
     Field,
     Road,
     City,
@@ -33,6 +33,35 @@ public enum FeatureTypeEnum {
             case Monastery: return 'M';
             case None: return 'X';
             default: throw new IllegalStateException();
+        }
+    }
+
+    public boolean isSameFeature(FeatureTypeEnum otherType){
+        switch (this){
+            case Field:
+                return otherType == Field;
+            case Road:
+            case RoadEnd:
+                return (otherType == Road || otherType == RoadEnd);
+            case City:
+            case Wall:
+            case InnerWall:
+                return (otherType == City || otherType == Wall || otherType == InnerWall);
+            case Monastery:
+                return (otherType == Monastery);
+            case None:
+                return (otherType == None);
+            default: throw new IllegalStateException();
+        }
+    }
+
+    public boolean isWallToCity(FeatureTypeEnum otherType){
+        switch (this){
+            case City:
+            case Wall:
+                return (otherType == City || otherType == Wall);
+            default:
+                return false;
         }
     }
 }
