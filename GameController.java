@@ -69,7 +69,7 @@ public class GameController {
 		}
 
 		for (PlayerController playerController : players){
-			playerController.processConfirmedMove(tileForPlayer, playerMoveInfo);
+			playerController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
 		}
 
 		switchPlayerControl();
