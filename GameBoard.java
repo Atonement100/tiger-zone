@@ -25,10 +25,6 @@ public class GameBoard {
     }
 
     void placeTile(Tile tileToPlace, Location targetLocation, int rotations){
-        //NEED TO ADD WHEN PLACING A TILE A CHECK TO SEE IF A MEEPLE HAS BEEN PLACED ON THE FEATURE BEING CONNECTED
-        //IF A MEEPLE HAS BEEN PLACED ON THE CONNECTING FEATURE UPDATE THE TILE TO "HAS MEEPLE" AND ADD THE MEEPLE BEING PLACED
-        //IF THERE ARE MULTIPLE MEEPLES BECAUSE OF CONNECTION NEED TO KEEP TRACK OF MEEPLE COUNT
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         tileToPlace.rotateClockwise(rotations);
         board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
 
@@ -49,8 +45,7 @@ public class GameBoard {
     private void updateMeepleInfoForNewTile(Location tileLocation){
         Tile tileToUpdate = board[tileLocation.Row][tileLocation.Col];
 
-        ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
-        ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
+
         for (Edge edge : tileToUpdate.edges) {
             for (Node node : edge.nodes){           //For each node...
                 if (node.meeplePlacedInFeature) continue; //If this node already knows it has a meeple, continue
@@ -61,6 +56,8 @@ public class GameBoard {
                 *  We can't break early from the loop to ensure that we get all connected unmarked nodes
                 *  This is to cover the case where a tile placed connects two independent feature zones.
                 */
+                ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
+                ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
 
                 boolean shouldMarkVisited = false;
 
@@ -111,7 +108,7 @@ public class GameBoard {
         }
     }
 
-    private boolean isValidMeeplePlacementOnNode(Location targetLocation, int meepleLocation){
+    boolean isValidMeeplePlacementOnNode(Location targetLocation, int meepleLocation){
         if (meepleLocation == 12) return true;
 
         int edge = meepleLocation / 3; //Nodes per edge

@@ -8,8 +8,8 @@ public class HumanPlayerController extends PlayerController {
     }
 
     @Override
-    void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo) {
-        super.processConfirmedMove(confirmedTile, moveInfo);
+    void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed) {
+        super.processConfirmedMove(confirmedTile, moveInfo, playerConfirmed);
 
         System.out.println("Human player has confirmed the recent move Row: " + moveInfo.tileLocation.Row + " Col: " + moveInfo.tileLocation.Col + " Rotation: " + moveInfo.tileRotation);
     }

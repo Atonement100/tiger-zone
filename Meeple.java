@@ -46,6 +46,8 @@ public class Meeple {
 
 	public MeepleStatusEnum convertIntToMeepleStatus (int status){
 		switch (status) {
+			case 0:
+				return MeepleStatusEnum.onNone;
 			case 1:
 				return MeepleStatusEnum.onField;
 			case 2:
