@@ -27,7 +27,8 @@ public class GameController {
 		}
 
 		this.gameTiles = retrieveGameTiles();
-		this.gameTileReference = this.gameTiles;
+		this.gameTileReference = retrieveGameTiles();
+
 		board = new GameBoard(gameTiles.size(), gameTiles.size());
 
 		Tile startingTile = prepareTiles();
@@ -101,7 +102,7 @@ public class GameController {
 
 	private ArrayList<Tile> retrieveGameTiles(){
 		Scanner scanner = new Scanner(System.in);
-		String filePath = scanner.next();
+		String filePath = "tileset.txt";// scanner.next();
 		return new TileRetriever(filePath).tiles;
 	}
 
