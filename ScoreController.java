@@ -111,6 +111,71 @@ public class ScoreController {
         return meeplesReturned;
     }
     
+    public int[] scoreIncompleteCity(Node start){
+        
+        int[] meeplesReturned = new int[2];
+        
+        
+        HashSet<Integer> uniqueTiles = new HashSet<Integer>();
+        HashSet<Integer> uniqueAnimals = new HashSet<Integer>();
+        
+        Queue<Node> bfsQueue = new LinkedList<Node>();
+        bfsQueue.add(start);
+        if(start.meeplePlacedInFeature){
+            uniqueTiles.add(start.owningTileId);
+            if(start.meeple.owner == 0){
+                meeplesReturned[0]++;
+            }
+            else if(start.meeple.owner == 1){
+                meeplesReturned[1]++;
+            }
+        }
+        
+        while(!bfsQueue.isEmpty()){
+            Node buffer = bfsQueue.poll();
+            buffer.visited = true;
+            for(int i = 0; i < buffer.neighbors.size(); i++){
+                if(!buffer.neighbors.get(i).visited &&
+                   (buffer.neighbors.get(i).featureType.toChar() == 'W' || buffer.neighbors.get(i).featureType.toChar() == 'I'
+                    ||buffer.neighbors.get(i).featureType.toChar() == 'C'))
+                {
+                    if(buffer.meeplePlacedInFeature && !uniqueTiles.contains(buffer.owningTileId)){
+                        
+                        uniqueTiles.add(buffer.owningTileId);
+                        if(this.gameTileReference.get(buffer.owningTileId).animalType != -1){
+                            uniqueAnimals.add(this.gameTileReference.get(buffer.owningTileId).animalType);
+                        }
+                        
+                        if(buffer.meeple.owner == 0){
+                            meeplesReturned[0]++;
+                        }
+                        else if(buffer.meeple.owner == 1){
+                            meeplesReturned[1]++;
+                        }
+                        bfsQueue.add(buffer.neighbors.get(i));
+                    }
+                    
+                }
+            }
+        }
+        
+        if(meeplesReturned[0] != 0 || meeplesReturned[1] != 0){
+            if(meeplesReturned[0] == meeplesReturned[1]){
+                this.player1Score += uniqueTiles.size() *(1+uniqueAnimals.size());
+                this.player2Score += uniqueTiles.size() *(1+uniqueAnimals.size());
+            }
+            else if(meeplesReturned[0] > meeplesReturned[1]){
+                this.player1Score += uniqueTiles.size() *(1+uniqueAnimals.size());
+            }
+            else{
+                this.player2Score += uniqueTiles.size() *(1+uniqueAnimals.size());
+            }
+        }
+        
+        
+        return meeplesReturned;
+    }
+    
     public int[] scoreCompleteCity(Node start){
         
         int[] meeplesReturned = new int[2];
