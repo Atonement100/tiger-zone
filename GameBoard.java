@@ -108,13 +108,41 @@ public class GameBoard {
         }
     }
 
+    private int updateMeeplePlacement(int meeplePlacement){
+    	int placement = 0;
+    	switch(meeplePlacement){
+    	case 0:
+    	case 1: 
+    	case 2: placement = 1;
+    			break;
+    	case 3:
+    	case 4:
+    	case 5: placement = 4;
+    			break;
+    	case 6:
+    	case 7:
+    	case 8: placement = 7;
+    			break;
+    	case 9:
+    	case 10:
+    	case 11: placement = 10;
+    			break;
+    	}
+    	return placement;
+    }
+    
     private boolean isValidMeeplePlacementOnNode(Location targetLocation, int meepleLocation){
         if (meepleLocation == 12) return true;
         else if (meepleLocation < 0 || meepleLocation > 12) return false;
-
+        
         int edge = meepleLocation / 3; //Nodes per edge
         int node = meepleLocation % 3;
         Tile tile = board[targetLocation.Row][targetLocation.Col];
+        
+    	if(tile.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
+    		meepleLocation = updateMeeplePlacement(meepleLocation);
+            node = meepleLocation % 3;
+    	}
 
         if (tile == null) return false;
 
@@ -169,24 +197,7 @@ public class GameBoard {
                 else{
                 	//if placement is on an inner wall, change the placement to the center node on the edge
                 	if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
-                		switch(placement){
-                		case 0:
-                		case 1: 
-                		case 2: placement = 1;
-                				break;
-                		case 3:
-                		case 4:
-                		case 5: placement = 4;
-                				break;
-                		case 6:
-                		case 7:
-                		case 8: placement = 7;
-                				break;
-                		case 9:
-                		case 10:
-                		case 11: placement = 10;
-                				break;
-                		}
+                		placement = updateMeeplePlacement(placement);
                         node = placement % 3;
                 	}
                     board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].meeplePlacedInFeature = true;
@@ -264,10 +275,16 @@ public class GameBoard {
             return (meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None); //It can be larger than 11 only if it is 12, which must also be a monastery placement
             //Monasteries are also not connected to anything, so they don't need to be verified for adjacency.
         }
+        
         //initializes necessary values
         int edge = meeplePlacement / 3;
         int node = meeplePlacement % 3;
 
+    	if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
+    		meeplePlacement = updateMeeplePlacement(meeplePlacement);
+            node = meeplePlacement % 3;
+    	}
+    	
         //checks if there is already a meeple on the feature that the player is trying to place a meeple on
         if(tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature){
             return false;
