@@ -1,3 +1,4 @@
+import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.LinkedList;
 import java.util.ArrayList;
@@ -31,13 +32,20 @@ public class ScoreController {
         
         //ROAD CYCLES
         for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
-            cycleBuffer = getRoadCycleNodes(toCheck.edges[edgeIndex].nodes[1]);
-            System.out.println("NODES IN ROAD CYCLE " + cycleBuffer.size());
+            //cycleBuffer = getRoadCycleNodes(toCheck.edges[edgeIndex].nodes[1]);
+            //System.out.println("NODES IN ROAD CYCLE " + cycleBuffer.size());
+
+            ArrayList<Integer> tileids = getTileIdsRoadSpans(toCheck.edges[edgeIndex].nodes[1]);
+            System.out.println("relevant tile ids:");
+            for (Integer tileid : tileids){
+                System.out.print(tileid-77 + ", ");
+            }
+
             
             //FOR TESTING *******************************
-            while(!cycleBuffer.isEmpty()){
-                cycleBuffer.remove(0).visited = false;
-            }
+           // while(!cycleBuffer.isEmpty()){
+           //     cycleBuffer.remove(0).visited = false;
+           // }
             //*******************************************
             System.out.println("");
         }
@@ -154,7 +162,61 @@ public class ScoreController {
         return nodesInCycle;		//actual cycle;
         
     }
-    
+
+    ArrayList<Integer> getTileIdsRoadSpans(Node start){
+        ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
+        ArrayDeque<Node> nodeCameFrom = new ArrayDeque<>(); //This goes hand in hand with nodequeue and indicates the previous node for each node in the nodequeue.
+        ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
+        ArrayList<Integer> visitedTiles = new ArrayList<>();
+        int endpointsReached = 0;
+        boolean cycleDetected = false;
+
+        nodeQueue.add(start);
+        nodeCameFrom.add(start);
+        if (start.featureType == FeatureTypeEnum.RoadEnd) endpointsReached++;
+
+        while (!nodeQueue.isEmpty()){
+            Node currNode = nodeQueue.removeFirst();
+            Node currParent = nodeCameFrom.removeFirst();
+            visitedNodes.add(currNode);
+            if (!visitedTiles.contains(currNode.owningTileId)){
+                visitedTiles.add(currNode.owningTileId);
+            }
+
+            for (Node neighbor : currNode.neighbors){
+                if (visitedNodes.contains(neighbor)){
+                    if (neighbor != currParent) {
+                        System.out.println ("road cycle");
+                        cycleDetected = true;
+                    }
+                    continue;
+                }
+
+                if (neighbor.featureType == FeatureTypeEnum.Road){
+                    nodeQueue.add(neighbor);
+                    nodeCameFrom.add(currNode);
+                }
+                else if (neighbor.featureType == FeatureTypeEnum.RoadEnd){
+                    System.out.println("reached endpt");
+                    endpointsReached++;
+                    if (!visitedTiles.contains(neighbor.owningTileId)){ //this should never be false, since endpoints are always only one node in
+                        visitedTiles.add(neighbor.owningTileId);
+                    }
+                }
+            }
+        }
+
+        System.out.println("endpoints: " + endpointsReached);
+        switch (endpointsReached){
+            case 0:
+                if (cycleDetected) return visitedTiles;
+                else return new ArrayList<>();
+            case 1: return new ArrayList<>(); // if only one endpoint was found, cant be a cycle and isnt complete
+            case 2: return visitedTiles;
+            default: throw new IllegalStateException();
+        }
+    }
+
     public ArrayList<Node> getRoadCycleNodes(Node start){
         
         //tentative list of nodesInCycle
@@ -186,7 +248,7 @@ public class ScoreController {
         
         //get last node added (one node away from starting node)
         Node oneLevelDepthNode = nodesInCycle.get(nodesInCycle.size()-1);
-        
+
         //get one of the one level depth node's neighbors of the same feature type and add it in the cycle list
         for(int neighborIndex = 0; neighborIndex < oneLevelDepthNode.neighbors.size(); neighborIndex++)
         {
@@ -197,7 +259,7 @@ public class ScoreController {
                 break;
             }
         }
-        
+
         //if there were no neighbors of the same feature type cycle is impossible,
         //mark everything in cycle List unvisited and return an empty List
         if(nodesInCycle.size() < 3){
