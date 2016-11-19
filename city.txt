@@ -1,0 +1,10 @@
+    game.board.placeTile(game.gameTiles.remove(35), new Location(38,37), 3);
+		game.board.placeTile(game.gameTiles.remove(0),  new Location(39,37), 0);
+		game.board.placeTile(game.gameTiles.remove(49), new Location(37,37), 0);
+		game.board.placeTile(game.gameTiles.remove(35), new Location(39,36), 3);
+		game.board.placeTile(game.gameTiles.remove(35), new Location(39,35), 0);
+		game.board.placeTile(game.gameTiles.remove(59), new Location(38,35), 3);
+		game.board.placeTile(game.gameTiles.remove(34), new Location(37,35), 1);
+		game.board.placeTile(game.gameTiles.remove(33), new Location(37,36), 2);
+		game.board.placeTile(game.gameTiles.remove(28), new Location(38,36), 0);
+		game.scoreController.attemptScoring(game.board.board[38][36]);
