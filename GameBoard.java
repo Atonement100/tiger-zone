@@ -107,29 +107,6 @@ public class GameBoard {
             }
         }
     }
-
-    private int updateMeeplePlacement(int meeplePlacement){
-    	int placement = 0;
-    	switch(meeplePlacement){
-    	case 0:
-    	case 1: 
-    	case 2: placement = 1;
-    			break;
-    	case 3:
-    	case 4:
-    	case 5: placement = 4;
-    			break;
-    	case 6:
-    	case 7:
-    	case 8: placement = 7;
-    			break;
-    	case 9:
-    	case 10:
-    	case 11: placement = 10;
-    			break;
-    	}
-    	return placement;
-    }
     
     private boolean isValidMeeplePlacementOnNode(Location targetLocation, int meepleLocation){
         if (meepleLocation == 12) return true;
@@ -140,8 +117,7 @@ public class GameBoard {
         Tile tile = board[targetLocation.Row][targetLocation.Col];
         
     	if(tile.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
-    		meepleLocation = updateMeeplePlacement(meepleLocation);
-            node = meepleLocation % 3;
+    		node = 1;
     	}
 
         if (tile == null) return false;
@@ -197,8 +173,7 @@ public class GameBoard {
                 else{
                 	//if placement is on an inner wall, change the placement to the center node on the edge
                 	if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
-                		placement = updateMeeplePlacement(placement);
-                        node = placement % 3;
+                		node = 1;
                 	}
                     board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].meeplePlacedInFeature = true;
                     board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].meeple = playerMeeples[currentPlayer][meepleIndex];
@@ -281,8 +256,7 @@ public class GameBoard {
         int node = meeplePlacement % 3;
 
     	if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
-    		meeplePlacement = updateMeeplePlacement(meeplePlacement);
-            node = meeplePlacement % 3;
+    		node = 1;
     	}
     	
         //checks if there is already a meeple on the feature that the player is trying to place a meeple on
