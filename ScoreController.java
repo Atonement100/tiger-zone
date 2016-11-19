@@ -77,7 +77,7 @@ public class ScoreController {
                     if(buffer.meeplePlacedInFeature && !uniqueTiles.contains(buffer.owningTileId)){
                         
                         uniqueTiles.add(buffer.owningTileId);
-                        if(this.gameTileReference.get(buffer.owningTileId).animalType != -1){
+                        if(this.gameTileReference.get(buffer.owningTileId).animalType != 0){
                             uniqueAnimals.add(this.gameTileReference.get(buffer.owningTileId).animalType);
                         }
                         
@@ -142,7 +142,7 @@ public class ScoreController {
                     if(buffer.meeplePlacedInFeature && !uniqueTiles.contains(buffer.owningTileId)){
                         
                         uniqueTiles.add(buffer.owningTileId);
-                        if(this.gameTileReference.get(buffer.owningTileId).animalType != -1){
+                        if(this.gameTileReference.get(buffer.owningTileId).animalType != 0){
                             uniqueAnimals.add(this.gameTileReference.get(buffer.owningTileId).animalType);
                         }
                         
@@ -207,7 +207,7 @@ public class ScoreController {
                     if(buffer.meeplePlacedInFeature && !uniqueTiles.contains(buffer.owningTileId)){
                         
                         uniqueTiles.add(buffer.owningTileId);
-                        if(this.gameTileReference.get(buffer.owningTileId).animalType != -1){
+                        if(this.gameTileReference.get(buffer.owningTileId).animalType != 0){
                             uniqueAnimals.add(this.gameTileReference.get(buffer.owningTileId).animalType);
                         }
                         
