@@ -167,6 +167,28 @@ public class GameBoard {
                     board[targetLocation.Row][targetLocation.Col].middle.meeple = playerMeeples[currentPlayer][meepleIndex];
                 }
                 else{
+                	//if placement is on an inner wall, change the placement to the center node on the edge
+                	if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
+                		switch(placement){
+                		case 0:
+                		case 1: 
+                		case 2: placement = 1;
+                				break;
+                		case 3:
+                		case 4:
+                		case 5: placement = 4;
+                				break;
+                		case 6:
+                		case 7:
+                		case 8: placement = 7;
+                				break;
+                		case 9:
+                		case 10:
+                		case 11: placement = 10;
+                				break;
+                		}
+                        node = placement % 3;
+                	}
                     board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].meeplePlacedInFeature = true;
                     board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].meeple = playerMeeples[currentPlayer][meepleIndex];
                     updateMeepleInfoForNewMeeple(targetLocation, placement);    //No need to propagate changes for monastery, only do it here
