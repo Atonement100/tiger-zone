@@ -103,9 +103,27 @@ public class ScoreController {
         }
     }
     
-    void scoreDen(Node den){
+    void scoreCompleteDen(Node den){
+        
+        
         denIdentifier++;
         den.featureID = denIdentifier;
+        
+        if(den.meeplePlacedInFeature && den.meeple != null){
+            if(den.meeple.owner == 0){
+                player1Score += 9;
+                //player1Meeples++;
+            }
+            else if(den.meeple.owner == 1){
+                player2Score += 9;
+                //player2Meeples++;
+            }
+        }
+        
+    }
+    
+    void scoreIncompleteDen(Node den){
+        
     }
     
     

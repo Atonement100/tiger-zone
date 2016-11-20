@@ -91,7 +91,7 @@ public class GameController {
         }
         
         if(fullySurrounded && tileForPlayer.hasMonastery){
-            scoreController.scoreDen(tileForPlayer.middle);
+            scoreController.scoreCompleteDen(tileForPlayer.middle);
         }
         
         while(!denLocations.isEmpty()){
@@ -108,7 +108,7 @@ public class GameController {
             
             //kinda redundant to check if these have monastery here since I am adding to the arrayList only tiles with monasteries
             if(fullySurrounded && board.board[row][col].hasMonastery){
-                scoreController.scoreDen(board.board[row][col].middle);
+                scoreController.scoreCompleteDen(board.board[row][col].middle);
             }
             
         }
