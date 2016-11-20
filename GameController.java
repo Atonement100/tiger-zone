@@ -6,7 +6,7 @@ public class GameController {
     static final int NUM_MEEPLES = 7;
     GameBoard board;
     private PlayerController[] players = new PlayerController[NUM_PLAYERS];
-    private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
+    //private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
     
     private ArrayList<Tile> gameTileReference; // Don't modify this one after constructor. Can be indexed in to with tile.ID.
     private ArrayList<Tile> gameTiles;
@@ -60,10 +60,10 @@ public class GameController {
     }
 
     private void endOfGameScoring(){
-        for(int playerIndex = 0; playerIndex < playerMeeples.length; playerIndex++){
-            for (int meepleIndex = 0; meepleIndex < playerMeeples[playerIndex].length; meepleIndex++){
-                if (playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onMonastery){
-                    scoreController.scoreIncompleteDen(playerMeeples[playerIndex][meepleIndex].location);
+        for(int playerIndex = 0; playerIndex < board.playerMeeples.length; playerIndex++){
+            for (int meepleIndex = 0; meepleIndex < board.playerMeeples[playerIndex].length; meepleIndex++){
+                if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onMonastery){
+                    scoreController.scoreIncompleteDen(board.playerMeeples[playerIndex][meepleIndex].location);
                 }
             }
         }

@@ -8,7 +8,7 @@ public class GameBoard {
     private static int[] dx = {0,-1,0,1}; // W, N, E, S
     private static int[] dy = {-1,0,1,0};
 
-    private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
+    Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
 
     GameBoard(int numRows, int numCols){
         board = new Tile[numRows][numCols];
