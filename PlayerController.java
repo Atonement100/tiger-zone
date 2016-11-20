@@ -25,4 +25,7 @@ public class PlayerController {
         return new MoveInformation();
     }
 
+    public void processFreedMeeple(int ownerID, int meepleID) {
+        localGameBoard.freeMeeple(ownerID, meepleID);
+    }
 }

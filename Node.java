@@ -14,7 +14,7 @@ public class Node {
     
     public Node(char featureType, int owningTileId){
         
-        featureID = -1;				//not complete, gets set in scoreController
+        this.featureID = -1;				//not complete, gets set in scoreController
         
         switch (featureType){
             case 'f':

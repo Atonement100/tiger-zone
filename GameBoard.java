@@ -15,7 +15,7 @@ public class GameBoard {
 
         for (int playerIndex = 0; playerIndex < NUM_PLAYERS; playerIndex++){
             for (int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
-                playerMeeples[playerIndex][meepleIndex] = new Meeple(playerIndex);
+                playerMeeples[playerIndex][meepleIndex] = new Meeple(playerIndex, meepleIndex);
             }
         }
     }
@@ -144,6 +144,11 @@ public class GameBoard {
         }
 
         return true;
+    }
+
+    void freeMeeple(int ownerID, int meepleID){
+        this.playerMeeples[ownerID][meepleID].status = MeepleStatusEnum.onNone;
+        this.playerMeeples[ownerID][meepleID].location = new Location(-1,-1);
     }
 
     //places a meeple in the valid position

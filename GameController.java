@@ -65,6 +65,8 @@ public class GameController {
                 if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onMonastery){
                     scoreController.scoreIncompleteDen(board.playerMeeples[playerIndex][meepleIndex].location);
                 }
+
+                //Other end of game checks should occur here!!!!!!!!
             }
         }
     }
@@ -84,12 +86,26 @@ public class GameController {
         if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer) ) {
             board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
         }
+        else{
+            System.out.println("Bad meeple placement, discarding");
+            playerMoveInfo.meepleLocation = -1;
+            //Just throw away bad meeple placements so score ctrlr and players don't get false signal
+        }
 
-        scoreController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
+        ArrayList<MeepleOwnerTuple> meeplesToReturn = scoreController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
 
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
         }
+
+        for (MeepleOwnerTuple info : meeplesToReturn){
+            board.freeMeeple(info.owner, info.ID);
+            scoreController.processFreedMeeple(info.owner, info.ID);
+            for (PlayerController playerController : players){
+                playerController.processFreedMeeple(info.owner, info.ID);
+            }
+        }
+
 
         switchPlayerControl();
         return;

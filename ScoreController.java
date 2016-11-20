@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class ScoreController {
@@ -11,6 +12,7 @@ public class ScoreController {
     int player2Score;
     private static int lakeIdentifier = 0;
     private static int denIdentifier = 0;
+    private static int roadIdentifier = 0;
     ArrayList<Tile> gameTileReference;
     
     ScoreController(ArrayList<Tile> gameTileReference, Location boardDimensions){
@@ -20,14 +22,38 @@ public class ScoreController {
         this.localBoard = new GameBoard(boardDimensions.Row, boardDimensions.Col);
     }
 
-    void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
+
+    ArrayList<MeepleOwnerTuple> processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
         confirmedTile.rotateClockwise(moveInfo.tileRotation);
         localBoard.placeTile(confirmedTile, moveInfo.tileLocation, moveInfo.tileRotation);
         localBoard.placeMeeple(confirmedTile, moveInfo.tileLocation, moveInfo.meepleLocation, playerConfirmed);
 
+        ArrayList<MeepleOwnerTuple> meeplesToReturn = new ArrayList<>();
 
+        meeplesToReturn.addAll(handleDens(confirmedTile, moveInfo));
+
+        for (Edge edge : confirmedTile.edges){
+            if (edge.nodes[1].featureType == FeatureTypeEnum.Road && isRoadScorable(edge.nodes[1])){
+                meeplesToReturn.addAll(scoreRoad(edge.nodes[1]));
+            }
+        }
+
+        //Not sure how walls are known to connect, and then scored but that should be here
+        //with whatever loop necessary and an if statement calling for a score if necessary
+        //meeplesToReturn should have .addAll(scoreCompletedCity) etc
+
+
+        return meeplesToReturn;
+    }
+
+    void processFreedMeeple(int ownerID, int meepleID){
+        localBoard.freeMeeple(ownerID, meepleID);
+    }
+
+    public ArrayList<MeepleOwnerTuple> handleDens(Tile confirmedTile, MoveInformation moveInfo){
+        ArrayList<MeepleOwnerTuple> meeplesToReturn = new ArrayList<>();
         //**************************************************************************************************************
-        //FACILITATE CHECK FOR ANY SURROUNDING DENS AND CHECK IF THIS IS A SCOARABLE TILE IN CASE IT IS A TILE WITH A DEN
+        //FACILITATE CHECK FOR ANY SURROUNDING DENS AND CHECK IF THIS IS A SCORABLE TILE IN CASE IT IS A TILE WITH A DEN
         int row = moveInfo.tileLocation.Row;
         int col = moveInfo.tileLocation.Col;
 
@@ -43,6 +69,7 @@ public class ScoreController {
 
         if(fullySurrounded && confirmedTile.hasMonastery){
             scoreCompleteDen(confirmedTile.middle);
+            meeplesToReturn.add(new MeepleOwnerTuple(confirmedTile.middle.meeple.owner, confirmedTile.middle.meeple.ID));
         }
 
         while(!denLocations.isEmpty()){
@@ -60,12 +87,12 @@ public class ScoreController {
             //kinda redundant to check if these have monastery here since I am adding to the arrayList only tiles with monasteries
             if(fullySurrounded && localBoard.board[row][col].hasMonastery){
                 scoreCompleteDen(localBoard.board[row][col].middle);
+                meeplesToReturn.add(new MeepleOwnerTuple(confirmedTile.middle.meeple.owner, confirmedTile.middle.meeple.ID));
             }
 
         }
 
-        //**************************************************************************************************************
-
+        return meeplesToReturn;
     }
 
     public void attemptScoring(Tile toCheck){
@@ -151,19 +178,18 @@ public class ScoreController {
             }
         }
     }
-    
+
     void scoreCompleteDen(Node den){
+        //handleDens will take care of returning meeples appropriately
         denIdentifier++;
         den.featureID = denIdentifier;
         
         if(den.meeplePlacedInFeature && den.meeple != null){
             if(den.meeple.owner == 0){
                 player1Score += 9;
-                //player1Meeples++;
             }
             else if(den.meeple.owner == 1){
                 player2Score += 9;
-                //player2Meeples++;
             }
         }
         
@@ -189,9 +215,11 @@ public class ScoreController {
     }
     
     
-    public int[] scoreRoad(Node start){
-        
+    public ArrayList<MeepleOwnerTuple> scoreRoad(Node start){
+        ArrayList<MeepleOwnerTuple> meeplesToReturn = new ArrayList<>();
         int[] meeplesReturned = new int[2];
+        roadIdentifier++;
+        start.featureID = roadIdentifier;
         
         HashSet<Integer> uniqueTiles = new HashSet<Integer>();
         HashSet<Integer> uniqueAnimals = new HashSet<Integer>();
@@ -201,19 +229,22 @@ public class ScoreController {
         if(start.meeplePlacedInFeature){
             uniqueTiles.add(start.owningTileId);
             if(start.meeple.owner == 0){
-                meeplesReturned[0]++;
+                meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID)); //Not sure if it's safe to put these outside of meeple owner because start.meeplePlacedInFeature
+                meeplesReturned[0]++;                                                           //will be true even if no meeple is on that node
             }
             else if(start.meeple.owner == 1){
+                meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
                 meeplesReturned[1]++;
             }
         }
         
         while(!bfsQueue.isEmpty()){
             Node buffer = bfsQueue.poll();
+            buffer.featureID = roadIdentifier;
             buffer.visited = true;
             for(int i = 0; i < buffer.neighbors.size(); i++){
                 if(!buffer.neighbors.get(i).visited &&
-                   (buffer.neighbors.get(i).featureType.toChar() == 'R' || buffer.neighbors.get(i).featureType.toChar() == 'E'))
+                   (buffer.neighbors.get(i).featureType == FeatureTypeEnum.Road || buffer.neighbors.get(i).featureType == FeatureTypeEnum.RoadEnd))
                 {
                     if(buffer.meeplePlacedInFeature && !uniqueTiles.contains(buffer.owningTileId)){
                         
@@ -224,9 +255,11 @@ public class ScoreController {
                         
                         if(buffer.meeple.owner == 0){
                             meeplesReturned[0]++;
+                            meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
                         }
                         else if(buffer.meeple.owner == 1){
                             meeplesReturned[1]++;
+                            meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
                         }
                         bfsQueue.add(buffer.neighbors.get(i));
                     }
@@ -249,7 +282,7 @@ public class ScoreController {
         }
         
         
-        return meeplesReturned;
+        return meeplesToReturn;
     }
     
     boolean isRoadScorable(Node start){
@@ -310,7 +343,8 @@ public class ScoreController {
          */
     }
     
-    public int[] scoreIncompleteCity(Node start){
+    public ArrayList<MeepleOwnerTuple> scoreIncompleteCity(Node start){
+        ArrayList<MeepleOwnerTuple> meeplesToReturn = new ArrayList<>();
         int[] meeplesReturned = new int[2];
         
         HashSet<Integer> uniqueTiles = new HashSet<Integer>();
@@ -322,9 +356,11 @@ public class ScoreController {
             uniqueTiles.add(start.owningTileId);
             if(start.meeple.owner == 0){
                 meeplesReturned[0]++;
+                meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
             }
             else if(start.meeple.owner == 1){
                 meeplesReturned[1]++;
+                meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
             }
         }
         
@@ -345,9 +381,11 @@ public class ScoreController {
                         
                         if(buffer.meeple.owner == 0){
                             meeplesReturned[0]++;
+                            meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
                         }
                         else if(buffer.meeple.owner == 1){
                             meeplesReturned[1]++;
+                            meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
                         }
                         bfsQueue.add(buffer.neighbors.get(i));
                     }
@@ -370,12 +408,12 @@ public class ScoreController {
         }
         
         
-        return meeplesReturned;
+        return meeplesToReturn;
     }
     
     
-    public int[] scoreCompleteCity(Node start){
-        
+    public ArrayList<MeepleOwnerTuple> scoreCompleteCity(Node start){
+        ArrayList<MeepleOwnerTuple> meeplesToReturn = new ArrayList<>();
         lakeIdentifier++;
         int[] meeplesReturned = new int[2];
         
@@ -388,9 +426,11 @@ public class ScoreController {
         if(start.meeplePlacedInFeature){
             uniqueTiles.add(start.owningTileId);
             if(start.meeple.owner == 0){
+                meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
                 meeplesReturned[0]++;
             }
             else if(start.meeple.owner == 1){
+                meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
                 meeplesReturned[1]++;
             }
         }
@@ -413,9 +453,11 @@ public class ScoreController {
                         
                         if(buffer.meeple.owner == 0){
                             meeplesReturned[0]++;
+                            meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
                         }
                         else if(buffer.meeple.owner == 1){
                             meeplesReturned[1]++;
+                            meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
                         }
                         bfsQueue.add(buffer.neighbors.get(i));
                     }
@@ -438,7 +480,7 @@ public class ScoreController {
         }
         
         
-        return meeplesReturned;
+        return meeplesToReturn;
     }
     
     public ArrayList<Node> getWallCycleNodes(Node start){

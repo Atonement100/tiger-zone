@@ -1,25 +1,22 @@
 
 public class Meeple {
 	int owner;
+	int ID;
 	MeepleStatusEnum status;
 	Location location;
-	
-	//status = 0 : meeple is not on the board
-	//status = 1 : meeple is on a field
-	//status = 2 : meeple is on a city
-	//status = 3 : meeple is on a road
-	//status = 4 : meeple in on a monastery
 	
 	public Meeple(){
 		this.owner = -1;
 		this.status = MeepleStatusEnum.onNone;
 		this.location = new Location(-1,-1);
+		this.ID = 0;
 	}
 	
-	public Meeple(int owner){
+	public Meeple(int owner, int ID){
 		this.owner = owner;
 		this.status = MeepleStatusEnum.onNone;
 		this.location = new Location(-1, -1);
+		this.ID = ID;
 	}
 	
 	void updateLocation(Location location){
