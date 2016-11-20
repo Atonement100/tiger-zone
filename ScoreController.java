@@ -1,14 +1,20 @@
 import java.util.*;
 
 public class ScoreController {
+    
+    
+    GameBoard board;
     int player1Score;
     int player2Score;
+    private static int lakeIdentifier = 0;
+    private static int denIdentifier = 0;
     ArrayList<Tile> gameTileReference;
     
-    ScoreController(ArrayList<Tile> gameTileReference){
+    ScoreController(ArrayList<Tile> gameTileReference, GameBoard board){
         this.player1Score = 0;
         this.player2Score = 0;
         this.gameTileReference = gameTileReference;
+        this.board = board;
     }
     
     public void attemptScoring(Tile toCheck){
@@ -44,9 +50,8 @@ public class ScoreController {
         }
     }
     
-    
-    //scoring complete trail is the same as scoring incomplete trail
     public int[] scoreRoad(Node start){
+        
         int[] meeplesReturned = new int[2];
         
         
@@ -108,6 +113,65 @@ public class ScoreController {
         
         return meeplesReturned;
     }
+    
+    boolean isRoadScorable(Node start){
+        ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
+        ArrayDeque<Node> nodeCameFrom = new ArrayDeque<>(); //This goes hand in hand with nodequeue and indicates the previous node for each node in the nodequeue.
+        ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
+        ArrayList<Integer> visitedTiles = new ArrayList<>();
+        int endpointsReached = 0;
+        boolean cycleDetected = false;
+        
+        nodeQueue.add(start);
+        nodeCameFrom.add(start);
+        if (start.featureType == FeatureTypeEnum.RoadEnd) endpointsReached++;
+        
+        while (!nodeQueue.isEmpty()){
+            Node currNode = nodeQueue.removeFirst();
+            Node currParent = nodeCameFrom.removeFirst();
+            visitedNodes.add(currNode);
+            if (!visitedTiles.contains(currNode.owningTileId)){
+                visitedTiles.add(currNode.owningTileId);
+            }
+            
+            for (Node neighbor : currNode.neighbors){
+                if (visitedNodes.contains(neighbor)){
+                    if (neighbor != currParent) {
+                        System.out.println ("road cycle");
+                        cycleDetected = true;
+                    }
+                    continue;
+                }
+                
+                if (neighbor.featureType == FeatureTypeEnum.Road){
+                    nodeQueue.add(neighbor);
+                    nodeCameFrom.add(currNode);
+                }
+                else if (neighbor.featureType == FeatureTypeEnum.RoadEnd){
+                    System.out.println("reached endpt");
+                    endpointsReached++;
+                    if (!visitedTiles.contains(neighbor.owningTileId)){ //this should never be false, since endpoints are always only one node in
+                        visitedTiles.add(neighbor.owningTileId);
+                    }
+                }
+            }
+        }
+        
+        System.out.println("endpoints: " + endpointsReached);
+        
+        return ((endpointsReached == 0 && cycleDetected) || endpointsReached == 2); //Either 2 endpoints need to have been reached or a cycle was detected.
+        /* Old code used to return tile ids instead of boolean
+         switch (endpointsReached){
+         case 0:
+         if (cycleDetected) return visitedTiles;
+         else return new ArrayList<>();
+         case 1: return new ArrayList<>(); // if only one endpoint was found, cant be a cycle and isnt complete
+         case 2: return visitedTiles;
+         default: throw new IllegalStateException();
+         }
+         */
+    }
+    
     
     public int[] scoreIncompleteCity(Node start){
         
@@ -174,8 +238,10 @@ public class ScoreController {
         return meeplesReturned;
     }
     
+    
     public int[] scoreCompleteCity(Node start){
         
+        lakeIdentifier++;
         int[] meeplesReturned = new int[2];
         
         
@@ -197,6 +263,7 @@ public class ScoreController {
         while(!bfsQueue.isEmpty()){
             Node buffer = bfsQueue.poll();
             buffer.visited = true;
+            buffer.featureID = lakeIdentifier;
             for(int i = 0; i < buffer.neighbors.size(); i++){
                 if(!buffer.neighbors.get(i).visited &&
                    (buffer.neighbors.get(i).featureType.toChar() == 'W' || buffer.neighbors.get(i).featureType.toChar() == 'I'
@@ -350,65 +417,8 @@ public class ScoreController {
         return nodesInCycle;		//actual cycle;
         
     }
-
-    boolean isRoadScorable(Node start){
-        ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
-        ArrayDeque<Node> nodeCameFrom = new ArrayDeque<>(); //This goes hand in hand with nodequeue and indicates the previous node for each node in the nodequeue.
-        ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
-        ArrayList<Integer> visitedTiles = new ArrayList<>();
-        int endpointsReached = 0;
-        boolean cycleDetected = false;
-
-        nodeQueue.add(start);
-        nodeCameFrom.add(start);
-        if (start.featureType == FeatureTypeEnum.RoadEnd) endpointsReached++;
-
-        while (!nodeQueue.isEmpty()){
-            Node currNode = nodeQueue.removeFirst();
-            Node currParent = nodeCameFrom.removeFirst();
-            visitedNodes.add(currNode);
-            if (!visitedTiles.contains(currNode.owningTileId)){
-                visitedTiles.add(currNode.owningTileId);
-            }
-
-            for (Node neighbor : currNode.neighbors){
-                if (visitedNodes.contains(neighbor)){
-                    if (neighbor != currParent) {
-                        System.out.println ("road cycle");
-                        cycleDetected = true;
-                    }
-                    continue;
-                }
-
-                if (neighbor.featureType == FeatureTypeEnum.Road){
-                    nodeQueue.add(neighbor);
-                    nodeCameFrom.add(currNode);
-                }
-                else if (neighbor.featureType == FeatureTypeEnum.RoadEnd){
-                    System.out.println("reached endpt");
-                    endpointsReached++;
-                    if (!visitedTiles.contains(neighbor.owningTileId)){ //this should never be false, since endpoints are always only one node in
-                        visitedTiles.add(neighbor.owningTileId);
-                    }
-                }
-            }
-        }
-
-        System.out.println("endpoints: " + endpointsReached);
-
-        return ((endpointsReached == 0 && cycleDetected) || endpointsReached == 2); //Either 2 endpoints need to have been reached or a cycle was detected.
-        /* Old code used to return tile ids instead of boolean
-        switch (endpointsReached){
-            case 0:
-                if (cycleDetected) return visitedTiles;
-                else return new ArrayList<>();
-            case 1: return new ArrayList<>(); // if only one endpoint was found, cant be a cycle and isnt complete
-            case 2: return visitedTiles;
-            default: throw new IllegalStateException();
-        }
-        */
-    }
-
+    
+    
     public ArrayList<Node> getRoadCycleNodes(Node start){
         
         //tentative list of nodesInCycle
@@ -466,7 +476,7 @@ public class ScoreController {
         //so that it doesn't exist two times in the list when it gets added back in the traversal
         Node twoLevelDepthNode = nodesInCycle.remove(nodesInCycle.size()-1);
         
-        //create queue to traverse along edges 
+        //create queue to traverse along edges
         Queue<Node> queue = new LinkedList<Node>();
         queue.add(twoLevelDepthNode);
         
