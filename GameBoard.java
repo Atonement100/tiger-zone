@@ -61,7 +61,7 @@ public class GameBoard {
             }
         }
         
-        if(fullySurrounded){
+        if(fullySurrounded && tileToPlace.hasMonastery){
             //send middle node to score controller
             //scoreController.scoreDen(board[row][col].middle)
             //no score controller though
@@ -79,7 +79,8 @@ public class GameBoard {
                 }
             }
             
-            if(fullySurrounded){
+            //kinda redundant to check if these have monastery here since I am adding to the arrayList only tiles with monasteries
+            if(fullySurrounded && board[row][col].hasMonastery){
                 //send middle node to score controller (scoreController.scoreDen(board[row][col].middle));
                 //no scoreController though
             }
