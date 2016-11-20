@@ -10,6 +10,7 @@ public class TileSet {
     private  String  tileID = new String();
     private  JButton tileButton = new JButton();
     private int X,Y;
+    private  ImageIcon tileIcon = new ImageIcon();
 
     public int getX() {
         return X;
@@ -44,9 +45,10 @@ public class TileSet {
 
     public void setTileIcon(ImageIcon tileIcon) {
         this.tileIcon = tileIcon;
+        tileButton.setIcon(tileIcon);
     }
 
-    private  ImageIcon tileIcon = new ImageIcon();
+
 
     public String getFilePath() {
         return filePath;

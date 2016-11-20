@@ -17,21 +17,59 @@ public class LabelDemo extends JFrame {
     public final int SIZE = 21;
     public static Image ICON;
     public static int i;
+    public boolean nextmove;
     public String buttonText;
+    public int rotation;
     private int x, y;
-    private String [] imgId = {"JJJJ-","JJJJX","JJTJX","TTTT-","TJTJ-","TJTT-","LLLL-",
-                                "JLLL-","LLJJ-","JLJL-","LJLJ-","LJJJ-","JLLJ-","TLJT-",
-                                "TLJTP","JLTT-","JLTTB","TLTJ-","TLTJD","TLLL-","TLTT-",
-                                "TLTTP","TLLT-","TLLTB","LJTJ-","LJTJD"};
+    private String[] imgId = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJTT-", "LLLL-",
+            "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-", "TLJT-",
+            "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-", "TLTT-",
+            "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD"};
     public TileSet[][] tiles = new TileSet[SIZE][SIZE];
     public PreView preView = new PreView();
+    public ImgSet[] img = new ImgSet[26];
+    private MouseListener me;
 
+    {
+        me = new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Clicking wont do anything");
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        };
+    }
+    public void getImgID(String s){
+        nextmove= false;
+        setupPreview(preView,s);
+
+    }
+    public boolean getnextMove(){
+        return nextmove;
+    }
     public LabelDemo() {
         // addMouseListener(this);
         JFrame frame = new JFrame("Tiger Zone");
 
-        ImgSet[] img = new ImgSet[24];
-        ImageIcon img2 = new ImageIcon("src/jlable/asset50x50/5.jpg");
         JPanel panel = new JPanel(new GridLayout(21, 21));
         MouseAdapter ma = new MouseAdapter() {
             @Override
@@ -39,15 +77,17 @@ public class LabelDemo extends JFrame {
                 super.mouseClicked(e);
                 //  System.out.println(e.getButton());
                 JButton reference = (JButton) e.getSource();
-                System.out.print("clicked button: " + reference.getText());
+                //System.out.print("clicked button: " + reference.getText());
                 buttonText = reference.getText();
                 String[] rowcol = buttonText.split("[,]");
                 x = Integer.parseInt(rowcol[0]);
                 y = Integer.parseInt(rowcol[1]);
                 System.out.println("x: " + x + " y: " + y);
-                reference.setText("+");
-
+                //reference.setText("+");
+                reference.setText("");
                 reference.setIcon(preView.getImg());
+                nextmove= true;
+
 
 
             }
@@ -60,8 +100,8 @@ public class LabelDemo extends JFrame {
 
 
         // MouseAdapter adapter= new MouseAdapter() { };
-        for (int i = 0; i < 24; i++) {
-            img[i]= new ImgSet();
+        for (int i = 0; i < 26; i++) {
+            img[i] = new ImgSet();
             img[i].setImage("Gui/asset50x50/" + i + ".jpg");
             img[i].setImgID(imgId[i]);
 
@@ -128,6 +168,24 @@ public class LabelDemo extends JFrame {
 
     }
 
+   public void setupPreview(PreView p ,String ID){
+       preView.setImgID(ID);
+       preView.setImg(findImg(ID));
+   };
+
+    public String getTileIndexs(int x, int y) {
+        String s = "";
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (tiles[i][j].getTileButton().getText() == x + "," + y) {
+                    s = i + "," + j;
+                    return s;
+                }
+            }
+        }
+        return s;
+    }
+
 //    public static void main (String[] args){
 //        LabelDemo l= new LabelDemo();
 //        //placeStartTile();
@@ -147,8 +205,20 @@ public class LabelDemo extends JFrame {
 //        return i;
 //    }
 
-    public void placeTile(int x, int y, String tileId, int rotation){
-        
 
+
+    public void possibleMove(int[] x, int[] y) {
+
+    }
+
+
+    public ImageIcon findImg(String tileId) {
+        for (int i = 0; i < 26; i++) {
+            if (img[i].getImgID() == tileId) {
+                return img[i].getImageIcon();
+            }
+        }
+        System.out.println("Imge is not found in imgset, tile id:" + tileId);
+        return null;
     }
 }
