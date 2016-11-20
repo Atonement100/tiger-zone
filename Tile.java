@@ -45,18 +45,6 @@ public class Tile {
 		this.animalType = animalType;
 		this.ID = identify++;
 
-		if (this.hasMonastery) {
-			this.middle = new Node(FeatureTypeEnum.Monastery.toChar(), this.ID);
-
-			for (Edge edge : this.edges){
-				if (edge.nodes[1].featureType == FeatureTypeEnum.Field){
-					addEachNodeAsNeighbor(middle, edge.nodes[1]);
-					break;
-				}
-			}
-		}
-
-		else this.middle = new Node(FeatureTypeEnum.None.toChar(), this.ID); //none
 
 		//Count number of road + city edges
 		int numRoads = 0, numCities = 0;
@@ -110,6 +98,18 @@ public class Tile {
 
 			this.edges[edgeIndex] = new Edge(nodeBuffer);
 		}
+
+		if (this.hasMonastery) {
+			this.middle = new Node(FeatureTypeEnum.Monastery.toChar(), this.ID);
+
+			for (Edge edge : this.edges){
+				if (edge.nodes[1].featureType == FeatureTypeEnum.Field){
+					addEachNodeAsNeighbor(middle, edge.nodes[1]);
+					break;
+				}
+			}
+		}
+		else this.middle = new Node(FeatureTypeEnum.None.toChar(), this.ID); //none
 
 		//Now we need to handle city edge cases
 		//numCities == 1 case is already handled above

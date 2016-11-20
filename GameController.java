@@ -13,17 +13,11 @@ public class GameController {
     private int currentPlayer = 0;
     public ScoreController scoreController;
     
-    private static int[] dxFULL = {0,-1,0,1,-1,-1,1,1};
-    private static int[] dyFULL = {-1,0,1,0,-1,1,-1,1};
-    
     public GameController(int row, int col){
         board = new GameBoard(row, col);
     }
     
     public GameController(int numHumanPlayers){
-        
-        
-        
         for (int numCreated = 0; numCreated < NUM_PLAYERS; numCreated++){
             if (numCreated < numHumanPlayers){
                 players[numCreated] = new HumanPlayerController();
@@ -39,7 +33,7 @@ public class GameController {
         
         board = new GameBoard(gameTiles.size(), gameTiles.size());
         
-        scoreController = new ScoreController(gameTileReference, board);
+        scoreController = new ScoreController(gameTileReference, board.getBoardDimensions());
         
         Tile startingTile = prepareTiles();
         Location boardDimensions = board.getBoardDimensions();
@@ -74,57 +68,17 @@ public class GameController {
         System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation);
         
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
-        
-        //**************************************************************************************************************
-        //FACILITATE CHECK FOR ANY SURROUNDING DENS AND CHECK IF THIS IS A SCOARABLE TILE IN CASE IT IS A TILE WITH A DEN
-        int row = playerMoveInfo.tileLocation.Row;
-        int col = playerMoveInfo.tileLocation.Col;
-        
-        boolean fullySurrounded = true;
-        
-        ArrayList<Location> denLocations = new ArrayList<Location>();
-        for(int direction = 0; direction < 8; direction++){
-            if(row + dxFULL[direction] >= 0 && row + dxFULL[direction] < board.board.length && col + dyFULL[direction] >= 0 && col + dyFULL[direction] < board.board[0].length){ //Checks within board boundary
-                if(board.board[row+dxFULL[direction]][col+dyFULL[direction]] == null) fullySurrounded = false;
-                else if(board.board[row+dxFULL[direction]][col+dyFULL[direction]].hasMonastery) denLocations.add(new Location(row+dxFULL[direction],col+dyFULL[direction]));
-            }
-        }
-        
-        if(fullySurrounded && tileForPlayer.hasMonastery){
-            scoreController.scoreCompleteDen(tileForPlayer.middle);
-        }
-        
-        while(!denLocations.isEmpty()){
-            Location buffer = denLocations.remove(0);
-            row = buffer.Row;
-            col = buffer.Col;
-            
-            fullySurrounded = true;
-            for(int direction = 0; direction < 8; direction++){
-                if(row + dxFULL[direction] >= 0 && row + dxFULL[direction] < board.board.length && col + dyFULL[direction] >= 0 && col + dyFULL[direction] < board.board[0].length){ //Checks within board boundary
-                    if(board.board[row+dxFULL[direction]][col+dyFULL[direction]] == null) fullySurrounded = false;
-                }
-            }
-            
-            //kinda redundant to check if these have monastery here since I am adding to the arrayList only tiles with monasteries
-            if(fullySurrounded && board.board[row][col].hasMonastery){
-                scoreController.scoreCompleteDen(board.board[row][col].middle);
-            }
-            
-        }
-        
-        //**************************************************************************************************************
-        
-        
-        
+
         if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer) ) {
             board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
         }
-        
+
+        scoreController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
+
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
         }
-        
+
         switchPlayerControl();
         return;
     }

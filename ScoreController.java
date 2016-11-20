@@ -3,22 +3,71 @@ import java.util.*;
 public class ScoreController {
     
     // W,N,E,S,NW,NE,SW,SE
+    private static int[] dxFULL = {0,-1,0,1,-1,-1,1,1};
+    private static int[] dyFULL = {-1,0,1,0,-1,1,-1,1};
     
-    
-    GameBoard board;
+    GameBoard localBoard;
     int player1Score;
     int player2Score;
     private static int lakeIdentifier = 0;
     private static int denIdentifier = 0;
     ArrayList<Tile> gameTileReference;
     
-    ScoreController(ArrayList<Tile> gameTileReference, GameBoard board){
+    ScoreController(ArrayList<Tile> gameTileReference, Location boardDimensions){
         this.player1Score = 0;
         this.player2Score = 0;
         this.gameTileReference = gameTileReference;
-        this.board = board;
+        this.localBoard = new GameBoard(boardDimensions.Row, boardDimensions.Col);
     }
-    
+
+    void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
+        confirmedTile.rotateClockwise(moveInfo.tileRotation);
+        localBoard.placeTile(confirmedTile, moveInfo.tileLocation, moveInfo.tileRotation);
+        localBoard.placeMeeple(confirmedTile, moveInfo.tileLocation, moveInfo.meepleLocation, playerConfirmed);
+
+
+        //**************************************************************************************************************
+        //FACILITATE CHECK FOR ANY SURROUNDING DENS AND CHECK IF THIS IS A SCOARABLE TILE IN CASE IT IS A TILE WITH A DEN
+        int row = moveInfo.tileLocation.Row;
+        int col = moveInfo.tileLocation.Col;
+
+        boolean fullySurrounded = true;
+
+        ArrayList<Location> denLocations = new ArrayList<Location>();
+        for(int direction = 0; direction < 8; direction++){
+            if(row + dxFULL[direction] >= 0 && row + dxFULL[direction] < localBoard.board.length && col + dyFULL[direction] >= 0 && col + dyFULL[direction] < localBoard.board[0].length){ //Checks within board boundary
+                if(localBoard.board[row+dxFULL[direction]][col+dyFULL[direction]] == null) fullySurrounded = false;
+                else if(localBoard.board[row+dxFULL[direction]][col+dyFULL[direction]].hasMonastery) denLocations.add(new Location(row+dxFULL[direction],col+dyFULL[direction]));
+            }
+        }
+
+        if(fullySurrounded && confirmedTile.hasMonastery){
+            scoreCompleteDen(confirmedTile.middle);
+        }
+
+        while(!denLocations.isEmpty()){
+            Location buffer = denLocations.remove(0);
+            row = buffer.Row;
+            col = buffer.Col;
+
+            fullySurrounded = true;
+            for(int direction = 0; direction < 8; direction++){
+                if(row + dxFULL[direction] >= 0 && row + dxFULL[direction] < localBoard.board.length && col + dyFULL[direction] >= 0 && col + dyFULL[direction] < localBoard.board[0].length){ //Checks within board boundary
+                    if(localBoard.board[row+dxFULL[direction]][col+dyFULL[direction]] == null) fullySurrounded = false;
+                }
+            }
+
+            //kinda redundant to check if these have monastery here since I am adding to the arrayList only tiles with monasteries
+            if(fullySurrounded && localBoard.board[row][col].hasMonastery){
+                scoreCompleteDen(localBoard.board[row][col].middle);
+            }
+
+        }
+
+        //**************************************************************************************************************
+
+    }
+
     public void attemptScoring(Tile toCheck){
         
         ArrayList<Node> cycleBuffer;
