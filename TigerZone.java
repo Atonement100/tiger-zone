@@ -13,8 +13,8 @@ public class TigerZone {
                 "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-", "TLTT-",
                 "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD"};
 		LabelDemo l= new LabelDemo();
-        l.getImgID(imgId[7]);
-      //  l.getImgID("JJJJX");
+       l.placeFirstTile(0,0,"JJJJ-");
+        l.getImgID("JJJJX");
        // l.possibleMove(new int []{3,4,5},  new int[]{6, 7, 8});
 		//System.out.print("Enter number of human players: ");
 	//	Scanner scanner = new Scanner(System.in);
