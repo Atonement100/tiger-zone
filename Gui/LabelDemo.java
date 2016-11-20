@@ -1,66 +1,108 @@
 package Gui;
 
 
-        import java.awt.*;
-        import java.awt.event.*;
-        import java.io.File;
-        import java.io.IOException;
-        import javax.imageio.ImageIO;
-        import javax.swing.*;
-        import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 /*
  * LabelDemo.java needs one other file:
  *   images/middle.gif
  *
  */
-public class LabelDemo extends JFrame  {
-    public  final int SIZE = 20;
+public class LabelDemo extends JFrame {
+    public final int SIZE = 21;
     public static Image ICON;
-    public static int i ;
+    public static int i;
+    public String buttonText;
+    private int x, y;
+    private String [] imgId = {"JJJJ-","JJJJX","JJTJX","TTTT-","TJTJ-","TJTT-","LLLL-",
+                                "JLLL-","LLJJ-","JLJL-","LJLJ-","LJJJ-","JLLJ-","TLJT-",
+                                "TLJTP","JLTT-","JLTTB","TLTJ-","TLTJD","TLLL-","TLTT-",
+                                "TLTTP","TLLT-","TLLTB","LJTJ-","LJTJD"};
+    public TileSet[][] tiles = new TileSet[SIZE][SIZE];
+    public PreView preView = new PreView();
+
     public LabelDemo() {
-       // addMouseListener(this);
+        // addMouseListener(this);
         JFrame frame = new JFrame("Tiger Zone");
-        ImageIcon [] img = new ImageIcon [24];
-        ImageIcon img2 = new ImageIcon("Gui/asset50x50/1.jpg");
-        JPanel panel = new JPanel(new GridLayout(20,20));
-        MouseAdapter ma =  new MouseAdapter() {
+
+        ImgSet[] img = new ImgSet[24];
+        ImageIcon img2 = new ImageIcon("src/jlable/asset50x50/5.jpg");
+        JPanel panel = new JPanel(new GridLayout(21, 21));
+        MouseAdapter ma = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                JLabel reference =(JLabel)e.getSource();
+                //  System.out.println(e.getButton());
+                JButton reference = (JButton) e.getSource();
+                System.out.print("clicked button: " + reference.getText());
+                buttonText = reference.getText();
+                String[] rowcol = buttonText.split("[,]");
+                x = Integer.parseInt(rowcol[0]);
+                y = Integer.parseInt(rowcol[1]);
+                System.out.println("x: " + x + " y: " + y);
+                reference.setText("+");
 
-                reference.setIcon(img2);
+                reference.setIcon(preView.getImg());
+
+
             }
         };
         try {
-           ICON=ImageIO.read(new File("Gui/assets/icon.png"));
+            ICON = ImageIO.read(new File("Gui/assets/icon.png"));
 
         } catch (IOException e) {
         }
-        JLabel [][] tiles= new JLabel[SIZE][SIZE];
 
-      // MouseAdapter adapter= new MouseAdapter() { };
-    for (int i=0; i<24;i++) {
-        img[i]= new ImageIcon("Gui/asset50x50/"+i+".jpg");
 
-    }
+        // MouseAdapter adapter= new MouseAdapter() { };
+        for (int i = 0; i < 24; i++) {
+            img[i]= new ImgSet();
+            img[i].setImage("Gui/asset50x50/" + i + ".jpg");
+            img[i].setImgID(imgId[i]);
 
-        for (i=0;i<SIZE;i++){
-            for ( int j=0;j<SIZE;j++){
-                tiles[i][j] = new JLabel();
-                //tiles[i][j].tilelabel = new JLabel();
-               tiles[i][j].setBorder(BorderFactory.createEtchedBorder(1));
+        }
+        //preView.setImg(img[i]);
 
-                tiles[i][j].addMouseListener(ma);
-                // tiles[i][j].setIcon(img);
-//                tiles[i][j].setIcon(img[i]);
-                panel.add(tiles[i][j]);
+        for (i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                tiles[i][j] = new TileSet();
+                tiles[i][j].setTileButtonBorder();
+                tiles[i][j].getTileButton().setBackground(Color.WHITE);
+                tiles[i][j].getTileButton().addMouseListener(ma);
+                panel.add(tiles[i][j].getTileButton());
             }
         }
+
+        /*this forloop are basicly naming the button on the screen to match what server is taking*/
+        for (i = SIZE / 2; i < SIZE; i++) {
+            for (int j = SIZE / 2; j < SIZE; j++) {
+                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
+            }
+            for (int j = 0; j < SIZE / 2; j++) {
+                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
+            }
+
+        }
+
+        for (i = 0; i < SIZE / 2; i++) {
+            for (int j = SIZE / 2; j < SIZE; j++) {
+                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
+            }
+            for (int j = 0; j < SIZE / 2; j++) {
+                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
+            }
+
+        }
+        /*******************************************************************************************/
+
         frame.setIconImage(ICON);
         frame.add(panel);
-       frame.setSize(1080,1080);
+        frame.setSize(1080, 1080);
 
         frame.setResizable(true);
         frame.setVisible(true);
@@ -88,7 +130,7 @@ public class LabelDemo extends JFrame  {
 
 //    public static void main (String[] args){
 //        LabelDemo l= new LabelDemo();
-//        placeStartTile();
+//        //placeStartTile();
 //
 //        System.out.println("hello form main");
 //
@@ -104,4 +146,9 @@ public class LabelDemo extends JFrame  {
 //    int geti(){
 //        return i;
 //    }
+
+    public void placeTile(int x, int y, String tileId, int rotation){
+        
+
+    }
 }
