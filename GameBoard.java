@@ -246,6 +246,7 @@ public class GameBoard {
             }
         }
 
+        tileToPlace.rotateClockwise(-rotations);
         return isCompatible;
     }
 
