@@ -153,8 +153,6 @@ public class ScoreController {
     }
     
     void scoreCompleteDen(Node den){
-        
-        
         denIdentifier++;
         den.featureID = denIdentifier;
         
@@ -171,8 +169,23 @@ public class ScoreController {
         
     }
     
-    void scoreIncompleteDen(Node den){
-        
+    void scoreIncompleteDen(Location denLocation){
+        int row = denLocation.Row;
+        int col = denLocation.Col;
+
+        int numSurroundingTiles = 0;
+        for(int direction = 0; direction < 8; direction++){
+            if(row + dxFULL[direction] >= 0 && row + dxFULL[direction] < localBoard.board.length && col + dyFULL[direction] >= 0 && col + dyFULL[direction] < localBoard.board[0].length){ //Checks within board boundary
+                if(localBoard.board[row+dxFULL[direction]][col+dyFULL[direction]] != null) numSurroundingTiles++;
+            }
+        }
+
+        if(localBoard.board[row][col].middle.meeple.owner == 0){
+            player1Score += numSurroundingTiles;
+        }
+        else if (localBoard.board[row][col].middle.meeple.owner == 1){
+            player2Score += numSurroundingTiles;
+        }
     }
     
     
