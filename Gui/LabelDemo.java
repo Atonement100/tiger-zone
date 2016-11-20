@@ -113,7 +113,7 @@ public class LabelDemo extends JFrame {
                 tiles[i][j] = new TileSet();
                 tiles[i][j].setTileButtonBorder();
                 tiles[i][j].getTileButton().setBackground(Color.WHITE);
-                tiles[i][j].getTileButton().addMouseListener(ma);
+               // tiles[i][j].getTileButton().addMouseListener(ma);
                 panel.add(tiles[i][j].getTileButton());
             }
         }
@@ -208,6 +208,7 @@ public class LabelDemo extends JFrame {
 
 
     public void possibleMove(int[] x, int[] y) {
+
 
     }
 
