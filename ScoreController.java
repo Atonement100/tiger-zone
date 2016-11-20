@@ -43,12 +43,62 @@ public class ScoreController {
             System.out.println("");
         }
     }
-    
+
+    void scoreField(Node start){
+        ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
+        ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
+
+        HashSet<Integer> uniqueCities = new HashSet<Integer>();
+        HashSet<Integer> uniqueDens = new HashSet<Integer>();
+
+        int[] meeplesReturned = new int[2];
+
+        nodeQueue.add(start);
+
+        while (!nodeQueue.isEmpty()){
+            Node currNode = nodeQueue.removeFirst();
+            visitedNodes.add(currNode);
+            currNode.visited = true;
+            if (currNode.meeple != null) meeplesReturned[currNode.meeple.owner]++;
+
+            for (Node neighbor : currNode.neighbors){
+                if (!neighbor.visited){
+                    if (neighbor.featureType == FeatureTypeEnum.Field){
+                        nodeQueue.add(neighbor);
+                    }
+                    else if (neighbor.featureType == FeatureTypeEnum.Monastery){
+                        if (!uniqueDens.contains(neighbor.featureID)){
+                            uniqueDens.add(neighbor.featureID);
+                        }
+                    }
+                    else if (neighbor.featureType == FeatureTypeEnum.Wall){
+                        if (!uniqueCities.contains(neighbor.featureID)){
+                            uniqueCities.add(neighbor.featureID);
+                        }
+                    }
+                }
+            }
+        }
+
+        if(meeplesReturned[0] != 0 || meeplesReturned[1] != 0){
+            int featureValue = 3*uniqueCities.size() + 5*uniqueDens.size();
+            if(meeplesReturned[0] == meeplesReturned[1]){
+                this.player1Score += featureValue;
+                this.player2Score += featureValue;
+            }
+            else if(meeplesReturned[0] > meeplesReturned[1]){
+                this.player1Score += featureValue;
+            }
+            else{
+                this.player2Score += featureValue;
+            }
+        }
+    }
+
     
     //scoring complete trail is the same as scoring incomplete trail
     public int[] scoreRoad(Node start){
         int[] meeplesReturned = new int[2];
-        
         
         HashSet<Integer> uniqueTiles = new HashSet<Integer>();
         HashSet<Integer> uniqueAnimals = new HashSet<Integer>();
@@ -78,7 +128,7 @@ public class ScoreController {
                         if(this.gameTileReference.get(buffer.owningTileId).animalType != 0){
                             uniqueAnimals.add(this.gameTileReference.get(buffer.owningTileId).animalType);
                         }
-                        
+
                         if(buffer.meeple.owner == 0){
                             meeplesReturned[0]++;
                         }
@@ -110,10 +160,8 @@ public class ScoreController {
     }
     
     public int[] scoreIncompleteCity(Node start){
-        
         int[] meeplesReturned = new int[2];
-        
-        
+
         HashSet<Integer> uniqueTiles = new HashSet<Integer>();
         HashSet<Integer> uniqueAnimals = new HashSet<Integer>();
         

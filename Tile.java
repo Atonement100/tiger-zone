@@ -45,7 +45,17 @@ public class Tile {
 		this.animalType = animalType;
 		this.ID = identify++;
 
-		if (this.hasMonastery) this.middle = new Node(FeatureTypeEnum.Monastery.toChar(), this.ID);
+		if (this.hasMonastery) {
+			this.middle = new Node(FeatureTypeEnum.Monastery.toChar(), this.ID);
+
+			for (Edge edge : this.edges){
+				if (edge.nodes[1].featureType == FeatureTypeEnum.Field){
+					addEachNodeAsNeighbor(middle, edge.nodes[1]);
+					break;
+				}
+			}
+		}
+
 		else this.middle = new Node(FeatureTypeEnum.None.toChar(), this.ID); //none
 
 		//Count number of road + city edges
