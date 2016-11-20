@@ -16,7 +16,7 @@ import javax.swing.*;
 public class LabelDemo extends JFrame {
     public final int SIZE = 21;
     public static Image ICON;
-    public static int i;
+
     public boolean nextmove;
     public String buttonText;
     public int rotation;
@@ -108,7 +108,7 @@ public class LabelDemo extends JFrame {
         }
         //preView.setImg(img[i]);
 
-        for (i = 0; i < SIZE; i++) {
+        for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 tiles[i][j] = new TileSet();
                 tiles[i][j].setTileButtonBorder();
@@ -119,7 +119,7 @@ public class LabelDemo extends JFrame {
         }
 
         /*this forloop are basicly naming the button on the screen to match what server is taking*/
-        for (i = SIZE / 2; i < SIZE; i++) {
+        for (int i = SIZE / 2; i < SIZE; i++) {
             for (int j = SIZE / 2; j < SIZE; j++) {
                 tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
             }
@@ -129,7 +129,7 @@ public class LabelDemo extends JFrame {
 
         }
 
-        for (i = 0; i < SIZE / 2; i++) {
+        for (int i = 0; i < SIZE / 2; i++) {
             for (int j = SIZE / 2; j < SIZE; j++) {
                 tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
             }
@@ -175,10 +175,13 @@ public class LabelDemo extends JFrame {
 
     public String getTileIndexs(int x, int y) {
         String s = "";
+
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                if (tiles[i][j].getTileButton().getText() == x + "," + y) {
-                    s = i + "," + j;
+                System.out.println(tiles[i][j].getTileButton().getText());
+                if ((x + "," + y) .equals(tiles[i][j].getTileButton().getText())) {
+                    System.out.println(tiles[i][j].getTileButton().getText());
+                    s = s+i + "," + j;
                     return s;
                 }
             }
@@ -221,5 +224,13 @@ public class LabelDemo extends JFrame {
         }
         System.out.println("Imge is not found in imgset, tile id:" + tileId);
         return null;
+    }
+    public void placeFirstTile(int x,int y,String id){
+        String  s =getTileIndexs(x,y);
+        System.out.println(s);
+        String[] rowcol = s.split("[,]");
+        tiles[Integer.parseInt(rowcol[0])][Integer.parseInt(rowcol[1])].setTileIcon(findImg(id));
+
+
     }
 }
