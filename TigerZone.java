@@ -12,16 +12,16 @@ public class TigerZone {
                 "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-", "TLJT-",
                 "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-", "TLTT-",
                 "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD"};
-		LabelDemo l= new LabelDemo();
-      	 l.placeFirstTile(0,0,"JJJJ-");
-        l.getImgID(imgId[14]);
-       // l.possibleMove(new int []{3,4,5},  new int[]{6, 7, 8});
-		//System.out.print("Enter number of human players: ");
-	//	Scanner scanner = new Scanner(System.in);
-		//int numPlayers = scanner.nextInt();
-	//	GameController game = new GameController(numPlayers);
+//		LabelDemo l= new LabelDemo();
+//      	 l.placeFirstTile(0,0,"JJJJ-");
+//        l.getImgID(imgId[8]);
+//        l.possibleMove(new int []{3,4,5},  new int[]{6, 7, 8});
+		System.out.print("Enter number of human players: ");
+		Scanner scanner = new Scanner(System.in);
+		int numPlayers = scanner.nextInt();
+		GameController game = new GameController(numPlayers);
 
-	///	game.gameLoop();
-	//	game.board.printBoard();
+		game.gameLoop();
+		//game.board.printBoard();
 	}
 }
