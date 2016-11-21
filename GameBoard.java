@@ -210,11 +210,12 @@ public class GameBoard {
         //logic(simple) CHECKS
 
         if(row < 0 || row >= rowBoundary || col < 0 || col >= colBoundary){
-
+            tileToPlace.rotateClockwise(-rotations);
             return false;			//placement out of bounds;
         }
 
         if(board[row][col] != null){
+            tileToPlace.rotateClockwise(-rotations);
             return false;			//if tile exists at loc
         }
 
@@ -226,7 +227,7 @@ public class GameBoard {
         boolean isCompatible = true;
         //get all neighboring tiles
 
-        boolean noNeighboringTile = false; //CHANGE THIS TO FALSE/TRUE FOR TESTING PURPOSES
+        boolean noNeighboringTile = true; //CHANGE THIS TO FALSE/TRUE FOR TESTING PURPOSES
         Tile[] neighborTiles = getNeighboringTiles(targetLocation);
         for (Tile nTile : neighborTiles){
             if (nTile != null){
@@ -237,9 +238,8 @@ public class GameBoard {
 
         //check compatibility with neighboring tiles
         for(int direction = 0; direction < 4; direction++){
-
             if (neighborTiles[direction] != null){
-                if(!tileToPlace.edges[direction].isCompatible(neighborTiles[direction].edges[(direction + 2) % 4])){ //Could change 4 to constant - EDGES_PER_TILE. 2 is EDGES_PER_TILE / 2
+                if(!tileToPlace.edgeValues[direction].equals(neighborTiles[direction].edgeValues[(direction + 2) % 4])){
                     isCompatible = false;
                     break;
                 }
