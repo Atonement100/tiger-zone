@@ -38,6 +38,7 @@ public class LabelDemo extends JFrame {
         return nextmove;
     }
     public LabelDemo() {
+        preView.displayScore(10);
         // addMouseListener(this);
         JFrame frame = new JFrame("Tiger Zone");
         JPanel panel = new JPanel(new GridLayout(21, 21));
