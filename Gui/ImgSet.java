@@ -8,6 +8,34 @@ import javax.swing.*;
 public class ImgSet {
     private String file;
     private ImageIcon imageIcon;
+
+    public ImageIcon getImageIcon_1() {
+        return imageIcon_1;
+    }
+
+    public void setImageIcon_1(String file) {
+        imageIcon_1 =new ImageIcon(file);
+    }
+
+    public ImageIcon getImageIcon_2() {
+        return imageIcon_2;
+    }
+
+    public void setImageIcon_2(String file) {
+        imageIcon_2 =new ImageIcon(file);
+    }
+
+    public ImageIcon getImageIcon_3() {
+        return imageIcon_3;
+    }
+
+    public void setImageIcon_3(String file) {
+        imageIcon_3 =new ImageIcon(file);
+    }
+
+    private ImageIcon imageIcon_1;
+    private ImageIcon imageIcon_2;
+    private ImageIcon imageIcon_3;
     private String imgID;
 
     public ImgSet() {
@@ -17,7 +45,7 @@ public class ImgSet {
         return imageIcon;
     }
 
-    public void setImage(String file) {
+    public void setImageIcon(String file) {
         imageIcon =new ImageIcon(file);
 
 
