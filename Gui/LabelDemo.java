@@ -28,36 +28,7 @@ public class LabelDemo extends JFrame {
     public TileSet[][] tiles = new TileSet[SIZE][SIZE];
     public PreView preView = new PreView();
     public ImgSet[] img = new ImgSet[26];
-    private MouseListener me;
 
-    {
-        me = new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                System.out.println("Clicking wont do anything");
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        };
-    }
     public void getImgID(String s){
         nextmove= false;
         setupPreview(preView,s);
@@ -69,7 +40,6 @@ public class LabelDemo extends JFrame {
     public LabelDemo() {
         // addMouseListener(this);
         JFrame frame = new JFrame("Tiger Zone");
-
         JPanel panel = new JPanel(new GridLayout(21, 21));
         MouseAdapter ma = new MouseAdapter() {
             @Override
@@ -82,14 +52,10 @@ public class LabelDemo extends JFrame {
                 String[] rowcol = buttonText.split("[,]");
                 x = Integer.parseInt(rowcol[0]);
                 y = Integer.parseInt(rowcol[1]);
-                System.out.println("x: " + x + " y: " + y);
+               // System.out.println("x: " + x + " y: " + y);
                 //reference.setText("+");
                 reference.setText("");
                 reference.setIcon(preView.getImg());
-                nextmove= true;
-
-
-
             }
         };
         try {
@@ -102,18 +68,21 @@ public class LabelDemo extends JFrame {
         // MouseAdapter adapter= new MouseAdapter() { };
         for (int i = 0; i < 26; i++) {
             img[i] = new ImgSet();
-            img[i].setImage("Gui/asset50x50/" + i + ".jpg");
+            img[i].setImageIcon("Gui/asset50x50/" + i + ".jpg");
+            img[i].setImageIcon_1("Gui/assets50x50_1/" + i + ".jpg");
+            img[i].setImageIcon_2("Gui/asset50x50_2/" + i + ".jpg");
+            img[i].setImageIcon_3("Gui/asset50x50_3/" + i + ".jpg");
             img[i].setImgID(imgId[i]);
 
         }
-        //preView.setImg(img[i]);
+
 
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 tiles[i][j] = new TileSet();
                 tiles[i][j].setTileButtonBorder();
                 tiles[i][j].getTileButton().setBackground(Color.WHITE);
-               // tiles[i][j].getTileButton().addMouseListener(ma);
+                tiles[i][j].getTileButton().addMouseListener(ma);
                 panel.add(tiles[i][j].getTileButton());
             }
         }
@@ -170,7 +139,10 @@ public class LabelDemo extends JFrame {
 
    public void setupPreview(PreView p ,String ID){
        preView.setImgID(ID);
-       preView.setImg(findImg(ID));
+       preView.setImage(findImg(ID).getImageIcon());
+       preView.setImg_1(findImg(ID).getImageIcon_1());
+       preView.setImg_2(findImg(ID).getImageIcon_2());
+       preView.setImg_3(findImg(ID).getImageIcon_3());
    };
 
     public String getTileIndexs(int x, int y) {
@@ -178,9 +150,9 @@ public class LabelDemo extends JFrame {
 
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                System.out.println(tiles[i][j].getTileButton().getText());
+               // System.out.println(tiles[i][j].getTileButton().getText());
                 if ((x + "," + y) .equals(tiles[i][j].getTileButton().getText())) {
-                    System.out.println(tiles[i][j].getTileButton().getText());
+                  //  System.out.println(tiles[i][j].getTileButton().getText());
                     s = s+i + "," + j;
                     return s;
                 }
@@ -216,10 +188,10 @@ public class LabelDemo extends JFrame {
     }
 
 
-    public ImageIcon findImg(String tileId) {
+    public ImgSet findImg(String tileId) {
         for (int i = 0; i < 26; i++) {
             if (img[i].getImgID() == tileId) {
-                return img[i].getImageIcon();
+                return img[i];
             }
         }
         System.out.println("Imge is not found in imgset, tile id:" + tileId);
@@ -229,7 +201,7 @@ public class LabelDemo extends JFrame {
         String  s =getTileIndexs(x,y);
         System.out.println(s);
         String[] rowcol = s.split("[,]");
-        tiles[Integer.parseInt(rowcol[0])][Integer.parseInt(rowcol[1])].setTileIcon(findImg(id));
+        tiles[Integer.parseInt(rowcol[0])][Integer.parseInt(rowcol[1])].setTileIcon(findImg(id).getImageIcon());
 
 
     }
