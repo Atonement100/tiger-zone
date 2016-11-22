@@ -19,7 +19,19 @@ public class PreView extends JFrame {
     public ImageIcon img_2;
     public ImageIcon img_3;
     public String imgID;
-    int Rotation = 0;
+
+    public int getMeeple() {
+
+        return meeple;
+    }
+
+    public int meeple;
+
+    public int getRotation() {
+        return Rotation;
+    }
+
+    private int Rotation = 0;
 
     public ImageIcon getImg_1() {
         return img_1;
@@ -80,20 +92,26 @@ public class PreView extends JFrame {
                 //System.out.print("clicked button: " + previewButton.getText());
                 previewButton.setText("");
                 Rotation = (Rotation + 1) % 4;
-                if (Rotation == 1) {
+
+                 if (Rotation == 1) {
                     previewButton.setIcon(img_1);
                     setImg(img_1);
-                  //  System.out.println("ccw once");
+                   System.out.println("ccw once");
                 }
-                if (Rotation == 2) {
+                else if (Rotation == 2) {
                     setImg(img_2);
                     previewButton.setIcon(img_2);
-                   // System.out.println("ccw two");
+                    System.out.println("ccw two");
                 }
-                if (Rotation == 3) {
+              else  if (Rotation == 3) {
                     setImg(img_3);
                     previewButton.setIcon(img_3);
-                   // System.out.println("ccw three");
+                    System.out.println("ccw three");
+                }
+               else{
+                    setImage(img);
+                    previewButton.setIcon(img);
+                    System.out.println("ccw 0");
                 }
                 preview.add(previewButton);
             }
