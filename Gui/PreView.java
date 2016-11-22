@@ -83,17 +83,17 @@ public class PreView extends JFrame {
                 if (Rotation == 1) {
                     previewButton.setIcon(img_1);
                     setImg(img_1);
-                    System.out.println("ccw once");
+                  //  System.out.println("ccw once");
                 }
                 if (Rotation == 2) {
                     setImg(img_2);
                     previewButton.setIcon(img_2);
-                    System.out.println("ccw two");
+                   // System.out.println("ccw two");
                 }
                 if (Rotation == 3) {
                     setImg(img_3);
                     previewButton.setIcon(img_3);
-                    System.out.println("ccw three");
+                   // System.out.println("ccw three");
                 }
                 preview.add(previewButton);
             }
