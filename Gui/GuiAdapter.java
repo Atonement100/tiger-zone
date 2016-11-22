@@ -20,6 +20,8 @@ public class GuiAdapter {
             "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD"};
 
     public GuiAdapter() {
+        Gui = new LabelDemo();
+
     }
 
     public GuiAdapter(int x, int y, int rotation, int meeple) {
@@ -29,6 +31,7 @@ public class GuiAdapter {
         this.meeple = meeple;
     }
     public int getX() {
+        x= Gui.getX();
         return x;
     }
 
@@ -37,6 +40,7 @@ public class GuiAdapter {
     }
 
     public int getY() {
+        y= Gui.getY();
         return y;
     }
 
@@ -45,6 +49,7 @@ public class GuiAdapter {
     }
 
     public int getRotation() {
+        rotation =Gui.getRotation();
         return rotation;
     }
 
@@ -53,6 +58,7 @@ public class GuiAdapter {
     }
 
     public int getMeeple() {
+        Gui.getMeeple();
         return meeple;
     }
 
@@ -65,7 +71,15 @@ public class GuiAdapter {
     }
 
     public void setTileID(String tileID) {
+        Gui.setDone(false);
         TileID = tileID;
+        mapTileid(tileID);
+        while (!Gui.isDone())
+        Gui.setupPreview(GuiID);
+
+
+      //  System.out.println(GuiID);
+
     }
 
     public String getGuiID() {
@@ -84,33 +98,33 @@ public class GuiAdapter {
         Gui = gui;
     }
     public void mapTileid(String gameTile){
-        if (gameTile=="A"){GuiID= Id[0];}
-        if (gameTile=="B"){GuiID= Id[1];}
-        if (gameTile=="C"){GuiID= Id[2];}
-        if (gameTile=="D"){GuiID= Id[3];}
-        if (gameTile=="E"){GuiID= Id[4];}
-        if (gameTile=="F"){GuiID= Id[5];}
-        if (gameTile=="G"){GuiID= Id[6];}
-        if (gameTile=="H"){GuiID= Id[7];}
-        if (gameTile=="I"){GuiID= Id[8];}
-        if (gameTile=="J"){GuiID= Id[9];}
-        if (gameTile=="K"){GuiID= Id[10];}
-        if (gameTile=="L"){GuiID= Id[11];}
-        if (gameTile=="M"){GuiID= Id[12];}
-        if (gameTile=="N"){GuiID= Id[13];}
-        if (gameTile=="O"){GuiID= Id[14];}
-        if (gameTile=="P"){GuiID= Id[15];}
-        if (gameTile=="Q"){GuiID= Id[16];}
-        if (gameTile=="R"){GuiID= Id[17];}
-        if (gameTile=="S"){GuiID= Id[18];}
-        if (gameTile=="T"){GuiID= Id[19];}
-        if (gameTile=="U"){GuiID= Id[20];}
-        if (gameTile=="V"){GuiID= Id[21];}
-        if (gameTile=="W"){GuiID= Id[22];}
-        if (gameTile=="X"){GuiID= Id[23];}
-        if (gameTile=="Y"){GuiID= Id[24];}
-        if (gameTile=="Z"){GuiID= Id[25];}
-        if (gameTile=="a"){GuiID= Id[26];}
+        if (gameTile.equals("A")){GuiID= Id[0];}
+        else if (gameTile.equals("B")){GuiID= Id[1];}
+        else if (gameTile.equals("C")){GuiID= Id[2];}
+        else if (gameTile.equals("D")){GuiID= Id[3];}
+        else if (gameTile.equals("E")){GuiID= Id[4];}
+        else  if (gameTile.equals("F")){GuiID= Id[5];}
+        else  if (gameTile.equals("G")){GuiID= Id[6];}
+        else if (gameTile.equals("H")){GuiID= Id[7];}
+        else if (gameTile.equals("I")){GuiID= Id[8];}
+        else if (gameTile.equals("J")){GuiID= Id[9];}
+        else if (gameTile.equals("K")){GuiID= Id[10];}
+        else  if (gameTile.equals("L")){GuiID= Id[11];}
+        else  if (gameTile.equals("M")){GuiID= Id[12];}
+        else  if (gameTile.equals("N")){GuiID= Id[13];}
+        else if (gameTile.equals("O")){GuiID= Id[14];}
+        else if (gameTile.equals("P")){GuiID= Id[15];}
+        else if (gameTile.equals("Q")){GuiID= Id[16];}
+        else if (gameTile.equals("R")){GuiID= Id[17];}
+        else if (gameTile.equals("S")){GuiID= Id[18];}
+        else if (gameTile.equals("T")){GuiID= Id[19];}
+        else  if (gameTile.equals("U")){GuiID= Id[20];}
+        else  if (gameTile.equals("V")){GuiID= Id[21];}
+        else  if (gameTile.equals("W")){GuiID= Id[22];}
+        else  if (gameTile.equals("X")){GuiID= Id[23];}
+        else   if (gameTile.equals("Y")){GuiID= Id[24];}
+        else   if (gameTile.equals("Z")){GuiID= Id[25];}
+        else   if (gameTile.equals("a")){GuiID= Id[26];}
        // if (gameTile=="b"){GuiID= Id[27];}
 
 
@@ -180,6 +194,12 @@ public class GuiAdapter {
     public void placeTile(int x,int y,String id){
         mapTileid(id);
         //Gui.placeFirstTile(x,y,GuiID);
+    }
+    public void tilePlaced(int x,int y,int rotation,int meeple){
+        setX(x);
+        setY(y);
+        setRotation(rotation);
+        setMeeple(meeple);
     }
 
 }
