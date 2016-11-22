@@ -8,8 +8,6 @@ public class PlayerController {
     }
 
     void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
-        confirmedTile.rotateClockwise(moveInfo.tileRotation);
-
         //need to locally update meeple
         localGameBoard.placeTile(confirmedTile, moveInfo.tileLocation, moveInfo.tileRotation);
         localGameBoard.placeMeeple(confirmedTile, moveInfo.tileLocation, moveInfo.meepleLocation, playerConfirmed);

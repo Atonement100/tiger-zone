@@ -24,7 +24,6 @@ public class ScoreController {
 
 
     ArrayList<MeepleOwnerTuple> processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
-        confirmedTile.rotateClockwise(moveInfo.tileRotation);
         localBoard.placeTile(confirmedTile, moveInfo.tileLocation, moveInfo.tileRotation);
         localBoard.placeMeeple(confirmedTile, moveInfo.tileLocation, moveInfo.meepleLocation, playerConfirmed);
 

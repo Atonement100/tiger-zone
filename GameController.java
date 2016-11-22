@@ -52,6 +52,7 @@ public class GameController {
         while(!gameTiles.isEmpty()){
             currentTile = drawTile();
             handleMove(currentTile);
+            board.printBoard();
         }
 
         endOfGameScoring();
@@ -92,10 +93,10 @@ public class GameController {
             //Just throw away bad meeple placements so score ctrlr and players don't get false signal
         }
 
-        ArrayList<MeepleOwnerTuple> meeplesToReturn = scoreController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
+        ArrayList<MeepleOwnerTuple> meeplesToReturn = scoreController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
 
         for (PlayerController playerController : players){
-            playerController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
+            playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
         }
 
         for (MeepleOwnerTuple info : meeplesToReturn){
