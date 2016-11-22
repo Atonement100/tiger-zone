@@ -38,7 +38,7 @@ public class LabelDemo extends JFrame {
         return nextmove;
     }
     public LabelDemo() {
-        preView.displayScore(10);
+
         // addMouseListener(this);
         JFrame frame = new JFrame("Tiger Zone");
         JPanel panel = new JPanel(new GridLayout(21, 21));
@@ -83,31 +83,33 @@ public class LabelDemo extends JFrame {
                 tiles[i][j] = new TileSet();
                 tiles[i][j].setTileButtonBorder();
                 tiles[i][j].getTileButton().setBackground(Color.WHITE);
+                tiles[i][j].getTileButton().setText(i+","+j);
+
                 tiles[i][j].getTileButton().addMouseListener(ma);
                 panel.add(tiles[i][j].getTileButton());
             }
         }
 
         /*this forloop are basicly naming the button on the screen to match what server is taking*/
-        for (int i = SIZE / 2; i < SIZE; i++) {
-            for (int j = SIZE / 2; j < SIZE; j++) {
-                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
-            }
-            for (int j = 0; j < SIZE / 2; j++) {
-                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
-            }
-
-        }
-
-        for (int i = 0; i < SIZE / 2; i++) {
-            for (int j = SIZE / 2; j < SIZE; j++) {
-                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
-            }
-            for (int j = 0; j < SIZE / 2; j++) {
-                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
-            }
-
-        }
+//        for (int i = SIZE / 2; i < SIZE; i++) {
+//            for (int j = SIZE / 2; j < SIZE; j++) {
+//                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
+//            }
+//            for (int j = 0; j < SIZE / 2; j++) {
+//                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
+//            }
+//
+//        }
+//
+//        for (int i = 0; i < SIZE / 2; i++) {
+//            for (int j = SIZE / 2; j < SIZE; j++) {
+//                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
+//            }
+//            for (int j = 0; j < SIZE / 2; j++) {
+//                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
+//            }
+//
+//        }
         /*******************************************************************************************/
 
         frame.setIconImage(ICON);
@@ -199,10 +201,11 @@ public class LabelDemo extends JFrame {
         return null;
     }
     public void placeFirstTile(int x,int y,String id){
-        String  s =getTileIndexs(x,y);
-        System.out.println(s);
-        String[] rowcol = s.split("[,]");
-        tiles[Integer.parseInt(rowcol[0])][Integer.parseInt(rowcol[1])].setTileIcon(findImg(id).getImageIcon());
+//        String  s =getTileIndexs(x,y);
+//        System.out.println(s);
+//        String[] rowcol = s.split("[,]");
+//        tiles[Integer.parseInt(rowcol[0])][Integer.parseInt(rowcol[1])].setTileIcon(findImg(id).getImageIcon());
+        tiles[x][y].setTileIcon(findImg(id).getImageIcon());
 
 
     }
