@@ -21,44 +21,44 @@ public class ScoreController {
         this.gameTileReference = gameTileReference;
         this.localBoard = new GameBoard(boardDimensions.Row, boardDimensions.Col);
     }
-
-
+    
+    
     ArrayList<MeepleOwnerTuple> processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
         localBoard.placeTile(confirmedTile, moveInfo.tileLocation, moveInfo.tileRotation);
         localBoard.placeMeeple(confirmedTile, moveInfo.tileLocation, moveInfo.meepleLocation, playerConfirmed);
-
+        
         ArrayList<MeepleOwnerTuple> meeplesToReturn = new ArrayList<>();
-
+        
         meeplesToReturn.addAll(handleDens(confirmedTile, moveInfo));
-
+        
         for (Edge edge : confirmedTile.edges){
             if (edge.nodes[1].featureType == FeatureTypeEnum.Road && isRoadScorable(edge.nodes[1])){
                 meeplesToReturn.addAll(scoreRoad(edge.nodes[1]));
             }
-
+            
             for(int cornerNodeIndex = 0; cornerNodeIndex < edge.nodes.length; cornerNodeIndex += 2){
                 ArrayList<Node> cycleBuffer = getWallCycleNodes(edge.nodes[cornerNodeIndex]);
-
+                
                 if (cycleBuffer.isEmpty()) continue;
                 else meeplesToReturn.addAll(scoreCompleteCity(edge.nodes[cornerNodeIndex]));
             }
         }
         return meeplesToReturn;
     }
-
+    
     void processFreedMeeple(int ownerID, int meepleID){
         localBoard.freeMeeple(ownerID, meepleID);
     }
-
+    
     public ArrayList<MeepleOwnerTuple> handleDens(Tile confirmedTile, MoveInformation moveInfo){
         ArrayList<MeepleOwnerTuple> meeplesToReturn = new ArrayList<>();
         //**************************************************************************************************************
         //FACILITATE CHECK FOR ANY SURROUNDING DENS AND CHECK IF THIS IS A SCORABLE TILE IN CASE IT IS A TILE WITH A DEN
         int row = moveInfo.tileLocation.Row;
         int col = moveInfo.tileLocation.Col;
-
+        
         boolean fullySurrounded = true;
-
+        
         ArrayList<Location> denLocations = new ArrayList<Location>();
         for(int direction = 0; direction < 8; direction++){
             if(row + dxFULL[direction] >= 0 && row + dxFULL[direction] < localBoard.board.length && col + dyFULL[direction] >= 0 && col + dyFULL[direction] < localBoard.board[0].length){ //Checks within board boundary
@@ -66,70 +66,70 @@ public class ScoreController {
                 else if(localBoard.board[row+dxFULL[direction]][col+dyFULL[direction]].hasMonastery) denLocations.add(new Location(row+dxFULL[direction],col+dyFULL[direction]));
             }
         }
-
+        
         if(fullySurrounded && confirmedTile.hasMonastery){
             scoreCompleteDen(confirmedTile.middle);
             meeplesToReturn.add(new MeepleOwnerTuple(confirmedTile.middle.meeple.owner, confirmedTile.middle.meeple.ID));
         }
-
+        
         while(!denLocations.isEmpty()){
             Location buffer = denLocations.remove(0);
             row = buffer.Row;
             col = buffer.Col;
-
+            
             fullySurrounded = true;
             for(int direction = 0; direction < 8; direction++){
                 if(row + dxFULL[direction] >= 0 && row + dxFULL[direction] < localBoard.board.length && col + dyFULL[direction] >= 0 && col + dyFULL[direction] < localBoard.board[0].length){ //Checks within board boundary
                     if(localBoard.board[row+dxFULL[direction]][col+dyFULL[direction]] == null) fullySurrounded = false;
                 }
             }
-
+            
             //kinda redundant to check if these have monastery here since I am adding to the arrayList only tiles with monasteries
             if(fullySurrounded && localBoard.board[row][col].hasMonastery){
                 scoreCompleteDen(localBoard.board[row][col].middle);
                 meeplesToReturn.add(new MeepleOwnerTuple(confirmedTile.middle.meeple.owner, confirmedTile.middle.meeple.ID));
             }
-
+            
         }
-
+        
         return meeplesToReturn;
     }
-
+    
     /*
-    public void attemptScoring(Tile toCheck){
-        
-        ArrayList<Node> cycleBuffer;
-        
-        //WALL CYCLES
-        for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
-            for(int cornerNodeIndex = 0; cornerNodeIndex < toCheck.edges[edgeIndex].nodes.length; cornerNodeIndex += 2){
-                cycleBuffer = getWallCycleNodes(toCheck.edges[edgeIndex].nodes[cornerNodeIndex]);
-                System.out.println("NODES IN WALL CYCLE " + cycleBuffer.size());
-                
-                //FOR TESTING *******************************
-                while(!cycleBuffer.isEmpty()){
-                    cycleBuffer.remove(0).visited = false;
-                }
-                //*******************************************
-                System.out.println("");
-            }
-        }
-        
-        //ROAD CYCLES
-        for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
-            cycleBuffer = getRoadCycleNodes(toCheck.edges[edgeIndex].nodes[1]);
-            System.out.println("NODES IN ROAD CYCLE " + cycleBuffer.size());
-            
-            //FOR TESTING *******************************
-            while(!cycleBuffer.isEmpty()){
-                cycleBuffer.remove(0).visited = false;
-            }
-            //*******************************************
-            System.out.println("");
-        }
-    }
-    */
-
+     public void attemptScoring(Tile toCheck){
+     
+     ArrayList<Node> cycleBuffer;
+     
+     //WALL CYCLES
+     for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
+     for(int cornerNodeIndex = 0; cornerNodeIndex < toCheck.edges[edgeIndex].nodes.length; cornerNodeIndex += 2){
+     cycleBuffer = getWallCycleNodes(toCheck.edges[edgeIndex].nodes[cornerNodeIndex]);
+     System.out.println("NODES IN WALL CYCLE " + cycleBuffer.size());
+     
+     //FOR TESTING *******************************
+     while(!cycleBuffer.isEmpty()){
+     cycleBuffer.remove(0).visited = false;
+     }
+     //*******************************************
+     System.out.println("");
+     }
+     }
+     
+     //ROAD CYCLES
+     for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
+     cycleBuffer = getRoadCycleNodes(toCheck.edges[edgeIndex].nodes[1]);
+     System.out.println("NODES IN ROAD CYCLE " + cycleBuffer.size());
+     
+     //FOR TESTING *******************************
+     while(!cycleBuffer.isEmpty()){
+     cycleBuffer.remove(0).visited = false;
+     }
+     //*******************************************
+     System.out.println("");
+     }
+     }
+     */
+    
     void scoreField(Node start){
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
         ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
@@ -180,7 +180,7 @@ public class ScoreController {
             }
         }
     }
-
+    
     void scoreCompleteDen(Node den){
         //handleDens will take care of returning meeples appropriately
         denIdentifier++;
@@ -200,14 +200,14 @@ public class ScoreController {
     void scoreIncompleteDen(Location denLocation){
         int row = denLocation.Row;
         int col = denLocation.Col;
-
+        
         int numSurroundingTiles = 0;
         for(int direction = 0; direction < 8; direction++){
             if(row + dxFULL[direction] >= 0 && row + dxFULL[direction] < localBoard.board.length && col + dyFULL[direction] >= 0 && col + dyFULL[direction] < localBoard.board[0].length){ //Checks within board boundary
                 if(localBoard.board[row+dxFULL[direction]][col+dyFULL[direction]] != null) numSurroundingTiles++;
             }
         }
-
+        
         if(localBoard.board[row][col].middle.meeple.owner == 0){
             player1Score += numSurroundingTiles;
         }
@@ -215,7 +215,7 @@ public class ScoreController {
             player2Score += numSurroundingTiles;
         }
     }
-
+    
     
     public ArrayList<MeepleOwnerTuple> scoreRoad(Node start){
         ArrayList<MeepleOwnerTuple> meeplesToReturn = new ArrayList<>();
@@ -289,7 +289,7 @@ public class ScoreController {
     
     boolean isRoadScorable(Node start){
         if (start.featureID != -1) return false; //Already been scored, skip
-
+        
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
         ArrayDeque<Node> nodeCameFrom = new ArrayDeque<>(); //This goes hand in hand with nodequeue and indicates the previous node for each node in the nodequeue.
         ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
@@ -489,7 +489,7 @@ public class ScoreController {
     
     public ArrayList<Node> getWallCycleNodes(Node start){
         if (start.featureID != -1) return new ArrayList<>(); //Already been scored, skip
-
+        
         //tentative list of nodesInCycle
         ArrayList<Node> nodesInCycle = new ArrayList<Node>();
         
@@ -576,6 +576,7 @@ public class ScoreController {
             while(!nodesInCycle.isEmpty()){
                 nodesInCycle.remove(0).visited = false;
             }
+            return nodesInCycle;
         }
         
         //INNER WALL CYCLE EDGE CASE BEGIN ******************************************************************

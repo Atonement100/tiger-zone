@@ -58,12 +58,12 @@ public class GameController {
             handleMove(currentTile);
             board.printBoard();
         }
-
+        
         endOfGameScoring();
         
         return 0;
     }
-
+    
     private void endOfGameScoring(){
         for(int playerIndex = 0; playerIndex < board.playerMeeples.length; playerIndex++){
             for (int meepleIndex = 0; meepleIndex < board.playerMeeples[playerIndex].length; meepleIndex++){
@@ -112,6 +112,8 @@ public class GameController {
     
     private void handleMove(Tile tileForPlayer){
         System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
+        Tile.printTile(tileForPlayer);
+        
         
         MoveInformation playerMoveInfo;
         do {
@@ -121,7 +123,7 @@ public class GameController {
         System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation);
         
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
-
+        
         if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer) ) {
             board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
         }
@@ -130,13 +132,13 @@ public class GameController {
             playerMoveInfo.meepleLocation = -1;
             //Just throw away bad meeple placements so score ctrlr and players don't get false signal
         }
-
+        
         ArrayList<MeepleOwnerTuple> meeplesToReturn = scoreController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
-
+        
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
         }
-
+        
         for (MeepleOwnerTuple info : meeplesToReturn){
             board.freeMeeple(info.owner, info.ID);
             scoreController.processFreedMeeple(info.owner, info.ID);
@@ -144,7 +146,7 @@ public class GameController {
                 playerController.processFreedMeeple(info.owner, info.ID);
             }
         }
-
+        
         switchPlayerControl();
         return;
     }
