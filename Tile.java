@@ -264,6 +264,14 @@ public class Tile {
 		return;
 	}
 
+	public void rotateAntiClockwise(int rotations){
+		rotations %= EDGES_PER_TILE;
+		if (rotations == 0) return;
+		else if (rotations < 0) rotations += EDGES_PER_TILE;
+
+		rotateClockwise(Math.abs(rotations - EDGES_PER_TILE));
+	}
+
 	public void printNodeHashes(){
 		for (Edge edge : this.edges){
 			for (Node node : edge.nodes){
