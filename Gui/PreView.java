@@ -18,6 +18,16 @@ public class PreView extends JFrame {
     public ImageIcon img_1;
     public ImageIcon img_2;
     public ImageIcon img_3;
+
+    public ImageIcon getReturnImg() {
+        return returnImg;
+    }
+
+    public void setReturnImg(ImageIcon returnImg) {
+        this.returnImg = returnImg;
+    }
+
+    public ImageIcon returnImg;
     public String imgID;
 
     public int getMeeple() {
@@ -80,11 +90,13 @@ public class PreView extends JFrame {
     }
 
     public void setImage(ImageIcon img) {
-        this.img = img;
+
         previewButton.setIcon(img);
     }
 
-    public PreView() {
+    public PreView()
+        {
+            setReturnImg(img);
         MouseAdapter ma = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -92,24 +104,24 @@ public class PreView extends JFrame {
                 //System.out.print("clicked button: " + previewButton.getText());
                 previewButton.setText("");
                 Rotation = (Rotation + 1) % 4;
-
+                System.out.println(Rotation);
                  if (Rotation == 1) {
                     previewButton.setIcon(img_1);
-                    setImg(img_1);
+                    setReturnImg(img_1);
                    System.out.println("ccw once");
                 }
                 else if (Rotation == 2) {
-                    setImg(img_2);
+                     setReturnImg(img_2);
                     previewButton.setIcon(img_2);
                     System.out.println("ccw two");
                 }
               else  if (Rotation == 3) {
-                    setImg(img_3);
+                     setReturnImg(img_3);
                     previewButton.setIcon(img_3);
                     System.out.println("ccw three");
                 }
-               else{
-                    setImage(img);
+               else if (Rotation==0){
+                     setReturnImg(img);
                     previewButton.setIcon(img);
                     System.out.println("ccw 0");
                 }
