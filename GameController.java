@@ -38,6 +38,10 @@ public class GameController {
         Tile startingTile = prepareTiles();
         Location boardDimensions = board.getBoardDimensions();
         board.placeTile(startingTile, new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
+        scoreController.localBoard.placeTile(new Tile(startingTile), new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
+        for (PlayerController playerController : players){
+            playerController.processConfirmedMove(new Tile(startingTile), new MoveInformation(new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0, -1), currentPlayer);
+        }
     }
     
     private Tile drawTile(){
