@@ -107,7 +107,6 @@ public class GameController {
             }
         }
 
-
         switchPlayerControl();
         return;
     }

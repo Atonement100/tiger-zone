@@ -35,13 +35,14 @@ public class ScoreController {
             if (edge.nodes[1].featureType == FeatureTypeEnum.Road && isRoadScorable(edge.nodes[1])){
                 meeplesToReturn.addAll(scoreRoad(edge.nodes[1]));
             }
+
+            for(int cornerNodeIndex = 0; cornerNodeIndex < edge.nodes.length; cornerNodeIndex += 2){
+                ArrayList<Node> cycleBuffer = getWallCycleNodes(edge.nodes[cornerNodeIndex]);
+
+                if (cycleBuffer.isEmpty()) continue;
+                else meeplesToReturn.addAll(scoreCompleteCity(edge.nodes[cornerNodeIndex]));
+            }
         }
-
-        //Not sure how walls are known to connect, and then scored but that should be here
-        //with whatever loop necessary and an if statement calling for a score if necessary
-        //meeplesToReturn should have .addAll(scoreCompletedCity) etc
-
-
         return meeplesToReturn;
     }
 
@@ -94,6 +95,7 @@ public class ScoreController {
         return meeplesToReturn;
     }
 
+    /*
     public void attemptScoring(Tile toCheck){
         
         ArrayList<Node> cycleBuffer;
@@ -126,7 +128,8 @@ public class ScoreController {
             System.out.println("");
         }
     }
-    
+    */
+
     void scoreField(Node start){
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
         ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
@@ -285,6 +288,8 @@ public class ScoreController {
     }
     
     boolean isRoadScorable(Node start){
+        if (start.featureID != -1) return false; //Already been scored, skip
+
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
         ArrayDeque<Node> nodeCameFrom = new ArrayDeque<>(); //This goes hand in hand with nodequeue and indicates the previous node for each node in the nodequeue.
         ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
@@ -483,7 +488,8 @@ public class ScoreController {
     }
     
     public ArrayList<Node> getWallCycleNodes(Node start){
-        
+        if (start.featureID != -1) return new ArrayList<>(); //Already been scored, skip
+
         //tentative list of nodesInCycle
         ArrayList<Node> nodesInCycle = new ArrayList<Node>();
         
