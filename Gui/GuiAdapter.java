@@ -74,8 +74,12 @@ public class GuiAdapter {
         Gui.setDone(false);
         TileID = tileID;
         mapTileid(tileID);
-        while (!Gui.isDone())
         Gui.setupPreview(GuiID);
+        while (!Gui.isDone()){
+
+            Gui.refreshPreview(GuiID,Gui.getRotation());
+        };
+
 
 
       //  System.out.println(GuiID);

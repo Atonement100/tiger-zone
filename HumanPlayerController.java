@@ -21,7 +21,7 @@ public class HumanPlayerController extends PlayerController {
         g.setTileID(""+currentTile.tileType);
         System.out.println("human processing move");
         return getPlayerMoveFromGui();
-       // return getPlayerMoveFromConsole();
+       //return getPlayerMoveFromConsole();
        // return null;
     }
 

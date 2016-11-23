@@ -12,7 +12,7 @@ public class TigerZone {
                 "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-", "TLJT-",
                 "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-", "TLTT-",
                 "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD"};
-	//	LabelDemo l= new LabelDemo();
+		//LabelDemo l= new LabelDemo();
   		// l.placeFirstTile(10,10,"JJJJ-");
       // l.getImgID(imgId[1]);
 //        l.possibleMove(new int []{3,4,5},  new int[]{6, 7, 8});

@@ -17,7 +17,7 @@ import javax.swing.*;
 public class LabelDemo extends JFrame {
     public final int SIZE = 21;
     public static Image ICON;
-    private boolean done;
+    private boolean done= false;
     public boolean nextmove;
 
 
@@ -39,6 +39,7 @@ public class LabelDemo extends JFrame {
     }
 
     public void setDone(boolean done) {
+        System.out.println(""+done);
         this.done = done;
     }
 
@@ -64,7 +65,7 @@ public class LabelDemo extends JFrame {
                 // System.out.println("x: " + x + " y: " + y);
                 //reference.setText("+");
                 reference.setText("");
-                reference.setIcon(preView.getImg());
+                reference.setIcon(preView.returnImg);
                 Scanner scanner = new Scanner(System.in);
                 System.out.println("Enter a meeple Place ment for placed tile range [-1-12]");
                 setMeeple(scanner.nextInt());
@@ -140,6 +141,29 @@ public class LabelDemo extends JFrame {
         preView.setImg_1(findImg(ID).getImageIcon_1());
         preView.setImg_2(findImg(ID).getImageIcon_2());
         preView.setImg_3(findImg(ID).getImageIcon_3());
+        preView.setReturnImg(findImg(ID).getImageIcon());
+    }
+    public void refreshPreview(String ID, int rotation) {
+        if (rotation==0){
+            preView.setImage(findImg(ID).getImageIcon());
+            preView.setImg(findImg(ID).getImageIcon());
+        }else if (rotation==1){
+            preView.setImage(findImg(ID).getImageIcon_1());
+            preView.setImg(findImg(ID).getImageIcon_1());
+
+        }else if (rotation==2){
+            preView.setImage(findImg(ID).getImageIcon_2());
+            preView.setImg(findImg(ID).getImageIcon_2());
+        }else if (rotation==3){
+            preView.setImage(findImg(ID).getImageIcon_3());
+            preView.setImg(findImg(ID).getImageIcon_3());
+        }
+//        preView.setImgID(ID);
+//        preView.setImage(findImg(ID).getImageIcon());
+//        preView.setImg_1(findImg(ID).getImageIcon_1());
+//        preView.setImg_2(findImg(ID).getImageIcon_2());
+//        preView.setImg_3(findImg(ID).getImageIcon_3());
+//        preView.setReturnImg(findImg(ID).getImageIcon());
     }
 
 
@@ -189,7 +213,7 @@ public class LabelDemo extends JFrame {
 
     public ImgSet findImg(String tileId) {
         for (int i = 0; i < 26; i++) {
-            if (img[i].getImgID() == tileId) {
+            if (img[i].getImgID().equals(tileId)) {
                 return img[i];
             }
         }
