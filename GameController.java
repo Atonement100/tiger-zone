@@ -66,8 +66,42 @@ public class GameController {
                 if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onMonastery){
                     scoreController.scoreIncompleteDen(board.playerMeeples[playerIndex][meepleIndex].location);
                 }
-
-                //Other end of game checks should occur here!!!!!!!!
+                else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onCity){
+                    Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
+                    Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
+                    for (Edge edge : meepleTile.edges){
+                        for (Node node: edge.nodes){
+                            if (node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+                                scoreController.scoreIncompleteCity(node);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onRoad){
+                    Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
+                    Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
+                    for (Edge edge : meepleTile.edges){
+                        for (Node node: edge.nodes){
+                            if (node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+                                scoreController.scoreField(node);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onField){
+                    Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
+                    Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
+                    for (Edge edge : meepleTile.edges){
+                        for (Node node: edge.nodes){
+                            if (node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+                                scoreController.scoreField(node);
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

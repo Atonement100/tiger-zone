@@ -215,7 +215,7 @@ public class ScoreController {
             player2Score += numSurroundingTiles;
         }
     }
-    
+
     
     public ArrayList<MeepleOwnerTuple> scoreRoad(Node start){
         ArrayList<MeepleOwnerTuple> meeplesToReturn = new ArrayList<>();
