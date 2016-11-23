@@ -293,7 +293,7 @@ public class Tile {
         System.out.println(toPrint.edges[0].nodes[1].featureType.toChar() + "   " + toPrint.edges[2].nodes[1].featureType.toChar());
         System.out.println(toPrint.edges[0].nodes[0].featureType.toChar() + "   " + toPrint.edges[2].nodes[2].featureType.toChar());
         System.out.print(" ");
-        for(int i = 0; i < 3; i++){
+        for(int i = 2; i >= 0; i--){
             System.out.print(toPrint.edges[3].nodes[i].featureType.toChar());
         }
         System.out.println("");
