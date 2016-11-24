@@ -239,7 +239,7 @@ public class GameBoard {
         //check compatibility with neighboring tiles
         for(int direction = 0; direction < 4; direction++){
             if (neighborTiles[direction] != null){
-                if(!tileToPlace.edgeValues[direction].equals(neighborTiles[direction].edgeValues[(direction + 2) % 4])){
+                if(!tileToPlace.edges[direction].isCompatible(neighborTiles[direction].edges[(direction + 2) % 4])){
                     isCompatible = false;
                     break;
                 }
