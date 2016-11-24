@@ -12,7 +12,9 @@ public class TigerZoneProtocol {
     private String[] tiles = { "TLTTP", "LJTJ-", "JLJL-", "JJTJX", "LTTJB", "TLLT" };
     private String gameA = "GAME A";
     private String gameB = "GAME B";
+    private String[] parseInput = null;
     private boolean switchGames = true;
+    
     public String VerifyAuthentication(String theInput) {
         String theOutput = null;
 
@@ -45,26 +47,33 @@ public class TigerZoneProtocol {
     
     public String NotifyPlayer() {
     	String theOutput = null;
-    	if(currentTile == tiles.length)
-    	{
+    	if(currentTile == tiles.length){
     		theOutput = "GAME OVER";
     	}
-    	else
-    	{
-    		if(switchGames)
-    		{
+    	else{
+    		if(switchGames){
     			theOutput = "MAKE YOUR MOVE IN " + gameA + " WITHIN 1 SECOND: MOVE " +  moveNumber + " PLACE " + tiles[currentTile];
     			switchGames = false;
     		}
-    		else
-    		{
+    		else{
     			theOutput = "MAKE YOUR MOVE IN " + gameB + " WITHIN 1 SECOND: MOVE " +  moveNumber + " PLACE " + tiles[currentTile];
     			switchGames = true;
     		}
     	}
+    	return theOutput;
+    }
+    
+    public String SendGameAMove(String theInput) {
+    	parseInput = theInput.split(" ");
+    	String theOutput = "GAME A MOVE " + moveNumber + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10] + " " + parseInput[11];
+    	return theOutput;
+    }
+
+    public String SendGameBMove(String theInput) {
+    	parseInput = theInput.split(" ");
+    	String theOutput = "GAME B MOVE " + moveNumber + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10] + " " + parseInput[11];
     	currentTile++;
     	moveNumber++;
     	return theOutput;
     }
-   
 }
