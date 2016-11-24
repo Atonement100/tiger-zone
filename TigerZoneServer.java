@@ -45,15 +45,14 @@ public class TigerZoneServer {
             out.println(outputLine);
             outputLine = "MATCH BEGINS IN 15 SECONDS";
             out.println(outputLine);
-            boolean workPlease = true;
-            while(workPlease)
+            boolean isGamePlaying = true;
+            while(isGamePlaying)
             {
             	outputLine = tzp.NotifyPlayer();
             	out.println(outputLine);
-            	if(outputLine.equals("Bye"))
-            		workPlease = false;
+            	if(outputLine.equals("GAME OVER"))
+            		isGamePlaying = false;
             }
-            
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "
                 + portNumber + " or listening for a connection");
