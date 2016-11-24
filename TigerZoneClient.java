@@ -23,10 +23,9 @@ public class TigerZoneClient {
                 new BufferedReader(new InputStreamReader(System.in));
             String fromServer;
             String fromUser;
-            //String tournamentPassword = "PersiaRocks!";
-            //String username = "Red";
-            //String password = "Obiwan77"; 
+            String opponentPlayerID;
             String[] parseText = null;
+            int numberOfRounds = 0;
             boolean isVerified = false;
             boolean isWaiting = true;
             boolean isPlaying = true;
@@ -34,23 +33,34 @@ public class TigerZoneClient {
             {
            		fromServer = in.readLine();
            		System.out.println("Server: " + fromServer);
-           		if (fromServer.equals("HELLO!"))
+        		fromUser = stdIn.readLine();
+           		if(fromServer.equals("THIS IS SPARTA!")){
+           			out.println("JOIN " + fromUser);
+           		}
+           		else if (fromServer.equals("HELLO!")){
            			isVerified = true;
-               
-           		fromUser = stdIn.readLine();
-           		if (fromUser != null) 
-           		{
-           			out.println(fromUser);
+           			out.println("I AM " + fromUser);
            		}
            	}
             
-            while(isWaiting)
-            {
+            // Find out how many challenges will be played
+            fromServer = in.readLine();
+       		parseText = fromServer.split(" ");
+       		String firstWord = parseText[0];
+       		if(firstWord.equalsIgnoreCase("NEW")){
+       			numberOfRounds = Integer.parseInt(parseText[6]);
+       		}
+       		// while(number of rounds < total rounds) 
+            // Getting game info - Player ID - Starting Tile - Order of Tiles 
+            while(isWaiting){
            		fromServer = in.readLine();
            		parseText = fromServer.split(" ");
-           		String firstWord = parseText[0];
+           		firstWord = parseText[0];
            		System.out.println("Server: " + fromServer);
-           		if(firstWord.equals("REMAINING"))
+           		if(firstWord.equals("YOUR")){
+           			opponentPlayerID = parseText[4];
+           		}
+           		else if(firstWord.equals("REMAINING"))
            		{
            			// TODO: ADD TILES TO AI LIST
            		}
@@ -59,29 +69,28 @@ public class TigerZoneClient {
            			isWaiting = false;
            		}
             }
-            
-            while(isPlaying)
-            {
+            // Where we start Receiving notification to send move / Send our moves. 
+            while(isPlaying){
            		fromServer = in.readLine();
            		System.out.println("Server: " + fromServer);
            		parseText = fromServer.split(" ");
-           		String firstWord = parseText[0];
-           		if(firstWord.equals("MAKE"))
-           		{
+           		firstWord = parseText[0];
+           		if(firstWord.equals("MAKE")){
            			// TODO: SEND MOVES FROM AI
-           			String makeMove = "GAME " + parseText[5] + " MOVE " + parseText[10] + " AT 0 0 0 TIGER 8";
+           			String makeMove = "GAME " + parseText[5] + " MOVE " + parseText[10] + " PLACE " + parseText[12] + " AT 0 0 0 TIGER 8";
            			// System.out just lets us know what we're sending. 
            			System.out.println("Client: " + makeMove);
            			out.println(makeMove);
            		}
-
             }
             
-            
-        } catch (UnknownHostException e) {
+        } 
+        
+        catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
-        } catch (IOException e) {
+        } 
+        catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to " +
                 hostName);
             System.exit(1);
