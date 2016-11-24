@@ -67,7 +67,7 @@ public class LabelDemo extends JFrame {
                 reference.setText("");
                 reference.setIcon(preView.returnImg);
                 Scanner scanner = new Scanner(System.in);
-                System.out.println("Enter a meeple Place ment for placed tile range [-1-12]");
+                System.out.println("Enter a meeple Place ment for placed tile range [-1,12]");
                 setMeeple(scanner.nextInt());
                 setDone(true);
             }

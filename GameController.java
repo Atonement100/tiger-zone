@@ -34,14 +34,14 @@ public class GameController {
         this.gameTileReference = retrieveGameTiles();
         
         
-        board = new GameBoard(gameTiles.size(), gameTiles.size());
-        
+       board = new GameBoard(gameTiles.size(), gameTiles.size());
+       // board = new GameBoard(21,21);
         scoreController = new ScoreController(gameTileReference, board.getBoardDimensions());
         
         Tile startingTile = prepareTiles();
         Location boardDimensions = board.getBoardDimensions();
         board.placeTile(startingTile, new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
-        guiAdapter.placeFirstTile(boardDimensions.Row / 4,boardDimensions.Col / 4, String.format("%s", startingTile.tileType));
+        guiAdapter.placeFirstTile(boardDimensions.Row / 4,boardDimensions.Col /4 , String.format("%s", startingTile.tileType));
     }
     
     private Tile drawTile(){
