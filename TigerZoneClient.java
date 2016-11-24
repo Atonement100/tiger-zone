@@ -82,6 +82,13 @@ public class TigerZoneClient {
            			System.out.println("Client: " + makeMove);
            			out.println(makeMove);
            		}
+           		else if(firstWord.equals("GAME")){
+           			// TODO: Update gameboard for AI for opponents move
+           		}
+           		else if (firstWord.equals("END")){
+           			// if its only 1 challenge end, if not go back to top for 2 or more challenges
+           		}
+           		
             }
             
         } 
