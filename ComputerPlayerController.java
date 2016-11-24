@@ -1,4 +1,11 @@
+import Gui.GuiAdapter;
+
+import java.util.*;
 public class ComputerPlayerController extends PlayerController {
+    public GuiAdapter guiAdapter;
+    public ComputerPlayerController(GuiAdapter g) {
+        this.guiAdapter = g;
+    }
 
     @Override
     MoveInformation processPlayerMove(Tile currentTile){

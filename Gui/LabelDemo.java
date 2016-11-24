@@ -39,7 +39,7 @@ public class LabelDemo extends JFrame {
     }
 
     public void setDone(boolean done) {
-        System.out.println(""+done);
+        //System.out.println(""+done);
         this.done = done;
     }
 
@@ -245,5 +245,18 @@ public class LabelDemo extends JFrame {
 
     public void setRotation(int rotation) {
         this.rotation = rotation;
+    }
+    public void placeComputertile(int row, int col, int tileRotation, String guiID) {
+        if (rotation==0){
+            tiles[row][col].setTileIcon(findImg(guiID).getImageIcon());
+        }else if (rotation==1){
+            tiles[row][col].setTileIcon(findImg(guiID).getImageIcon_1());
+
+        }else if (rotation==2){
+            tiles[row][col].setTileIcon(findImg(guiID).getImageIcon_2());
+        }else if (rotation==3){
+            tiles[row][col].setTileIcon(findImg(guiID).getImageIcon_3());
+        }
+
     }
 }

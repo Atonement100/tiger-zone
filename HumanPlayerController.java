@@ -3,7 +3,11 @@ import Gui.GuiAdapter;
 import java.util.*;
 
 public class HumanPlayerController extends PlayerController {
-    GuiAdapter g = new GuiAdapter();
+    public GuiAdapter guiAdapter;
+    public HumanPlayerController(GuiAdapter g) {
+        this.guiAdapter = g;
+    }
+
     @Override
     MoveInformation processPlayerMove(Tile currentTile){
         return getPlayerMove(currentTile);
@@ -18,10 +22,10 @@ public class HumanPlayerController extends PlayerController {
 
     @Override
     protected MoveInformation getPlayerMove(Tile currentTile){
-        g.setTileID(""+currentTile.tileType);
+        guiAdapter.setTileID(""+currentTile.tileType);
         System.out.println("human processing move");
-        return getPlayerMoveFromGui();
-       //return getPlayerMoveFromConsole();
+       // return getPlayerMoveFromGui();
+       return getPlayerMoveFromConsole();
        // return null;
     }
 
@@ -44,8 +48,8 @@ public class HumanPlayerController extends PlayerController {
 //        for (int index = 0; index < inputs.length; index++){
 //            inputs[index] = scanner.nextInt();
 //        }
-        System.out.print(""+g.getX()+","+g.getY()+","+g.getRotation()+","+g.getMeeple());
-        return new MoveInformation(new Location(g.getX(),g.getY()),g.getRotation(),g.getMeeple());
+      //  System.out.print(""+guiAdapter.getX()+","+guiAdapter.getY()+","+guiAdapter.getRotation()+","+guiAdapter.getMeeple());
+        return new MoveInformation(new Location(guiAdapter.getX(),guiAdapter.getY()),guiAdapter.getRotation(),guiAdapter.getMeeple());
     }
 
 

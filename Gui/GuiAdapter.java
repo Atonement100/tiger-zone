@@ -82,7 +82,7 @@ public class GuiAdapter {
 
 
 
-      //  System.out.println(GuiID);
+        //  System.out.println(GuiID);
 
     }
 
@@ -129,14 +129,14 @@ public class GuiAdapter {
         else   if (gameTile.equals("Y")){GuiID= Id[24];}
         else   if (gameTile.equals("Z")){GuiID= Id[25];}
         else   if (gameTile.equals("a")){GuiID= Id[26];}
-       // if (gameTile=="b"){GuiID= Id[27];}
+        // if (gameTile=="b"){GuiID= Id[27];}
 
 
     }
     public void unmapTileid(String gameTile){
-      if (GuiID==Id[0]){
-          setTileID("A");
-      }
+        if (gameTile.equals(Id[0])){
+            setTileID("A");
+        }
         if (GuiID==Id[1]){
             setTileID("B");
         } if (GuiID==Id[2]){
@@ -206,4 +206,8 @@ public class GuiAdapter {
         setMeeple(meeple);
     }
 
+    public void addTile(int row, int col, int tileRotation, String s) {
+        mapTileid(s);
+        Gui.placeComputertile(row,col,tileRotation,GuiID);
+    }
 }

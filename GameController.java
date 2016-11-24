@@ -1,3 +1,5 @@
+import Gui.GuiAdapter;
+
 import java.util.*;
 import java.util.ArrayList;
 public class GameController {
@@ -5,6 +7,7 @@ public class GameController {
     static final int NUM_PLAYERS = 2;
     static final int NUM_MEEPLES = 7;
     GameBoard board;
+    protected GuiAdapter guiAdapter= new GuiAdapter();
     private PlayerController[] players = new PlayerController[NUM_PLAYERS];
     //private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
     
@@ -20,10 +23,10 @@ public class GameController {
     public GameController(int numHumanPlayers){
         for (int numCreated = 0; numCreated < NUM_PLAYERS; numCreated++){
             if (numCreated < numHumanPlayers){
-                players[numCreated] = new HumanPlayerController();
+                players[numCreated] = new HumanPlayerController(guiAdapter);
             }
             else {
-                players[numCreated] = new ComputerPlayerController();
+                players[numCreated] = new ComputerPlayerController(guiAdapter);
             }
         }
         
@@ -38,6 +41,7 @@ public class GameController {
         Tile startingTile = prepareTiles();
         Location boardDimensions = board.getBoardDimensions();
         board.placeTile(startingTile, new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
+        guiAdapter.placeFirstTile(boardDimensions.Row / 4,boardDimensions.Col / 4, String.format("%s", startingTile.tileType));
     }
     
     private Tile drawTile(){
