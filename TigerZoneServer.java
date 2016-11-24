@@ -57,7 +57,7 @@ public class TigerZoneServer {
             {
             	outputLine = tzp.NotifyPlayer();
             	out.println(outputLine);
-            	if(outputLine.equals("GAME OVER"))
+            	if(outputLine.equals("END OF ROUND"))
             		isGamePlaying = false;
             	inputLine = in.readLine();
             	outputLine = tzp.SendGameAMove(inputLine);
