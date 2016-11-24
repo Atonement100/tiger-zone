@@ -23,18 +23,53 @@ public class TigerZoneClient {
                 new BufferedReader(new InputStreamReader(System.in));
             String fromServer;
             String fromUser;
-
-            while ((fromServer = in.readLine()) != null) {
-                System.out.println("Server: " + fromServer);
-                if (fromServer.equals("Bye."))
-                    break;
-                
-                fromUser = stdIn.readLine();
-                if (fromUser != null) {
-                    System.out.println("Client: " + fromUser);
-                    out.println(fromUser);
-                }
+            String[] parseText = null;
+            boolean isVerified = false;
+            boolean isWaiting = true;
+            boolean isPlaying = true;
+            while (!isVerified) 
+            {
+           		fromServer = in.readLine();
+           		System.out.println("Server: " + fromServer);
+           		if (fromServer.equals("HELLO!"))
+           			isVerified = true;
+               
+           		fromUser = stdIn.readLine();
+           		if (fromUser != null) 
+           		{
+           			out.println(fromUser);
+           		}
+           	}
+            
+            while(isWaiting)
+            {
+           		fromServer = in.readLine();
+           		parseText = fromServer.split(" ");
+           		String firstWord = parseText[0];
+           		System.out.println("Server: " + fromServer);
+           		if(firstWord.equals("REMAINING"))
+           		{
+           			// TODO: ADD TILES TO AI LIST
+           		}
+           		else if(firstWord.equals("MATCH"))
+           		{
+           			isWaiting = false;
+           		}
             }
+            
+            while(isPlaying)
+            {
+           		fromServer = in.readLine();
+           		System.out.println("Server: " + fromServer);
+           		// TODO: SEND MOVES
+           		fromUser = stdIn.readLine();
+           		if (fromUser != null) 
+           		{
+           			out.println(fromUser);
+           		}
+            }
+            
+            
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
