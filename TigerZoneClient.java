@@ -23,6 +23,9 @@ public class TigerZoneClient {
                 new BufferedReader(new InputStreamReader(System.in));
             String fromServer;
             String fromUser;
+            //String tournamentPassword = "PersiaRocks!";
+            //String username = "Red";
+            //String password = "Obiwan77"; 
             String[] parseText = null;
             boolean isVerified = false;
             boolean isWaiting = true;
@@ -61,12 +64,17 @@ public class TigerZoneClient {
             {
            		fromServer = in.readLine();
            		System.out.println("Server: " + fromServer);
-           		// TODO: SEND MOVES
-           		fromUser = stdIn.readLine();
-           		if (fromUser != null) 
+           		parseText = fromServer.split(" ");
+           		String firstWord = parseText[0];
+           		if(firstWord.equals("MAKE"))
            		{
-           			out.println(fromUser);
+           			// TODO: SEND MOVES FROM AI
+           			String makeMove = "GAME " + parseText[5] + " MOVE " + parseText[10] + " AT 0 0 0 TIGER 8";
+           			// System.out just lets us know what we're sending. 
+           			System.out.println("Client: " + makeMove);
+           			out.println(makeMove);
            		}
+
             }
             
             
