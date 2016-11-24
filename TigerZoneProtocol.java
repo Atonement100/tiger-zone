@@ -8,6 +8,7 @@ public class TigerZoneProtocol {
 
     private int state = WAITING;
     private int currentTile = 0;
+    private int moveNumber = 1;
     private String[] tiles = { "TLTTP", "LJTJ-", "JLJL-", "JJTJX", "LTTJB", "TLLT" };
     private String gameA = "GAME A";
     private String gameB = "GAME B";
@@ -44,27 +45,26 @@ public class TigerZoneProtocol {
     
     public String NotifyPlayer() {
     	String theOutput = null;
-    	if(currentTile > tiles.length)
+    	if(currentTile == tiles.length)
     	{
-    		theOutput = "Bye";
+    		theOutput = "GAME OVER";
     	}
     	else
     	{
     		if(switchGames)
     		{
-    			theOutput = "MAKE YOUR MOVE IN " + gameA + " WITHIN 1 SECOND: MOVE " +  currentTile + " PLACE " + tiles[currentTile];
+    			theOutput = "MAKE YOUR MOVE IN " + gameA + " WITHIN 1 SECOND: MOVE " +  moveNumber + " PLACE " + tiles[currentTile];
     			switchGames = false;
     		}
     		else
     		{
-    			theOutput = "MAKE YOUR MOVE IN " + gameB + " WITHIN 1 SECOND: MOVE " +  currentTile + " PLACE " + tiles[currentTile];
+    			theOutput = "MAKE YOUR MOVE IN " + gameB + " WITHIN 1 SECOND: MOVE " +  moveNumber + " PLACE " + tiles[currentTile];
     			switchGames = true;
     		}
     	}
     	currentTile++;
+    	moveNumber++;
     	return theOutput;
     }
-
-    
-    
+   
 }
