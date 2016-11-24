@@ -6,13 +6,12 @@ public class TigerZoneProtocol {
     private static final int SENTHELLO = 2;
     private static final int SENTWELCOME = 3;
 
-    private static final int NUMJOKES = 5;
-
     private int state = WAITING;
-    private int currentJoke = 0;
+    private int currentTile = 0;
     private String[] tiles = { "TLTTP", "LJTJ-", "JLJL-", "JJTJX", "LTTJB", "TLLT" };
-
-
+    private String gameA = "GAME A";
+    private String gameB = "GAME B";
+    private boolean switchGames = true;
     public String VerifyAuthentication(String theInput) {
         String theOutput = null;
 
@@ -35,25 +34,35 @@ public class TigerZoneProtocol {
                 state = SENTSPARTA;
             }
         } 
-        else if (state == SENTWELCOME) {
-            if (theInput.equalsIgnoreCase("y")) {
-                theOutput = "Knock! Knock!";
-                if (currentJoke == (NUMJOKES - 1))
-                    currentJoke = 0;
-                else
-                    currentJoke++;
-                state = SENTSPARTA;
-            } else {
-                theOutput = "Bye.";
-                state = WAITING;
-            }
-        }
         return theOutput;
     }
     public String StartGame() {
         String theOutput = null;
         theOutput = "THE REMAINING " + tiles.length + " TILES ARE " + Arrays.toString(tiles);
         return theOutput;
+    }
+    
+    public String NotifyPlayer() {
+    	String theOutput = null;
+    	if(currentTile > tiles.length)
+    	{
+    		theOutput = "Bye";
+    	}
+    	else
+    	{
+    		if(switchGames)
+    		{
+    			theOutput = "MAKE YOUR MOVE IN " + gameA + " WITHIN 1 SECOND: MOVE " +  currentTile + " PLACE " + tiles[currentTile];
+    			switchGames = false;
+    		}
+    		else
+    		{
+    			theOutput = "MAKE YOUR MOVE IN " + gameB + " WITHIN 1 SECOND: MOVE " +  currentTile + " PLACE " + tiles[currentTile];
+    			switchGames = true;
+    		}
+    	}
+    	currentTile++;
+    	return theOutput;
     }
 
     
