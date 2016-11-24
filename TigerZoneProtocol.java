@@ -26,14 +26,14 @@ public class TigerZoneProtocol {
                 theOutput = "HELLO!";
                 state = SENTHELLO;
             } else {
-                theOutput = "Wrong password, try \"JOIN PersiaRocks!\"! ";
+                theOutput = "Wrong password, try \"PersiaRocks!\"! ";
             }
         } else if (state == SENTHELLO) {
             if (theInput.equalsIgnoreCase("I AM Red Obiwan77")) {
                 theOutput = "WELCOME Red PLEASE WAIT FOR THE NEXT CHALLENGE";
                 state = SENTWELCOME;
             } else {
-                theOutput = "Wrong User/Password - I AM Red Obiwan77";
+                theOutput = "Wrong User/Password - Red Obiwan77";
                 state = SENTSPARTA;
             }
         } 
@@ -48,7 +48,7 @@ public class TigerZoneProtocol {
     public String NotifyPlayer() {
     	String theOutput = null;
     	if(currentTile == tiles.length){
-    		theOutput = "GAME OVER";
+    		theOutput = "END OF ROUND";
     	}
     	else{
     		if(switchGames){
