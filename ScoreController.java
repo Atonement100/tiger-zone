@@ -21,11 +21,19 @@ public class ScoreController {
         this.gameTileReference = gameTileReference;
         this.localBoard = new GameBoard(boardDimensions.Row, boardDimensions.Col);
     }
+
+    ScoreController(ArrayList<Tile> gameTileReference, GameBoard board){
+        this.player1Score = 0;
+        this.player2Score = 0;
+        this.gameTileReference = gameTileReference;
+        this.localBoard = board;
+    }
     
-    
-    ArrayList<MeepleOwnerTuple> processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
-        localBoard.placeTile(confirmedTile, moveInfo.tileLocation, moveInfo.tileRotation);
-        localBoard.placeMeeple(confirmedTile, moveInfo.tileLocation, moveInfo.meepleLocation, playerConfirmed);
+    ArrayList<MeepleOwnerTuple> processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed, boolean usingLocalBoard){
+        if (usingLocalBoard) {
+            localBoard.placeTile(confirmedTile, moveInfo.tileLocation, moveInfo.tileRotation);
+            localBoard.placeMeeple(confirmedTile, moveInfo.tileLocation, moveInfo.meepleLocation, playerConfirmed);
+        }
         
         ArrayList<MeepleOwnerTuple> meeplesToReturn = new ArrayList<>();
         

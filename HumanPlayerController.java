@@ -2,6 +2,11 @@ import java.util.*;
 
 public class HumanPlayerController extends PlayerController {
 
+    HumanPlayerController(GameBoard board){
+        this.localMeeples = new Meeple[7];
+        this.localGameBoard = board;
+    }
+
     @Override
     MoveInformation processPlayerMove(Tile currentTile){
         return getPlayerMove(currentTile);

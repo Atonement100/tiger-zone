@@ -1,5 +1,10 @@
 public class ComputerPlayerController extends PlayerController {
 
+    ComputerPlayerController(GameBoard board){
+        this.localMeeples = new Meeple[7];
+        this.localGameBoard = board;
+    }
+
     @Override
     MoveInformation processPlayerMove(Tile currentTile){
         return getPlayerMove(currentTile);

@@ -7,6 +7,11 @@ public class PlayerController {
         this.localGameBoard = new GameBoard(77,77);
     }
 
+    PlayerController(GameBoard board){
+        this.localMeeples = new Meeple[7];
+        this.localGameBoard = board;
+    }
+
     void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
         //need to locally update meeple
         localGameBoard.placeTile(confirmedTile, moveInfo.tileLocation, moveInfo.tileRotation);
