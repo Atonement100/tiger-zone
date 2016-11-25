@@ -41,11 +41,45 @@ public class GameBoard {
         
         updateMeepleInfoForNewTile(targetLocation);
     }
+
+    void placeTemporaryTile(Tile tileToPlace, Location targetLocation, int rotations){
+        tileToPlace.rotateClockwise(rotations);
+        board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
+
+        for(int direction = 0; direction < 4; direction++){
+            Tile[] neighborTiles = getNeighboringTiles(targetLocation);
+
+            if(neighborTiles[direction] == null) continue;			//if there is no tile, no check is necessary, continue
+
+            for (int nodeIndex = 0; nodeIndex < tileToPlace.edges[direction].nodes.length; nodeIndex++){
+                tileToPlace.edges[direction].nodes[nodeIndex].neighbors.add(neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex]);
+            }
+        }
+
+        updateMeepleInfoForNewTile(targetLocation);
+    }
+
+    void removeTemporaryTile(Location targetLocation){
+        Tile tileToRemove = board[targetLocation.Row][targetLocation.Col];
+
+        for(int direction = 0; direction < 4; direction++){
+            Tile[] neighborTiles = getNeighboringTiles(targetLocation);
+
+            if(neighborTiles[direction] == null) continue;			//if there is no tile, no check is necessary, continue
+
+            for (int nodeIndex = 0; nodeIndex < tileToRemove.edges[direction].nodes.length; nodeIndex++){
+                tileToRemove.edges[direction].nodes[nodeIndex].neighbors.remove(neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex]);
+                tileToRemove.edges[direction].nodes[nodeIndex].meeplePlacedInFeature = false;
+            }
+        }
+
+        board[targetLocation.Row][targetLocation.Col] = null;
+        tileToRemove.rotateAntiClockwise(tileToRemove.rotations);
+    }
     
     private void updateMeepleInfoForNewTile(Location tileLocation){
         Tile tileToUpdate = board[tileLocation.Row][tileLocation.Col];
-        
-        
+
         for (Edge edge : tileToUpdate.edges) {
             for (Node node : edge.nodes){           //For each node...
                 if (node.meeplePlacedInFeature) continue; //If this node already knows it has a meeple, continue
@@ -116,12 +150,12 @@ public class GameBoard {
         int edge = meepleLocation / 3; //Nodes per edge
         int node = meepleLocation % 3;
         Tile tile = board[targetLocation.Row][targetLocation.Col];
-        
+
+        if (tile == null) return false;
+
         if(tile.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
             node = 1;
         }
-        
-        if (tile == null) return false;
         
         Node startingNode = tile.edges[edge].nodes[node];
         if (startingNode.meeplePlacedInFeature) return false;
@@ -186,9 +220,7 @@ public class GameBoard {
                     board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].meeple = playerMeeples[currentPlayer][meepleIndex];
                     updateMeepleInfoForNewMeeple(targetLocation, placement);    //No need to propagate changes for monastery, only do it here
                 }
-                
-                
-                
+
                 //Updates location and status of meeple
                 playerMeeples[currentPlayer][meepleIndex].location.Row = targetLocation.Row;
                 playerMeeples[currentPlayer][meepleIndex].location.Col = targetLocation.Col;
@@ -198,7 +230,7 @@ public class GameBoard {
             }
         }
     }
-    
+
     boolean verifyTilePlacement(Tile tileToPlace, Location targetLocation, int rotations){
         tileToPlace.rotateClockwise(rotations);
         
@@ -236,7 +268,10 @@ public class GameBoard {
                 noNeighboringTile = false;
             }
         }
-        if (noNeighboringTile) return false;
+        if (noNeighboringTile) {
+            tileToPlace.rotateClockwise(-rotations);
+            return false;
+        }
         
         //check compatibility with neighboring tiles
         for(int direction = 0; direction < 4; direction++){
