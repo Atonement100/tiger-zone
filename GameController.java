@@ -122,7 +122,7 @@ public class GameController {
             playerMoveInfo = players[currentPlayer].processPlayerMove(tileForPlayer);
         } while (!board.verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation));
         
-        System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation);
+        System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation + " Meeple Location: " + playerMoveInfo.meepleLocation);
         
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
         
@@ -131,6 +131,7 @@ public class GameController {
         }
         else{
             System.out.println("Bad meeple placement, discarding");
+            System.out.println("Bad Meeple: " + playerMoveInfo.meepleLocation);
             playerMoveInfo.meepleLocation = -1;
             //Just throw away bad meeple placements so score ctrlr and players don't get false signal
         }
