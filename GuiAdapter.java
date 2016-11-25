@@ -1,5 +1,3 @@
-package Gui;
-
 /**
  * Created by Darshil on 11/21/2016.
  *
@@ -209,5 +207,9 @@ public class GuiAdapter {
     public void addTile(int row, int col, int tileRotation, String s) {
         mapTileid(s);
         Gui.placeComputertile(row,col,tileRotation,GuiID);
+    }
+
+    public void proccessConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
+        addTile(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tileRotation, new Character(confirmedTile.tileType).toString());
     }
 }

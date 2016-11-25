@@ -1,6 +1,3 @@
-
-import Gui.LabelDemo;
-
 import javax.swing.*;
 import java.util.*;
 

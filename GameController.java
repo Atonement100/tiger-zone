@@ -1,5 +1,3 @@
-import Gui.GuiAdapter;
-
 import java.util.*;
 import java.util.ArrayList;
 public class GameController {
@@ -113,7 +111,7 @@ public class GameController {
     
     private void handleMove(Tile tileForPlayer){
         System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
-        Tile.printTile(tileForPlayer);
+        //Tile.printTile(tileForPlayer); Unneeded for GUI mode.
         
         
         MoveInformation playerMoveInfo;
@@ -145,7 +143,7 @@ public class GameController {
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
         }
-        
+        guiAdapter.proccessConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
         
         for (Meeple info : meeplesToReturn){
             board.freeMeeple(info.owner, info.ID);

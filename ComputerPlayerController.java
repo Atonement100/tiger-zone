@@ -1,4 +1,3 @@
-import Gui.GuiAdapter;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -193,7 +192,7 @@ class ComputerPlayerController extends PlayerController {
         possibleTargets.remove(moveLocation);
 
         for (Location loc : possibleTargets){
-            System.out.println("target: " + loc.Row + ", " + loc.Col);
+            //System.out.println("target: " + loc.Row + ", " + loc.Col); Commented out to free console space.
         }
     }
 

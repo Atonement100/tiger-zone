@@ -1,5 +1,3 @@
-import Gui.GuiAdapter;
-
 import java.util.*;
 
 public class HumanPlayerController extends PlayerController {
