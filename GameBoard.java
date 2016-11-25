@@ -43,6 +43,7 @@ public class GameBoard {
     }
 
     void placeTemporaryTile(Tile tileToPlace, Location targetLocation, int rotations){
+        //This previously differed from the original placetile function, leave in place in the event things need to be different again
         tileToPlace.rotateClockwise(rotations);
         board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
 
@@ -53,6 +54,7 @@ public class GameBoard {
 
             for (int nodeIndex = 0; nodeIndex < tileToPlace.edges[direction].nodes.length; nodeIndex++){
                 tileToPlace.edges[direction].nodes[nodeIndex].neighbors.add(neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex]);
+                neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex].neighbors.add(tileToPlace.edges[direction].nodes[nodeIndex]);
             }
         }
 
@@ -69,6 +71,8 @@ public class GameBoard {
 
             for (int nodeIndex = 0; nodeIndex < tileToRemove.edges[direction].nodes.length; nodeIndex++){
                 tileToRemove.edges[direction].nodes[nodeIndex].neighbors.remove(neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex]);
+                neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex].neighbors.remove(tileToRemove.edges[direction].nodes[nodeIndex]);
+
                 tileToRemove.edges[direction].nodes[nodeIndex].meeplePlacedInFeature = false;
             }
         }
