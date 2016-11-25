@@ -252,11 +252,29 @@ public class GameBoard {
         return isCompatible;
     }
     
+    void dummyFunc(int stat){
+    	switch (stat){
+    	case 0: System.out.println("Placement value is not within -1 to 12");
+    		throw new IllegalStateException();
+    	case 1: System.out.println("Meeple already placed in this feature, cannot place new meeple");
+    		throw new IllegalStateException();
+    	case 2: System.out.println("You are out of meeples to place, cannot place a meeple");
+    		throw new IllegalStateException();
+    	}
+    }
+    
     //checks if a meeple can be placed at the spot indicated
     boolean verifyMeeplePlacement(Tile tileToPlace, Location tilePlacement, int meeplePlacement, int currentPlayer){
         if (meeplePlacement < 0 || meeplePlacement > 11){
-            return (meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None); //It can be larger than 11 only if it is 12, which must also be a monastery placement
-            //Monasteries are also not connected to anything, so they don't need to be verified for adjacency.
+        	if(meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None){
+        		return true; //It can be larger than 11 only if it is 12, which must also be a monastery placement
+        		//Monasteries are also not connected to anything, so they don't need to be verified for adjacency.
+        	}
+        	if(meeplePlacement == -1){
+        		System.out.println("Placement = -1 meaning don't want to place a meeple");
+        		return false;
+        	}
+        	dummyFunc(0);
         }
         
         //initializes necessary values
@@ -264,15 +282,15 @@ public class GameBoard {
         int node = meeplePlacement % 3;
         
         if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
+        	System.out.println("Meeple placed on inner wall, changed node to middle node");
             node = 1;
         }
         
         //checks if there is already a meeple on the feature that the player is trying to place a meeple on
         if(tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature){
+        	dummyFunc(1);
             return false;
         }
-        
-        isValidMeeplePlacementOnNode(tilePlacement, meeplePlacement);
         
         //checks if the player has any meeples to place
         for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
@@ -281,6 +299,7 @@ public class GameBoard {
             }
         }
         
+        dummyFunc(2);
         return false;
     }
     
