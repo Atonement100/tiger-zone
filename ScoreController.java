@@ -491,6 +491,9 @@ public class ScoreController {
     public ArrayList<Node> getWallCycleNodes(Node start){
         if (start.featureID != -1) return new ArrayList<>(); //Already been scored, skip
         
+        //attempting to find a wall cycle from a non-wall node
+        if (start.featureType != FeatureTypeEnum.InnerWall && start.featureType != FeatureTypeEnum.Wall) return new ArrayList<>();
+        
         //tentative list of nodesInCycle
         ArrayList<Node> nodesInCycle = new ArrayList<Node>();
         
