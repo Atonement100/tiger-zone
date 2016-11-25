@@ -21,7 +21,7 @@ public class GameController {
         this.gameTiles = retrieveGameTiles();
         this.gameTileReference = retrieveGameTiles();
         board = new GameBoard(gameTiles.size(), gameTiles.size());
-
+        
         for (int numCreated = 0; numCreated < NUM_PLAYERS; numCreated++){
             if (numCreated < numHumanPlayers){
                 players[numCreated] = new HumanPlayerController(board);
@@ -31,14 +31,14 @@ public class GameController {
             }
         }
         
-
+        
         scoreController = new ScoreController(gameTileReference, board);
         
         Tile startingTile = prepareTiles();
         Location boardDimensions = board.getBoardDimensions();
         board.placeTile(startingTile, new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
         /*scoreController.localBoard.placeTile(new Tile(startingTile), new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
-             */
+         */
         for (PlayerController playerController : players) {
             playerController.processConfirmedMove(new Tile(startingTile), new MoveInformation(new Location(boardDimensions.Row / 2, boardDimensions.Col / 2), 0, -1), currentPlayer);
         }
@@ -57,7 +57,7 @@ public class GameController {
             currentTile = drawTile();
             handleMove(currentTile);
             board.printBoard();
-
+            
             scoreController.localBoard.printBoard();
         }
         
@@ -135,16 +135,16 @@ public class GameController {
             playerMoveInfo.meepleLocation = -1;
             //Just throw away bad meeple placements so score ctrlr and players don't get false signal
         }
-
-
-        ArrayList<MeepleOwnerTuple> meeplesToReturn = scoreController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer, false);
-
+        
+        
+        ArrayList<Meeple> meeplesToReturn = scoreController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer, false);
+        
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
         }
-
-
-        for (MeepleOwnerTuple info : meeplesToReturn){
+        
+        
+        for (Meeple info : meeplesToReturn){
             board.freeMeeple(info.owner, info.ID);
             scoreController.processFreedMeeple(info.owner, info.ID);
             for (PlayerController playerController : players){
