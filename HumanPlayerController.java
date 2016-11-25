@@ -55,7 +55,9 @@ public class HumanPlayerController extends PlayerController {
 //            inputs[index] = scanner.nextInt();
 //        }
        // System.out.print(""+guiAdapter.getX()+","+guiAdapter.getY()+","+guiAdapter.getRotation()+","+guiAdapter.getMeeple());
-        return new MoveInformation(new Location(guiAdapter.getX(),guiAdapter.getY()),guiAdapter.getRotation(),guiAdapter.getMeeple());
+        MoveInformation move = new MoveInformation(new Location(guiAdapter.getX(),guiAdapter.getY()),guiAdapter.getRotation(),guiAdapter.getMeeple());
+        System.out.println(move.toString());
+        return move;
     }
 
 

@@ -19,8 +19,8 @@ public class GuiAdapter {
             "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-", "TLTT-",
             "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD"};
 
-    public GuiAdapter() {
-        Gui = new LabelDemo();
+    public GuiAdapter(int boardSize) {
+        Gui = new LabelDemo(boardSize);
 
     }
 

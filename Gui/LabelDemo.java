@@ -15,7 +15,7 @@ import javax.swing.*;
  *
  */
 public class LabelDemo extends JFrame {
-    public final int SIZE = 21;
+    public int size = 2;
     public static Image ICON;
     private boolean done= false;
     public boolean nextmove;
@@ -30,7 +30,7 @@ public class LabelDemo extends JFrame {
             "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-", "TLJT-",
             "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-", "TLTT-",
             "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD"};
-    public TileSet[][] tiles = new TileSet[SIZE][SIZE];
+    public TileSet[][] tiles;
     public PreView preView = new PreView();
     public ImgSet[] img = new ImgSet[26];
 
@@ -48,9 +48,11 @@ public class LabelDemo extends JFrame {
     }
 
 
-    public LabelDemo() {
+    public LabelDemo(int boardSize) {
+        size = boardSize;
+        tiles = new TileSet[size][size];
         JFrame frame = new JFrame("Tiger Zone");
-        JPanel panel = new JPanel(new GridLayout(21, 21));
+        JPanel panel = new JPanel(new GridLayout(size, size));
         MouseAdapter ma = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -90,8 +92,8 @@ public class LabelDemo extends JFrame {
         }
 
                 /*Initialize all the button on the Game board and Name them according to row and col*/
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 tiles[i][j] = new TileSet();
                 tiles[i][j].setTileButtonBorder();
                 tiles[i][j].getTileButton().setBackground(Color.WHITE);
@@ -125,11 +127,12 @@ public class LabelDemo extends JFrame {
         /*******************************************************************************************/
         /*Display the Jframe for the main Game board*/
         frame.setIconImage(ICON);
-        frame.add(panel);
-        frame.setSize(1080, 1080);
-        frame.setResizable(false);
+        JScrollPane scrollPane = new JScrollPane(panel);
+        frame.add(scrollPane);
+        frame.setSize(800, 600);
+        frame.setResizable(true);
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 
     }
@@ -171,8 +174,8 @@ public class LabelDemo extends JFrame {
     /*this will get the index of the button on the screen if layout is inplemented as Dave has in documentation*/
     public String getTileIndexs(int x, int y) {
         String s = "";
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 if ((x + "," + y).equals(tiles[i][j].getTileButton().getText())) {
                     s = s + i + "," + j;
                     return s;

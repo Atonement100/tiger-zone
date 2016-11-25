@@ -7,7 +7,7 @@ public class GameController {
     static final int NUM_PLAYERS = 2;
     static final int NUM_MEEPLES = 7;
     GameBoard board;
-    protected GuiAdapter guiAdapter= new GuiAdapter();
+    protected GuiAdapter guiAdapter;
     private PlayerController[] players = new PlayerController[NUM_PLAYERS];
     //private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
     
@@ -24,7 +24,7 @@ public class GameController {
         this.gameTiles = retrieveGameTiles();
         this.gameTileReference = retrieveGameTiles();
         board = new GameBoard(gameTiles.size(), gameTiles.size());
-        
+        guiAdapter= new GuiAdapter(gameTiles.size());
         for (int numCreated = 0; numCreated < NUM_PLAYERS; numCreated++){
             if (numCreated < numHumanPlayers){
                 players[numCreated] = new HumanPlayerController(guiAdapter);
@@ -41,7 +41,7 @@ public class GameController {
         Tile startingTile = prepareTiles();
         Location boardDimensions = board.getBoardDimensions();
         board.placeTile(startingTile, new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
-        guiAdapter.placeFirstTile(boardDimensions.Row / 4,boardDimensions.Col /4 , String.format("%s", startingTile.tileType));
+        guiAdapter.placeFirstTile(boardDimensions.Row / 2,boardDimensions.Col /2 , String.format("%s", startingTile.tileType));
         /*scoreController.localBoard.placeTile(new Tile(startingTile), new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
          */
         for (PlayerController playerController : players) {
@@ -123,8 +123,13 @@ public class GameController {
         
         
         MoveInformation playerMoveInfo;
+        boolean firstAttempt = true;
         do {
+            if(!firstAttempt){
+                System.out.println("Invalid move.");
+            }
             playerMoveInfo = players[currentPlayer].processPlayerMove(tileForPlayer);
+            firstAttempt = false;
         } while (!board.verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation));
         
         System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation + " Meeple Location: " + playerMoveInfo.meepleLocation);

@@ -1,5 +1,6 @@
 package Gui;
 
+import java.awt.Dimension;
 import javax.swing.*;
 
 /**
@@ -68,7 +69,7 @@ public class TileSet {
     }
 
     public TileSet() {
-
+        tileButton.setPreferredSize(new Dimension(50, 50));
     }
 
 }
