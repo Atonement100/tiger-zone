@@ -22,6 +22,5 @@ public class TigerZone {
 		GameController game = new GameController(numPlayers);
 
 		game.gameLoop();
-		game.board.printBoard();
 	}
 }

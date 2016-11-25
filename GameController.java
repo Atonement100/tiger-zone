@@ -60,10 +60,7 @@ public class GameController {
         
         while(!gameTiles.isEmpty()){
             currentTile = drawTile();
-            handleMove(currentTile);
-            board.printBoard();
-            
-            scoreController.localBoard.printBoard();
+            handleMove(currentTile);           
         }
         
         endOfGameScoring();
