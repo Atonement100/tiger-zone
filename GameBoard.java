@@ -299,7 +299,7 @@ public class GameBoard {
     }
     
     //checks if a meeple can be placed at the spot indicated
-    boolean verifyMeeplePlacement(Tile tileToPlace, Location tilePlacement, int meeplePlacement, int currentPlayer){
+    boolean verifyMeeplePlacement(Tile tileToPlace, int meeplePlacement, int currentPlayer){
         if (meeplePlacement < 0 || meeplePlacement > 11){
         	if(meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None){
         		return true; //It can be larger than 11 only if it is 12, which must also be a monastery placement
@@ -335,6 +335,42 @@ public class GameBoard {
         }
         
         dummyFunc(2);
+        return false;
+    }
+
+    //checks if a meeple can be placed at the spot indicated
+    boolean aiVerifyMeeplePlacement(Tile tileToPlace, int meeplePlacement, int currentPlayer){
+        if (meeplePlacement < 0 || meeplePlacement > 11){
+            if(meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None){
+                return true; //It can be larger than 11 only if it is 12, which must also be a monastery placement
+                //Monasteries are also not connected to anything, so they don't need to be verified for adjacency.
+            }
+            if(meeplePlacement == -1){
+                System.out.println("Placement = -1 meaning don't want to place a meeple");
+                return false;
+            }
+        }
+
+        //initializes necessary values
+        int edge = meeplePlacement / 3;
+        int node = meeplePlacement % 3;
+
+        if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
+            System.out.println("Meeple placed on inner wall, changed node to middle node");
+            node = 1;
+        }
+
+        //checks if there is already a meeple on the feature that the player is trying to place a meeple on
+        if(tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature){
+            return false;
+        }
+
+        //checks if the player has any meeples to place
+        for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
+            if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
+                return true;
+            }
+        }
         return false;
     }
     

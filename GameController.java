@@ -57,8 +57,6 @@ public class GameController {
             currentTile = drawTile();
             handleMove(currentTile);
             board.printBoard();
-            
-            scoreController.localBoard.printBoard();
         }
         
         endOfGameScoring();
@@ -77,7 +75,7 @@ public class GameController {
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
-                            if (node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+                            if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
                                 scoreController.scoreIncompleteCity(node);
                                 break;
                             }
@@ -89,7 +87,7 @@ public class GameController {
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
-                            if (node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+                            if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
                                 scoreController.scoreField(node);
                                 break;
                             }
@@ -101,7 +99,7 @@ public class GameController {
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
-                            if (node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+                            if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
                                 scoreController.scoreField(node);
                                 break;
                             }
@@ -126,7 +124,7 @@ public class GameController {
         
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
         
-        if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer) ) {
+        if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.meepleLocation, currentPlayer) ) {
             board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
         }
         else{
