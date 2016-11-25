@@ -8,6 +8,11 @@ public class HumanPlayerController extends PlayerController {
         this.guiAdapter = g;
     }
 
+    HumanPlayerController(GameBoard board){
+        this.localMeeples = new Meeple[7];
+        this.localGameBoard = board;
+    }
+
     @Override
     MoveInformation processPlayerMove(Tile currentTile){
         return getPlayerMove(currentTile);
@@ -17,7 +22,7 @@ public class HumanPlayerController extends PlayerController {
     void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed) {
         super.processConfirmedMove(confirmedTile, moveInfo, playerConfirmed);
 
-        System.out.println("Human player has confirmed the recent move Row: " + moveInfo.tileLocation.Row + " Col: " + moveInfo.tileLocation.Col + " Rotation: " + moveInfo.tileRotation);
+        //System.out.println("Human player has confirmed the recent move Row: " + moveInfo.tileLocation.Row + " Col: " + moveInfo.tileLocation.Col + " Rotation: " + moveInfo.tileRotation);
     }
 
     @Override

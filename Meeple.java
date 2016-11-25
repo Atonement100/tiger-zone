@@ -36,7 +36,7 @@ public class Meeple {
 	}
 	
 	Location getLocation() { return location; }
-	
+
 	MeepleStatusEnum getStatus(){
 		return status;
 	}
@@ -44,15 +44,18 @@ public class Meeple {
 	public MeepleStatusEnum convertIntToMeepleStatus (int status){
 		switch (status) {
 			case 0:
-				return MeepleStatusEnum.onNone;
-			case 1:
 				return MeepleStatusEnum.onField;
-			case 2:
-				return MeepleStatusEnum.onCity;
-			case 3:
-				return MeepleStatusEnum.onRoad;
+			case 1:
 			case 4:
+				return MeepleStatusEnum.onRoad;
+			case 2:
+			case 3:
+			case 5:
+				return MeepleStatusEnum.onCity;
+			case 6:
 				return MeepleStatusEnum.onMonastery;
+			case 9:
+				return MeepleStatusEnum.onNone;
 			default:
 				throw new IllegalStateException();
 

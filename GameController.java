@@ -21,27 +21,32 @@ public class GameController {
     }
     
     public GameController(int numHumanPlayers){
+        this.gameTiles = retrieveGameTiles();
+        this.gameTileReference = retrieveGameTiles();
+        board = new GameBoard(gameTiles.size(), gameTiles.size());
+        
         for (int numCreated = 0; numCreated < NUM_PLAYERS; numCreated++){
             if (numCreated < numHumanPlayers){
                 players[numCreated] = new HumanPlayerController(guiAdapter);
             }
             else {
-                players[numCreated] = new ComputerPlayerController(guiAdapter);
+                players[numCreated] = new ComputerPlayerController(guiAdapter, board);
             }
         }
         
-        this.gameTiles = retrieveGameTiles();
-        this.gameTileReference = retrieveGameTiles();
         
-        
-       board = new GameBoard(gameTiles.size(), gameTiles.size());
-       // board = new GameBoard(21,21);
-        scoreController = new ScoreController(gameTileReference, board.getBoardDimensions());
+        board = new GameBoard(gameTiles.size(), gameTiles.size());
+        scoreController = new ScoreController(gameTileReference, board);
         
         Tile startingTile = prepareTiles();
         Location boardDimensions = board.getBoardDimensions();
         board.placeTile(startingTile, new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
         guiAdapter.placeFirstTile(boardDimensions.Row / 4,boardDimensions.Col /4 , String.format("%s", startingTile.tileType));
+        /*scoreController.localBoard.placeTile(new Tile(startingTile), new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
+         */
+        for (PlayerController playerController : players) {
+            playerController.processConfirmedMove(new Tile(startingTile), new MoveInformation(new Location(boardDimensions.Row / 2, boardDimensions.Col / 2), 0, -1), currentPlayer);
+        }
     }
     
     private Tile drawTile(){
@@ -57,13 +62,15 @@ public class GameController {
             currentTile = drawTile();
             handleMove(currentTile);
             board.printBoard();
+            
+            scoreController.localBoard.printBoard();
         }
-
+        
         endOfGameScoring();
         
         return 0;
     }
-
+    
     private void endOfGameScoring(){
         for(int playerIndex = 0; playerIndex < board.playerMeeples.length; playerIndex++){
             for (int meepleIndex = 0; meepleIndex < board.playerMeeples[playerIndex].length; meepleIndex++){
@@ -112,39 +119,44 @@ public class GameController {
     
     private void handleMove(Tile tileForPlayer){
         System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
+        Tile.printTile(tileForPlayer);
+        
         
         MoveInformation playerMoveInfo;
         do {
             playerMoveInfo = players[currentPlayer].processPlayerMove(tileForPlayer);
         } while (!board.verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation));
         
-        System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation);
+        System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation + " Meeple Location: " + playerMoveInfo.meepleLocation);
         
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
-
+        
         if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer) ) {
             board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
         }
         else{
             System.out.println("Bad meeple placement, discarding");
+            System.out.println("Bad Meeple: " + playerMoveInfo.meepleLocation);
             playerMoveInfo.meepleLocation = -1;
             //Just throw away bad meeple placements so score ctrlr and players don't get false signal
         }
-
-        ArrayList<MeepleOwnerTuple> meeplesToReturn = scoreController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
-
+        
+        
+        ArrayList<Meeple> meeplesToReturn = scoreController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer, false);
+        
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
         }
-
-        for (MeepleOwnerTuple info : meeplesToReturn){
+        
+        
+        for (Meeple info : meeplesToReturn){
             board.freeMeeple(info.owner, info.ID);
             scoreController.processFreedMeeple(info.owner, info.ID);
             for (PlayerController playerController : players){
                 playerController.processFreedMeeple(info.owner, info.ID);
             }
         }
-
+        
         switchPlayerControl();
         return;
     }
