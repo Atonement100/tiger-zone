@@ -66,11 +66,12 @@ public class GameBoard {
                     Node currNode = nodeQueue.removeFirst();
                     visitedQueue.add(currNode);
                     for (Node neighbor : currNode.neighbors) {
-                        if (neighbor.meeplePlacedInFeature){
-                            shouldMarkVisited = true;
-                        }
-                        else if (!visitedQueue.contains(neighbor)){     //Only add to nodequeue if we haven't seen it before
-                            nodeQueue.add(neighbor);
+                        if (currNode.featureType.isSameFeature(neighbor.featureType)) {
+                            if (neighbor.meeplePlacedInFeature) {
+                                shouldMarkVisited = true;
+                            } else if (!visitedQueue.contains(neighbor)) {     //Only add to nodequeue if we haven't seen it before
+                                nodeQueue.add(neighbor);
+                            }
                         }
                     }
                 }
@@ -100,7 +101,7 @@ public class GameBoard {
             Node currNode = nodeQueue.removeFirst();
             visitedQueue.add(currNode);
             for (Node neighbor : currNode.neighbors){
-                if (!neighbor.meeplePlacedInFeature && !visitedQueue.contains(neighbor)){
+                if (currNode.featureType.isSameFeature(neighbor.featureType) && !neighbor.meeplePlacedInFeature && !visitedQueue.contains(neighbor)){
                     neighbor.meeplePlacedInFeature = true;
                     nodeQueue.add(neighbor);
                 }
@@ -133,12 +134,13 @@ public class GameBoard {
             Node currNode = nodeQueue.removeFirst();
             visitedQueue.add(currNode);
             for (Node neighbor : currNode.neighbors){
-                if (neighbor.meeplePlacedInFeature){
-                    System.out.println("Potential error from isValidMeeplePlacementOnNode - starting node should be marked true when the tile is placed");
-                    return false;
-                }
-                else if (!visitedQueue.contains(neighbor)){
-                    nodeQueue.add(neighbor);
+                if (neighbor.featureType.isSameFeature(currNode.featureType)) {
+                    if (neighbor.meeplePlacedInFeature) {
+                        System.out.println("Potential error from isValidMeeplePlacementOnNode - starting node should be marked true when the tile is placed");
+                        return false;
+                    } else if (!visitedQueue.contains(neighbor)) {
+                        nodeQueue.add(neighbor);
+                    }
                 }
             }
         }
@@ -294,6 +296,22 @@ public class GameBoard {
         }
         
         return neighborTiles;
+    }
+
+    Location[] getEmptyNeighboringLocations(Location tileLocation){
+        int row = tileLocation.Row;
+        int col = tileLocation.Col;
+        Location[] neighborLocations = new Location[4];
+
+        for(int direction = 0; direction < 4; direction++){
+            //if within bounds and null
+            if(row + dx[direction] >= 0 && row + dx[direction] < board.length && col + dy[direction] >= 0 && col + dy[direction] < board[0].length &&
+                    board[row + dx[direction]][col + dy[direction]] == null) {
+                neighborLocations[direction] = new Location(row + dx[direction], col + dy[direction]);
+            }
+        }
+
+        return neighborLocations;
     }
     
     void printBoard(){
