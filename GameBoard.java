@@ -315,8 +315,9 @@ public class GameBoard {
     }
     
     void printBoard(){
-        for (int row = 33; row < 43; row++) {
-            for (int col = 33; col < 43; col++) {
+        int lower = 23, upper = 53;
+        for (int row = lower; row < upper; row++) {
+            for (int col = lower; col < upper; col++) {
                 
                 if (board[row][col] == null) {
                     System.out.print("     ");
@@ -329,7 +330,7 @@ public class GameBoard {
                 }
             }
             System.out.println("");
-            for (int col = 33; col < 43; col++) {
+            for (int col = lower; col < upper; col++) {
                 if (board[row][col] == null) {
                     System.out.print("     ");
                 } else {
@@ -337,7 +338,7 @@ public class GameBoard {
                 }
             }
             System.out.println("");
-            for (int col = 33; col < 43; col++) {
+            for (int col = lower; col < upper; col++) {
                 if (board[row][col] == null) {
                     System.out.print("     ");
                 } else {
@@ -345,7 +346,7 @@ public class GameBoard {
                 }
             }
             System.out.println("");
-            for (int col = 33; col < 43; col++) {
+            for (int col = lower; col < upper; col++) {
                 if (board[row][col] == null) {
                     System.out.print("     ");
                 } else {
@@ -353,7 +354,7 @@ public class GameBoard {
                 }
             }
             System.out.println();
-            for (int col = 33; col < 43; col++) {
+            for (int col = lower; col < upper; col++) {
                 if (board[row][col] == null) {
                     System.out.print("     ");
                 } else {
