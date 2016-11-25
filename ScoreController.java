@@ -75,7 +75,7 @@ public class ScoreController {
             }
         }
         
-        if(fullySurrounded && confirmedTile.hasMonastery){
+        if(fullySurrounded && confirmedTile.hasMonastery && confirmedTile.middle.meeple != null){
             scoreCompleteDen(confirmedTile.middle);
             meeplesToReturn.add(new MeepleOwnerTuple(confirmedTile.middle.meeple.owner, confirmedTile.middle.meeple.ID));
         }
@@ -93,7 +93,7 @@ public class ScoreController {
             }
             
             //kinda redundant to check if these have monastery here since I am adding to the arrayList only tiles with monasteries
-            if(fullySurrounded && localBoard.board[row][col].hasMonastery){
+            if(fullySurrounded && localBoard.board[row][col].hasMonastery && localBoard.board[row][col].middle.meeple != null){
                 scoreCompleteDen(localBoard.board[row][col].middle);
                 meeplesToReturn.add(new MeepleOwnerTuple(confirmedTile.middle.meeple.owner, confirmedTile.middle.meeple.ID));
             }
@@ -236,8 +236,12 @@ public class ScoreController {
         
         Queue<Node> bfsQueue = new LinkedList<Node>();
         bfsQueue.add(start);
-        if(start.meeplePlacedInFeature){
-            uniqueTiles.add(start.owningTileId);
+
+        uniqueTiles.add(start.owningTileId);
+        if(start.meeple != null){
+            meeplesReturned[start.meeple.owner]++;
+            meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
+            /*
             if(start.meeple.owner == 0){
                 meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID)); //Not sure if it's safe to put these outside of meeple owner because start.meeplePlacedInFeature
                 meeplesReturned[0]++;                                                           //will be true even if no meeple is on that node
@@ -246,6 +250,7 @@ public class ScoreController {
                 meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
                 meeplesReturned[1]++;
             }
+            */
         }
         
         while(!bfsQueue.isEmpty()){
@@ -262,7 +267,12 @@ public class ScoreController {
                         if(this.gameTileReference.get(buffer.owningTileId).animalType != 0){
                             uniqueAnimals.add(this.gameTileReference.get(buffer.owningTileId).animalType);
                         }
-                        
+
+                        if(buffer.meeple != null){
+                            meeplesReturned[start.meeple.owner]++;
+                            meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
+                        }
+                        /*
                         if(buffer.meeple.owner == 0){
                             meeplesReturned[0]++;
                             meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
@@ -271,6 +281,7 @@ public class ScoreController {
                             meeplesReturned[1]++;
                             meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
                         }
+                        */
                         bfsQueue.add(buffer.neighbors.get(i));
                     }
                     
@@ -364,16 +375,11 @@ public class ScoreController {
         
         Queue<Node> bfsQueue = new LinkedList<Node>();
         bfsQueue.add(start);
-        if(start.meeplePlacedInFeature){
-            uniqueTiles.add(start.owningTileId);
-            if(start.meeple.owner == 0){
-                meeplesReturned[0]++;
-                meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
-            }
-            else if(start.meeple.owner == 1){
-                meeplesReturned[1]++;
-                meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
-            }
+
+        uniqueTiles.add(start.owningTileId);
+        if(start.meeple != null){
+            meeplesReturned[start.meeple.owner]++;
+            meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
         }
         
         while(!bfsQueue.isEmpty()){
@@ -390,14 +396,10 @@ public class ScoreController {
                         if(this.gameTileReference.get(buffer.owningTileId).animalType != 0){
                             uniqueAnimals.add(this.gameTileReference.get(buffer.owningTileId).animalType);
                         }
-                        
-                        if(buffer.meeple.owner == 0){
-                            meeplesReturned[0]++;
-                            meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
-                        }
-                        else if(buffer.meeple.owner == 1){
-                            meeplesReturned[1]++;
-                            meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
+
+                        if(buffer.meeple != null){
+                            meeplesReturned[start.meeple.owner]++;
+                            meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
                         }
                         bfsQueue.add(buffer.neighbors.get(i));
                     }
@@ -435,18 +437,13 @@ public class ScoreController {
         
         Queue<Node> bfsQueue = new LinkedList<Node>();
         bfsQueue.add(start);
-        if(start.meeplePlacedInFeature){
-            uniqueTiles.add(start.owningTileId);
-            if(start.meeple.owner == 0){
-                meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
-                meeplesReturned[0]++;
-            }
-            else if(start.meeple.owner == 1){
-                meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
-                meeplesReturned[1]++;
-            }
+
+        uniqueTiles.add(start.owningTileId);
+        if(start.meeple != null){
+            meeplesReturned[start.meeple.owner]++;
+            meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
         }
-        
+
         while(!bfsQueue.isEmpty()){
             Node buffer = bfsQueue.poll();
             buffer.visited = true;
@@ -462,14 +459,10 @@ public class ScoreController {
                         if(this.gameTileReference.get(buffer.owningTileId).animalType != 0){
                             uniqueAnimals.add(this.gameTileReference.get(buffer.owningTileId).animalType);
                         }
-                        
-                        if(buffer.meeple.owner == 0){
-                            meeplesReturned[0]++;
-                            meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
-                        }
-                        else if(buffer.meeple.owner == 1){
-                            meeplesReturned[1]++;
-                            meeplesToReturn.add(new MeepleOwnerTuple(buffer.meeple.owner, buffer.meeple.ID));
+
+                        if(buffer.meeple != null){
+                            meeplesReturned[start.meeple.owner]++;
+                            meeplesToReturn.add(new MeepleOwnerTuple(start.meeple.owner, start.meeple.ID));
                         }
                         bfsQueue.add(buffer.neighbors.get(i));
                     }
