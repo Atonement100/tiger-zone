@@ -3,7 +3,9 @@
 public class PlayerController {
     protected Meeple[] localMeeples;
     protected GameBoard localGameBoard;
+    protected int playerID;
 
+    protected static int defaultID = 0;
     PlayerController(){
         this.localMeeples = new Meeple[7];
         this.localGameBoard = new GameBoard(77,77);
@@ -12,6 +14,13 @@ public class PlayerController {
     PlayerController(GameBoard board){
         this.localMeeples = new Meeple[7];
         this.localGameBoard = board;
+        this.playerID = defaultID++;
+    }
+
+    PlayerController(GameBoard board, int playerID){
+        this.localMeeples = new Meeple[7];
+        this.localGameBoard = board;
+        this.playerID = playerID;
     }
 
     void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){

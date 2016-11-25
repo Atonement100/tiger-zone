@@ -33,9 +33,6 @@ public class GameController {
                 players[numCreated] = new ComputerPlayerController(guiAdapter, board);
             }
         }
-        
-        
-        board = new GameBoard(gameTiles.size(), gameTiles.size());
         scoreController = new ScoreController(gameTileReference, board);
         
         Tile startingTile = prepareTiles();
@@ -79,7 +76,7 @@ public class GameController {
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
-                            if (node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+                            if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
                                 scoreController.scoreIncompleteCity(node);
                                 break;
                             }
@@ -91,7 +88,7 @@ public class GameController {
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
-                            if (node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+                            if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
                                 scoreController.scoreField(node);
                                 break;
                             }
@@ -103,7 +100,7 @@ public class GameController {
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
-                            if (node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+                            if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
                                 scoreController.scoreField(node);
                                 break;
                             }
@@ -132,8 +129,7 @@ public class GameController {
         System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation + " Meeple Location: " + playerMoveInfo.meepleLocation);
         
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
-        
-        if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer) ) {
+        if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.meepleLocation, currentPlayer) ) {
             board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
         }
         else{
