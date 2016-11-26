@@ -7,6 +7,7 @@ public class NetworkAdapter{
 	private ArrayList<Tile> shuffledTiles = new ArrayList<Tile>();
 	private ArrayList<Tile> staticTiles = new ArrayList<Tile>();
 	private String pid; //Our playerID
+	private String oid; // Opponent playerID
 	/* Initialize AI's with game ID 
 	Don't know if hard coding gameID is a good idea or not */
 	//AI ai1 = new AI("A");
@@ -20,7 +21,7 @@ public class NetworkAdapter{
 	}
 
 	//Parses the string and decides which method to call
-	public void parseMessage(String message){
+	public void parseMatchProtocol(String message){
 		String[] tokens = message.split(" ");
 		String tileID, gid, x, y, orientation;
 		switch(tokens[0]){
@@ -32,41 +33,49 @@ public class NetworkAdapter{
 				orientation = tokens[7];
 				//Place on both AI boards
 				break;
+			case "YOUR": // set opponent player id
+				oid = tokens[4];
+				break;
 			case "THE": //Create shuffled array of tiles
 				initializeShuffledTiles(Integer.parseInt(tokens[2]), tokens);
 				break;
-			case "MAKE": //Have AI for game gameID make move with this tile(don't actually place on AI's board yet, GAME does this)
-				tileID = convertTileToID(tokens[12]);
-				Tile nextTile = convertFromTileID(tileID);
-				gid = tokens[5];
-				//make move with specific AI based on gid
-				break;
-			case "GAME": //Read in move that was legally made for both players & place tile on board
-				gid = tokens[1];
-				String playerID = tokens[5]; //player that made the move
-				if (tokens[6].equals("PLACED")){
-					Tile tilePlaced = convertFromTileID(convertTileToID(tokens[7]));
-					x = tokens[9];
-					y = tokens[10];
-					orientation = tokens[11];
-					String piece = "";
-					String zone = "";
-					if(!tokens[12].equals("NONE")){
-						piece = tokens[12];
-						zone = tokens[13];
-					}
-				}
-				else{
-					//Game was forfeited from an illegal move
-					//End AI for this match
-				}
-				break;
-			case "END": //Round: Wait for next match, Challenges: wait for next challenge
-						//Empty shuffledTiles array
-				break;
 		}
 	}
-
+	public void parseMakeMove(String message){
+		String[] tokens = message.split(" ");
+		String tileID, gid;
+		tileID = convertTileToID(tokens[12]);
+		Tile nextTile = convertFromTileID(tileID);
+		gid = tokens[5];
+	}
+	public void parseUpdateGameBoard(String message){
+		String[] tokens = message.split(" ");
+		String tileID, gid, x, y, orientation;
+		//Read in move that was legally made for both players & place tile on board
+		gid = tokens[1];
+		String playerID = tokens[5]; //player that made the move
+		if (tokens[6].equals("PLACED")){
+			Tile tilePlaced = convertFromTileID(convertTileToID(tokens[7]));
+			x = tokens[9];
+			y = tokens[10];
+			orientation = tokens[11];
+			String piece = "";
+			String zone = "";
+			if(!tokens[12].equals("NONE")){
+			piece = tokens[12];
+			zone = tokens[13];
+			}
+		}
+		else{
+		//Game was forfeited from an illegal move
+		//End AI for this match
+		}
+	}
+	
+	public void endGame(){
+		//Round: Wait for next match, Challenges: wait for next challenge
+		//Empty shuffledTiles array
+	}
 
 	//Creates message to be sent through the network for the tournament password
 	public String sendJoinPassword(){
