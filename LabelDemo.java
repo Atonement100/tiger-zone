@@ -212,7 +212,7 @@ public class LabelDemo extends JFrame {
     }
 
     public ImgSet findImg(String tileId) {
-        for (int i = 0; i < 26; i++) {
+        for (int i = 0; i < 27; i++) {
             if (img[i].getImgID().equals(tileId)) {
                 return img[i];
             }
@@ -247,14 +247,19 @@ public class LabelDemo extends JFrame {
         this.rotation = rotation;
     }
     public void placeComputertile(int row, int col, int tileRotation, String guiID) {
+        System.out.println("Placing tile " + guiID);
         if (rotation==0){
+            System.out.println("Getting tile with rotation 0");
             tiles[row][col].setTileIcon(findImg(guiID).getImageIcon());
         }else if (rotation==1){
+            System.out.println("Getting tile with rotation 1");
             tiles[row][col].setTileIcon(findImg(guiID).getImageIcon_1());
 
         }else if (rotation==2){
+            System.out.println("Getting tile with rotation 2");
             tiles[row][col].setTileIcon(findImg(guiID).getImageIcon_2());
         }else if (rotation==3){
+            System.out.println("Getting tile with rotation 3");
             tiles[row][col].setTileIcon(findImg(guiID).getImageIcon_3());
         }
 
