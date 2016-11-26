@@ -86,7 +86,7 @@ class ComputerPlayerController extends PlayerController {
             }
         }
 
-        if (moveInfo.meepleLocation == -1) numMeeples--;
+        if (moveInfo.meepleLocation == -1) numMeeples--;        
         return moveInfo;
 
        // System.out.println("No viable location to place :(");
