@@ -33,14 +33,20 @@ public class NetworkAdapter{
 				orientation = tokens[7];
 				//Place on both AI boards
 				break;
-			case "YOUR": // set opponent player id
+				
+			//Set opponent's player ID
+			case "YOUR": 
 				oid = tokens[4];
 				break;
+				
+				// THE REMAINING TILES ARE : - should push array of tiles into AI here
 			case "THE": //Create shuffled array of tiles
 				initializeShuffledTiles(Integer.parseInt(tokens[2]), tokens);
 				break;
 		}
 	}
+	
+	// Make Move string is parsed, should probably send AI the tile and GameID we get from parsing here
 	public void parseMakeMove(String message){
 		String[] tokens = message.split(" ");
 		String tileID, gid;
@@ -48,6 +54,7 @@ public class NetworkAdapter{
 		Tile nextTile = convertFromTileID(tileID);
 		gid = tokens[5];
 	}
+	// Update gameboard string for both games is parsed - should update gameboards for our gamemove and opponent's game move on AI's representation of board
 	public void parseUpdateGameBoard(String message){
 		String[] tokens = message.split(" ");
 		String tileID, gid, x, y, orientation;
