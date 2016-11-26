@@ -31,6 +31,7 @@ public class LabelDemo extends JFrame {
     public TileSet[][] tiles;
     public PreView preView = new PreView();
     public ImgSet[] img = new ImgSet[28];
+    private JLabel p1ScoreLabel, p2ScoreLabel;
 
     public boolean isDone() {
         return done;
@@ -98,7 +99,20 @@ public class LabelDemo extends JFrame {
                 panel.add(tiles[i][j].getTileButton());
             }
         }
-
+        // Setup score panel.
+        JPanel scorePanel = new JPanel();
+        scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.LINE_AXIS));
+        JPanel player1Panel = new JPanel();
+        p1ScoreLabel = new JLabel("Player 1 Score: ");
+        player1Panel.add(p1ScoreLabel);
+        player1Panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        JPanel player2Panel = new JPanel();
+        p2ScoreLabel = new JLabel("Player 2 Score: ");
+        player2Panel.add(p2ScoreLabel);
+        player2Panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        scorePanel.add(player1Panel);
+        scorePanel.add(player2Panel);
+        
         /*this forloop are basicly naming the button on the screen to match what server is taking*/
         /*for (int i = SIZE / 2; i < SIZE; i++) {
             for (int j = SIZE / 2; j < SIZE; j++) {
@@ -123,7 +137,8 @@ public class LabelDemo extends JFrame {
         /*Display the Jframe for the main Game board*/
         frame.setIconImage(ICON);
         JScrollPane scrollPane = new JScrollPane(panel);
-        frame.add(scrollPane);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        frame.add(scorePanel, BorderLayout.NORTH);
         frame.setSize(800, 600);
         frame.setResizable(true);
         frame.setVisible(true);
@@ -257,5 +272,12 @@ public class LabelDemo extends JFrame {
             tiles[row][col].setTileIcon(findImg(guiID).getImageIcon_3());
         }
 
+    }
+    
+    public void updateScores(int p1Score, int p2Score){
+        p1ScoreLabel.setText("Player 1 Score: " + p1Score);
+        p1ScoreLabel.repaint();
+        p2ScoreLabel.setText(("Player 2 score: " + p2Score));
+        p2ScoreLabel.repaint();
     }
 }

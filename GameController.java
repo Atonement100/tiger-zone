@@ -66,6 +66,7 @@ public class GameController {
             handleMove(currentTile);
             System.out.println("Player 1 score: " + scoreController.player1Score);
             System.out.println("Player 2 score: " + scoreController.player2Score);
+            guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
         }
         
         

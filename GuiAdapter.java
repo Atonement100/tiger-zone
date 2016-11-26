@@ -12,6 +12,7 @@ public class GuiAdapter {
     private int rotation;
     private int meeple;
     public LabelDemo Gui;
+    
     String[] Id = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJJT-", "TJTT-",
             "LLLL-", "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-",
             "TLJT-", "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-",
@@ -222,5 +223,9 @@ public class GuiAdapter {
             tileIDChar = 'b';
         }
         addTile(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tileRotation, Character.toString(tileIDChar));
+    }
+
+    public void updateScores(int player1Score, int player2Score){
+        Gui.updateScores(player1Score, player2Score);
     }
 }
