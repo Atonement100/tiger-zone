@@ -12,18 +12,17 @@ public class TigerZoneClient {
 
         String hostName = args[0];
         int portNumber = Integer.parseInt(args[1]);
+        String tournamentPassword = args[2];
+        String username = args[3];
+        String password = args[4];
 
         try (
             Socket tzSocket = new Socket(hostName, portNumber);
             PrintWriter out = new PrintWriter(tzSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(
-                new InputStreamReader(tzSocket.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(tzSocket.getInputStream()));
         ) {
-            BufferedReader stdIn =
-                new BufferedReader(new InputStreamReader(System.in));
+            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
             String fromServer;
-            String fromUser;
-            String opponentPlayerID;
             String[] serverText = null;
             int totalNumberOfRounds = 0;
             boolean isVerified = false;
@@ -33,13 +32,12 @@ public class TigerZoneClient {
             {
            		fromServer = in.readLine();
            		System.out.println("Server: " + fromServer);
-        		fromUser = stdIn.readLine();
            		if(fromServer.equals("THIS IS SPARTA!")){
-           			out.println("JOIN " + fromUser);
+           			out.println("JOIN " + tournamentPassword);
            		}
            		else if (fromServer.equals("HELLO!")){
            			isVerified = true;
-           			out.println("I AM " + fromUser);
+           			out.println("I AM " + username + " " + password);
            		}
            	}
             
@@ -99,7 +97,7 @@ public class TigerZoneClient {
    						isPlaying = false;
    					}
        			}
-				// if its only 1 challenge end, if not go back to top for 2 or more challenges
+			// if its only 1 challenge end, if not go back to top for 2 or more challenges
        			currentRound++;
        			}
         	} 
