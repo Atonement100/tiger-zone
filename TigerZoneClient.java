@@ -24,8 +24,8 @@ public class TigerZoneClient {
             String fromServer;
             String fromUser;
             String opponentPlayerID;
-            String[] parseText = null;
-            int numberOfRounds = 0;
+            String[] serverText = null;
+            int totalNumberOfRounds = 0;
             boolean isVerified = false;
             boolean isWaiting = true;
             boolean isPlaying = true;
@@ -45,53 +45,64 @@ public class TigerZoneClient {
             
             // Find out how many challenges will be played
             fromServer = in.readLine();
-       		parseText = fromServer.split(" ");
-       		String firstWord = parseText[0];
-       		if(firstWord.equalsIgnoreCase("NEW")){
-       			numberOfRounds = Integer.parseInt(parseText[6]);
+       		serverText = fromServer.split(" ");
+       		if(serverText[0].equalsIgnoreCase("NEW")){
+       			totalNumberOfRounds = Integer.parseInt(serverText[6]);
        		}
-       		// while(number of rounds < total rounds) 
+       		int currentRound = 0;
+       		while(currentRound < totalNumberOfRounds)
+       		{
+       		NetworkAdapter netAdapter = new NetworkAdapter();
             // Getting game info - Player ID - Starting Tile - Order of Tiles 
-            while(isWaiting){
-           		fromServer = in.readLine();
-           		parseText = fromServer.split(" ");
-           		firstWord = parseText[0];
-           		System.out.println("Server: " + fromServer);
-           		if(firstWord.equals("YOUR")){
-           			opponentPlayerID = parseText[4];
-           		}
-           		else if(firstWord.equals("REMAINING"))
-           		{
-           			// TODO: ADD TILES TO AI LIST
-           		}
-           		else if(firstWord.equals("MATCH"))
-           		{
-           			isWaiting = false;
-           		}
-            }
-            // Where we start Receiving notification to send move / Send our moves. 
-            while(isPlaying){
-           		fromServer = in.readLine();
-           		System.out.println("Server: " + fromServer);
-           		parseText = fromServer.split(" ");
-           		firstWord = parseText[0];
-           		if(firstWord.equals("MAKE")){
-           			// TODO: SEND MOVES FROM AI
-           			String makeMove = "GAME " + parseText[5] + " MOVE " + parseText[10] + " PLACE " + parseText[12] + " AT 0 0 0 TIGER 8";
-           			// System.out just lets us know what we're sending. 
-           			System.out.println("Client: " + makeMove);
-           			out.println(makeMove);
-           		}
-           		else if(firstWord.equals("GAME")){
-           			// TODO: Update gameboard for AI for opponents move
-           		}
-           		else if (firstWord.equals("END")){
-           			// if its only 1 challenge end, if not go back to top for 2 or more challenges
-           		}
-           		
-            }
-            
-        } 
+       			while(isWaiting){
+       				fromServer = in.readLine();
+       				serverText = fromServer.split(" ");
+       				System.out.println("Server: " + fromServer);
+       				if(serverText[0].equals("MATCH"))
+       				{
+       					isWaiting = false;
+       				}
+       				else {
+       				netAdapter.parseMatchProtocol(fromServer);
+       				}
+       			}
+       			int gamesEnded = 0;
+       			// Where we start Receiving notification to send move / Send our moves. 
+       			while(isPlaying){
+       				fromServer = in.readLine();
+       				System.out.println("Server: " + fromServer);
+       				serverText = fromServer.split(" ");
+       				
+       				if(serverText[0].equals("MAKE")){
+       					//TODO: SEND MOVES FROM AI
+       					netAdapter.parseMakeMove(fromServer);
+       					//just need to update fields
+       					String makeMove = netAdapter.sendMove(messageStatus, gid, tileID, x, y, orientation, zone);
+       					//System.out just lets us know what we're sending. 
+       					System.out.println("Client: " + makeMove);
+       					// Sends move to Server
+       					out.println(makeMove);
+       				}
+       				else if(serverText[0].equals("GAME")){
+       					 //TODO: Update gameboard for AI for opponents move
+       					netAdapter.parseUpdateGameBoard(fromServer);
+       					if(serverText[6].equalsIgnoreCase("FORFEITED:")){
+       						gamesEnded++;
+       					}
+       				}
+       				else if (serverText[0].equals("END")){
+       					// end specific game
+       					netAdapter.endGame();
+       					gamesEnded++;
+       				}
+   					if(gamesEnded == 2){
+   						isPlaying = false;
+   					}
+       			}
+				// if its only 1 challenge end, if not go back to top for 2 or more challenges
+       			currentRound++;
+       			}
+        	} 
         
         catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
