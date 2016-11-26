@@ -39,6 +39,8 @@ public class GameController {
         board.placeTile(startingTile, new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
         /*scoreController.localBoard.placeTile(new Tile(startingTile), new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
          */
+        
+        
         for (PlayerController playerController : players) {
             playerController.processConfirmedMove(new Tile(startingTile), new MoveInformation(new Location(boardDimensions.Row / 2, boardDimensions.Col / 2), 0, -1), currentPlayer);
         }
@@ -53,11 +55,19 @@ public class GameController {
     int gameLoop(){
         Tile currentTile;
         
+        
         while(!gameTiles.isEmpty()){
             currentTile = drawTile();
             handleMove(currentTile);
             board.printBoard();
+            
+            
+            System.out.println("");
+            System.out.println("Player 1 score: " + scoreController.player1Score);
+            System.out.println("Player 2 score: " + scoreController.player2Score);
+            
         }
+        
         
         endOfGameScoring();
         
@@ -135,7 +145,7 @@ public class GameController {
         }
         
         
-        ArrayList<Meeple> meeplesToReturn = scoreController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer, false);
+        ArrayList<Meeple> meeplesToReturn = scoreController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer, false);
         
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
