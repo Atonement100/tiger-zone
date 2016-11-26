@@ -23,13 +23,14 @@ public class LabelDemo extends JFrame {
     private int meeple;
     public String buttonText;
     private int x, y;
-    private String[] imgId = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJTT-", "LLLL-",
-            "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-", "TLJT-",
-            "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-", "TLTT-",
-            "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD"};
+    private String[] imgId = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJJT-", "TJTT-",
+            "LLLL-", "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-",
+            "TLJT-", "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-",
+            "TLTT-", "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD", "TLLLC"};
+            // Not sure if C is the correct animal ID for crocodile on last tile.
     public TileSet[][] tiles;
     public PreView preView = new PreView();
-    public ImgSet[] img = new ImgSet[26];
+    public ImgSet[] img = new ImgSet[28];
 
     public boolean isDone() {
         return done;
@@ -78,7 +79,7 @@ public class LabelDemo extends JFrame {
 
         }
                 /*Initialize all the img to imgset class*/
-        for (int i = 0; i < 26; i++) {
+        for (int i = 0; i < 28; i++) {
             img[i] = new ImgSet();
             img[i].setImageIcon("Gui/Tiles50x50/" + i + ".jpg");
             img[i].setImageIcon_1("Gui/Tiles50x50_1/" + i + ".jpg");
@@ -212,7 +213,7 @@ public class LabelDemo extends JFrame {
     }
 
     public ImgSet findImg(String tileId) {
-        for (int i = 0; i < 27; i++) {
+        for (int i = 0; i < 28; i++) {
             if (img[i].getImgID().equals(tileId)) {
                 return img[i];
             }

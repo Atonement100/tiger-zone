@@ -12,10 +12,11 @@ public class GuiAdapter {
     private int rotation;
     private int meeple;
     public LabelDemo Gui;
-    String[] Id = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJTT-", "LLLL-",
-            "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-", "TLJT-",
-            "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-", "TLTT-",
-            "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD"};
+    String[] Id = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJJT-", "TJTT-",
+            "LLLL-", "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-",
+            "TLJT-", "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-",
+            "TLTT-", "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD", "TLLLC"};
+            // Not sure if C is the correct animal ID for crocodile on last tile.
 
     public GuiAdapter(int boardSize) {
         Gui = new LabelDemo(boardSize);
@@ -127,7 +128,7 @@ public class GuiAdapter {
         else   if (gameTile.equals("Y")){GuiID= Id[24];}
         else   if (gameTile.equals("Z")){GuiID= Id[25];}
         else   if (gameTile.equals("a")){GuiID= Id[26];}
-        // if (gameTile=="b"){GuiID= Id[27];}
+        else if (gameTile.equals("b")){GuiID= Id[27];}
 
 
     }
@@ -187,6 +188,10 @@ public class GuiAdapter {
             setTileID("Z");
         } if (GuiID==Id[26]){
             setTileID("a");
+        } if (GuiID==Id[27]){
+            // Not sure if this should be the internal GuiAdapter version ("b") or the tile
+            // version ("U").
+            setTileID("b");  
         }
     }
     public void placeFirstTile(int x,int y,String id){
@@ -210,6 +215,12 @@ public class GuiAdapter {
     }
 
     public void proccessConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
-        addTile(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tileRotation, new Character(confirmedTile.tileType).toString());
+        // Tile TLLL- and TLLLC both have id character 'U', so a different one must be used for 
+        //      TLLLC in GUIAdapter to map the tile id character to the tile id string. 
+        char tileIDChar = confirmedTile.tileType;
+        if(tileIDChar == 'U' && confirmedTile.animalType == 4){
+            tileIDChar = 'b';
+        }
+        addTile(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tileRotation, Character.toString(tileIDChar));
     }
 }
