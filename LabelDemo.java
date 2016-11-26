@@ -130,7 +130,7 @@ public class LabelDemo extends JFrame {
         frame.setSize(800, 600);
         frame.setResizable(true);
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
     }
@@ -248,19 +248,15 @@ public class LabelDemo extends JFrame {
         this.rotation = rotation;
     }
     public void placeComputertile(int row, int col, int tileRotation, String guiID) {
-        System.out.println("Placing tile " + guiID);
+        setRotation(tileRotation);
         if (rotation==0){
-            System.out.println("Getting tile with rotation 0");
             tiles[row][col].setTileIcon(findImg(guiID).getImageIcon());
         }else if (rotation==1){
-            System.out.println("Getting tile with rotation 1");
             tiles[row][col].setTileIcon(findImg(guiID).getImageIcon_1());
 
         }else if (rotation==2){
-            System.out.println("Getting tile with rotation 2");
             tiles[row][col].setTileIcon(findImg(guiID).getImageIcon_2());
         }else if (rotation==3){
-            System.out.println("Getting tile with rotation 3");
             tiles[row][col].setTileIcon(findImg(guiID).getImageIcon_3());
         }
 

@@ -108,12 +108,12 @@ public class PreView extends JFrame {
                  if (Rotation == 1) {
                     previewButton.setIcon(img_1);
                     setReturnImg(img_1);
-                   System.out.println("ccw once");
+                   //System.out.println("ccw once");
                 }
                 else if (Rotation == 2) {
                      setReturnImg(img_2);
                     previewButton.setIcon(img_2);
-                    System.out.println("ccw two");
+                    //System.out.println("ccw two");
                 }
               else  if (Rotation == 3) {
                      setReturnImg(img_3);
@@ -123,7 +123,7 @@ public class PreView extends JFrame {
                else if (Rotation==0){
                      setReturnImg(img);
                     previewButton.setIcon(img);
-                    System.out.println("ccw 0");
+                    //System.out.println("ccw 0");
                 }
                 preview.add(previewButton);
             }
