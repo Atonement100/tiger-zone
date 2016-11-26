@@ -45,8 +45,13 @@ public class GameController {
     }
     
     private Tile drawTile(){
-        Tile nextTile = gameTiles.get(gameTiles.size()-1);
-        gameTiles.remove(gameTiles.size()-1);
+        Tile nextTile;
+        do {
+            nextTile = gameTiles.get(gameTiles.size() - 1);
+            gameTiles.remove(gameTiles.size() - 1);
+        } while (!board.isPossibleToPlaceTileSomewhere(nextTile));
+
+
         return nextTile;
     }
     
