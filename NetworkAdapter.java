@@ -77,23 +77,6 @@ public class NetworkAdapter{
 		//Empty shuffledTiles array
 	}
 
-	//Creates message to be sent through the network for the tournament password
-	public String sendJoinPassword(){
-		System.out.print("Input join password: ");
-		String password = s.next();
-		return "JOIN " + password;
-	}
-
-	//Creates message to be sent through the network for the username and password
-	public String sendUserInfo(){
-		System.out.print("Input username: ");
-		String username = s.next();
-		System.out.print("Input password: ");
-		String password = s.next();
-		pid = username;
-		return "I AM " + username + " " + password;
-	}
-
 	//Creates message to be sent through the network for a tile placement
 	//messageStatus denotes type of move
 	public String sendMove(int messageStatus, String gid, String tileID, int x, int y, int orientation, int zone){
