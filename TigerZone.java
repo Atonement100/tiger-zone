@@ -17,16 +17,7 @@ public class TigerZone {
 		Scanner scanner = new Scanner(System.in);
 		int numPlayers = scanner.nextInt();
 		GameController game = new GameController(numPlayers);
-                // Need to limit turn speed if we want to watch AI only games in the GUI.
-                long minTurnMiliseconds = 0;
-                if(numPlayers == 0){
-                    // Edit this value to change turn speed / remove speed limit.
-                    minTurnMiliseconds = 500;
-                    // Give time to find starting tile in GUI.
-                    System.out.print("Press enter to begin game.");
-                    scanner.nextLine();
-                    scanner.nextLine();
-                }                
-		game.gameLoop(minTurnMiliseconds);
+
+		game.gameLoop();
 	}
 }

@@ -50,13 +50,14 @@ public class GameController {
         return nextTile;
     }
     
-    int gameLoop(long minTurnMiliseconds){
+    int gameLoop(){
         Tile currentTile;
         
         while(!gameTiles.isEmpty()){
             currentTile = drawTile();
-            handleMove(currentTile, minTurnMiliseconds);           
-        }       
+            handleMove(currentTile);           
+        }
+        
         endOfGameScoring();
         
         return 0;
@@ -108,8 +109,7 @@ public class GameController {
         }
     }
     
-    private void handleMove(Tile tileForPlayer, long minTurnMiliseconds){
-        long startTime = System.currentTimeMillis();
+    private void handleMove(Tile tileForPlayer){
         System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
         //Tile.printTile(tileForPlayer); Unneeded for GUI mode.
         
@@ -138,16 +138,7 @@ public class GameController {
         
         
         ArrayList<Meeple> meeplesToReturn = scoreController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer, false);
-        // Limit turn speed so that AI games can be seen progressing in the GUI.
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        long remainingTime = minTurnMiliseconds - elapsedTime;
-        if(remainingTime > 0){
-            try{
-                Thread.sleep((remainingTime));
-            }catch(InterruptedException e){
-                System.out.println("Thread interrupted while sleeping, whose idea was this???");
-            }           
-        }
+        
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
         }
