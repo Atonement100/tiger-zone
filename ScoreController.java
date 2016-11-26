@@ -350,8 +350,8 @@ public class ScoreController {
                 }
             }
         }
-        
-        System.out.println("endpoints: " + endpointsReached);
+        // Commented out to free console space.
+        //System.out.println("endpoints: " + endpointsReached);
         
         return ((endpointsReached == 0 && cycleDetected) || endpointsReached == 2); //Either 2 endpoints need to have been reached or a cycle was detected.
         /* Old code used to return tile ids instead of boolean
@@ -563,7 +563,8 @@ public class ScoreController {
             Node buffer = queue.poll();
             buffer.visited = true;
             nodesInCycle.add(buffer);
-            System.out.println(buffer.featureType.toChar() + " "+ buffer.owningTileId + " " + buffer.hashCode());
+            // Commented out to free console space.
+            //System.out.println(buffer.featureType.toChar() + " "+ buffer.owningTileId + " " + buffer.hashCode());
             for(int i = 0; i < buffer.neighbors.size(); i++){
                 if(buffer.neighbors.get(i).visited && buffer.neighbors.get(i) == start)
                 {

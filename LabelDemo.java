@@ -62,10 +62,7 @@ public class LabelDemo extends JFrame {
                 String[] rowcol = buttonText.split("[,]");
                 x = Integer.parseInt(rowcol[0]);
                 y = Integer.parseInt(rowcol[1]);
-                // System.out.println("x: " + x + " y: " + y);
-                //reference.setText("+");
-                reference.setText("");
-                reference.setIcon(preView.returnImg);
+                //reference.setIcon(preView.returnImg);
                 Scanner scanner = new Scanner(System.in);
                 System.out.println("Enter a meeple Place ment for placed tile range [-1,12]");
                 setMeeple(scanner.nextInt());
