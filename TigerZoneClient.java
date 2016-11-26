@@ -4,9 +4,9 @@ import java.net.*;
 public class TigerZoneClient {
     public static void main(String[] args) throws IOException {
         
-        if (args.length != 2) {
+        if (args.length != 5) {
             System.err.println(
-                "Usage: java TigerZoneClient <host name> <port number>");
+                "Usage: java TigerZoneClient <host name> <port number> <tournament password> <username> <password>");
             System.exit(1);
         }
 
@@ -28,6 +28,7 @@ public class TigerZoneClient {
             boolean isVerified = false;
             boolean isWaiting = true;
             boolean isPlaying = true;
+            // Getting verified by server
             while (!isVerified) 
             {
            		fromServer = in.readLine();
@@ -70,34 +71,38 @@ public class TigerZoneClient {
        				fromServer = in.readLine();
        				System.out.println("Server: " + fromServer);
        				serverText = fromServer.split(" ");
+       				switch(serverText[0]){
+       					case "MAKE":
+       						//TODO: SEND MOVES FROM AI
+       						netAdapter.parseMakeMove(fromServer);
+       						//AI should probably call this method and client gets the string in another method 
+       						String makeMove = netAdapter.sendMove(messageStatus, gid, tileID, x, y, orientation, zone);
+       						//System.out just lets us know what we're sending. 
+       						System.out.println("Client: " + makeMove);
+       						// Sends move to Server
+       						out.println(makeMove);
+       						break;
        				
-       				if(serverText[0].equals("MAKE")){
-       					//TODO: SEND MOVES FROM AI
-       					netAdapter.parseMakeMove(fromServer);
-       					//just need to update fields
-       					String makeMove = netAdapter.sendMove(messageStatus, gid, tileID, x, y, orientation, zone);
-       					//System.out just lets us know what we're sending. 
-       					System.out.println("Client: " + makeMove);
-       					// Sends move to Server
-       					out.println(makeMove);
-       				}
-       				else if(serverText[0].equals("GAME")){
-       					 //TODO: Update gameboard for AI for opponents move
-       					netAdapter.parseUpdateGameBoard(fromServer);
-       					if(serverText[6].equalsIgnoreCase("FORFEITED:")){
+       					case "GAME":
+       						//TODO: Update gameboard for AI for both players move
+       						netAdapter.parseUpdateGameBoard(fromServer);
+       						if(serverText[6].equalsIgnoreCase("FORFEITED:")){
+       							gamesEnded++;
+       						}
+       						break;
+       				
+       					case "END":
+       						netAdapter.endGame();
        						gamesEnded++;
-       					}
+       						break;
        				}
-       				else if (serverText[0].equals("END")){
-       					// end specific game
-       					netAdapter.endGame();
-       					gamesEnded++;
-       				}
+       				
    					if(gamesEnded == 2){
+   						// After Endgame / forfeited has happened twice, exit loop
    						isPlaying = false;
    					}
        			}
-			// if its only 1 challenge end, if not go back to top for 2 or more challenges
+				// if its only 1 challenge end, if not go back to top for 2 or more challenges
        			currentRound++;
        			}
         	} 
