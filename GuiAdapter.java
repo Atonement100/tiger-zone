@@ -56,7 +56,7 @@ public class GuiAdapter {
     }
 
     public int getMeeple() {
-        Gui.getMeeple();
+        meeple = Gui.getMeeple();
         return meeple;
     }
 
