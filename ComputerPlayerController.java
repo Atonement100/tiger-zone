@@ -13,7 +13,7 @@ class ComputerPlayerController extends PlayerController {
         this.localGameBoard = board;
         this.numMeeples = 7;
         this.numCrocodiles = 2;
-        this.playerID = defaultID++;
+        this.playerID = defaultID++ % 2;
     }
 
     @Override
@@ -25,9 +25,12 @@ class ComputerPlayerController extends PlayerController {
     protected MoveInformation getPlayerMove(Tile currentTile){
         //AI Logic / fx calls may come from here
         // System.out.println("computer processing move");
-        MoveInformation moveInfo = new MoveInformation();
-        moveInfo.meepleLocation = -1;
 
+        MoveInformation noMeepleMoveInfo = new MoveInformation(),
+        meepleMoveInfo = new MoveInformation();
+        boolean meepleMoveFound = false;
+        noMeepleMoveInfo.meepleLocation = -1;
+        meepleMoveInfo.meepleLocation = -1;
         int maxConnections = 0;
 
         for (Location possibleLoc : possibleTargets){
@@ -40,8 +43,8 @@ class ComputerPlayerController extends PlayerController {
             if (connections <= maxConnections) continue;
             for (int possibleRot = 0; possibleRot < 4; possibleRot++){
                 if (this.localGameBoard.verifyTilePlacement(currentTile, possibleLoc, possibleRot)){
-                    moveInfo.tileLocation = possibleLoc;
-                    moveInfo.tileRotation = possibleRot;
+                    noMeepleMoveInfo.tileLocation = possibleLoc;
+                    noMeepleMoveInfo.tileRotation = possibleRot;
                     maxConnections = connections;
 
                     localGameBoard.placeTemporaryTile(currentTile, possibleLoc, possibleRot);
@@ -68,11 +71,19 @@ class ComputerPlayerController extends PlayerController {
                         for (int zoneIndex = 0; zoneIndex < zoneValues.length; zoneIndex++){
                             if (zoneValues[zoneIndex].left > highestScore){
                                 highestScore = zoneValues[zoneIndex].left;
-                                moveInfo.meepleZone = zoneIndex + 1;
-                                moveInfo.meepleLocation = zoneValues[zoneIndex].right;
+                                meepleMoveInfo.meepleZone = zoneIndex + 1;
+                                meepleMoveInfo.meepleLocation = zoneValues[zoneIndex].right;
+                                meepleMoveInfo.tileRotation = possibleRot;
+                                meepleMoveInfo.tileLocation = possibleLoc;
+                                meepleMoveFound = true;
+
                             }
                         }
 
+                        if (meepleMoveFound) {
+                            localGameBoard.removeTemporaryTile(possibleLoc);
+                            break;
+                        }
                         //moveInfo.meepleLocation = best node (for our local system)
                         //moveInfo.meepleZone = best zone (for networking)
                     }
@@ -83,13 +94,19 @@ class ComputerPlayerController extends PlayerController {
                     localGameBoard.removeTemporaryTile(possibleLoc);
 
                 }
+
+
             }
         }
 
-        if (moveInfo.meepleLocation == -1) numMeeples--;
-        return moveInfo;
-
-       // System.out.println("No viable location to place :(");
+        if (meepleMoveFound){
+            numMeeples--;
+            return meepleMoveInfo;
+        }
+        else{
+            return noMeepleMoveInfo;
+        }
+        // System.out.println("No viable location to place :(");
         //return new MoveInformation(new Location(-1, -1), -1, -1);
     }
 
@@ -130,18 +147,19 @@ class ComputerPlayerController extends PlayerController {
         if (currentTile.edges[leadingEdge].nodes[2].featureType == currentTile.edges[followingEdge].nodes[0].featureType &&
                 currentTile.edges[leadingEdge].nodes[2].featureType.isSameFeature(FeatureTypeEnum.City) &&
                 !currentTile.citiesAreIndependent){
-            //Guaranteed to be a city node
+            //Guaranteed to be a city zone
             //Use edges[1].nodes[0]
             if(localGameBoard.aiVerifyMeeplePlacement(currentTile, followingEdge * 3, this.playerID)){
                 return new IntegerTuple(1, followingEdge * 3);
             }
         }
         else{
-            //Guaranteed to be a field node
+            //Guaranteed to be a field zone
             if(currentTile.edges[leadingEdge].nodes[2].featureType == FeatureTypeEnum.Field){
                 //If both nodes considered are fields, doesn't matter which we use. Otherwise pick the one that is a field.
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, leadingEdge * 3 + 2, this.playerID)){
-                    return new IntegerTuple(1, leadingEdge * 3 + 2);
+                    // return new IntegerTuple(1, leadingEdge * 3 + 2);
+                    return new IntegerTuple(-1, -1);
                 }
             }
             else if (currentTile.edges[followingEdge].nodes[0].featureType == FeatureTypeEnum.Field){

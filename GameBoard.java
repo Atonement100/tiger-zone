@@ -1,4 +1,5 @@
 import java.util.ArrayDeque;
+import java.util.HashSet;
 
 public class GameBoard {
     Tile[][] board;
@@ -7,6 +8,7 @@ public class GameBoard {
     private static final int NUM_MEEPLES = GameController.NUM_MEEPLES;
     private static int[] dx = {0,-1,0,1}; // W, N, E, S
     private static int[] dy = {-1,0,1,0};
+    private HashSet<Location> possibleTargets = new HashSet<>();
     
     Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
     
@@ -39,6 +41,7 @@ public class GameBoard {
         }
         
         updateMeepleInfoForNewTile(targetLocation);
+        updateAvailablePlacements(targetLocation);
     }
 
     void placeTemporaryTile(Tile tileToPlace, Location targetLocation, int rotations){
@@ -70,8 +73,12 @@ public class GameBoard {
             for (int nodeIndex = 0; nodeIndex < tileToRemove.edges[direction].nodes.length; nodeIndex++){
                 tileToRemove.edges[direction].nodes[nodeIndex].neighbors.remove(neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex]);
                 neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex].neighbors.remove(tileToRemove.edges[direction].nodes[nodeIndex]);
+            }
+        }
 
-                tileToRemove.edges[direction].nodes[nodeIndex].meeplePlacedInFeature = false;
+        for (Edge edge: tileToRemove.edges){
+            for (Node node : edge.nodes){
+                node.meeplePlacedInFeature = false;
             }
         }
 
@@ -145,7 +152,7 @@ public class GameBoard {
         }
     }
     
-    private boolean isValidMeeplePlacementOnNode(Location targetLocation, int meepleLocation){
+    boolean isValidMeeplePlacementOnNode(Location targetLocation, int meepleLocation){
         if (meepleLocation == 12) return true;
         else if (meepleLocation < 0 || meepleLocation > 12) return false;
         
@@ -179,6 +186,44 @@ public class GameBoard {
             }
         }
         
+        return true;
+    }
+
+    boolean isValidMeeplePlacementOnNode(Tile tile, int meepleLocation){
+        if (meepleLocation == 12) return true;
+        else if (meepleLocation < 0 || meepleLocation > 12) return false;
+
+        int edge = meepleLocation / 3; //Nodes per edge
+        int node = meepleLocation % 3;
+
+        if (tile == null) return false;
+
+        if(tile.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
+            node = 1;
+        }
+
+        Node startingNode = tile.edges[edge].nodes[node];
+        if (startingNode.meeplePlacedInFeature) return false;
+
+
+        ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
+        ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
+        nodeQueue.add(startingNode);
+        while (!nodeQueue.isEmpty()){
+            Node currNode = nodeQueue.removeFirst();
+            visitedQueue.add(currNode);
+            for (Node neighbor : currNode.neighbors){
+                if (neighbor.featureType.isSameFeature(currNode.featureType)) {
+                    if (neighbor.meeplePlacedInFeature) {
+                        System.out.println("Potential error from isValidMeeplePlacementOnNode - starting node should be marked true when the tile is placed");
+                        return false;
+                    } else if (!visitedQueue.contains(neighbor)) {
+                        nodeQueue.add(neighbor);
+                    }
+                }
+            }
+        }
+
         return true;
     }
     
@@ -338,6 +383,17 @@ public class GameBoard {
 
     //checks if a meeple can be placed at the spot indicated
     boolean aiVerifyMeeplePlacement(Tile tileToPlace, int meeplePlacement, int currentPlayer){
+        boolean noMeepleAvailable = true;
+        for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
+            if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
+                noMeepleAvailable = false;
+            }
+        }
+
+        if (noMeepleAvailable) return false;
+
+        return isValidMeeplePlacementOnNode(tileToPlace, meeplePlacement);
+/*
         if (meeplePlacement < 0 || meeplePlacement > 11){
             if(meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None){
                 return true; //It can be larger than 11 only if it is 12, which must also be a monastery placement
@@ -369,6 +425,9 @@ public class GameBoard {
             }
         }
         return false;
+        */
+
+
     }
     
     private Tile[] getNeighboringTiles(Location tileLocation){
@@ -399,6 +458,27 @@ public class GameBoard {
         }
 
         return neighborLocations;
+    }
+
+    boolean isPossibleToPlaceTileSomewhere(Tile tile){
+        for (Location possibleLoc : possibleTargets){
+            for (int rotation = 0; rotation < 4; rotation++){
+                if (verifyTilePlacement(tile, possibleLoc, rotation)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    void updateAvailablePlacements(Location moveLocation){
+        for (Location loc : getEmptyNeighboringLocations(moveLocation)){
+            if (loc != null){
+                possibleTargets.add(loc);
+            }
+        }
+        possibleTargets.remove(moveLocation);
     }
     
     void printBoard(){

@@ -22,6 +22,7 @@ public class ScoreController {
         this.localBoard = new GameBoard(boardDimensions.Row, boardDimensions.Col);
     }
     
+    
     ScoreController(ArrayList<Tile> gameTileReference, GameBoard board){
         this.player1Score = 0;
         this.player2Score = 0;
@@ -30,17 +31,16 @@ public class ScoreController {
     }
     
     ArrayList<Meeple> processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed, boolean usingLocalBoard){
-        if (usingLocalBoard) {
-            localBoard.placeTile(confirmedTile, moveInfo.tileLocation, moveInfo.tileRotation);
-            localBoard.placeMeeple(confirmedTile, moveInfo.tileLocation, moveInfo.meepleLocation, playerConfirmed);
-        }
+        
         
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
         
         meeplesToReturn.addAll(handleDens(confirmedTile, moveInfo));
         
         for (Edge edge : confirmedTile.edges){
-            if (edge.nodes[1].featureType == FeatureTypeEnum.Road && isRoadScorable(edge.nodes[1])){
+            if ((edge.nodes[1].featureType == FeatureTypeEnum.Road || edge.nodes[1].featureType == FeatureTypeEnum.RoadEnd)
+                && isRoadScorable(edge.nodes[1]))
+            {
                 meeplesToReturn.addAll(scoreRoad(edge.nodes[1]));
             }
             
@@ -48,7 +48,9 @@ public class ScoreController {
                 ArrayList<Node> cycleBuffer = getWallCycleNodes(edge.nodes[cornerNodeIndex]);
                 
                 if (cycleBuffer.isEmpty()) continue;
-                else meeplesToReturn.addAll(scoreCompleteCity(edge.nodes[cornerNodeIndex]));
+                else {
+                    meeplesToReturn.addAll(scoreCompleteCity(edge.nodes[cornerNodeIndex]));
+                }
             }
         }
         return meeplesToReturn;
@@ -102,41 +104,6 @@ public class ScoreController {
         
         return meeplesToReturn;
     }
-    
-    /*
-     public void attemptScoring(Tile toCheck){
-     
-     ArrayList<Node> cycleBuffer;
-     
-     //WALL CYCLES
-     for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
-     for(int cornerNodeIndex = 0; cornerNodeIndex < toCheck.edges[edgeIndex].nodes.length; cornerNodeIndex += 2){
-     cycleBuffer = getWallCycleNodes(toCheck.edges[edgeIndex].nodes[cornerNodeIndex]);
-     System.out.println("NODES IN WALL CYCLE " + cycleBuffer.size());
-     
-     //FOR TESTING *******************************
-     while(!cycleBuffer.isEmpty()){
-     cycleBuffer.remove(0).visited = false;
-     }
-     //*******************************************
-     System.out.println("");
-     }
-     }
-     
-     //ROAD CYCLES
-     for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
-     cycleBuffer = getRoadCycleNodes(toCheck.edges[edgeIndex].nodes[1]);
-     System.out.println("NODES IN ROAD CYCLE " + cycleBuffer.size());
-     
-     //FOR TESTING *******************************
-     while(!cycleBuffer.isEmpty()){
-     cycleBuffer.remove(0).visited = false;
-     }
-     //*******************************************
-     System.out.println("");
-     }
-     }
-     */
     
     void scoreField(Node start){
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
@@ -226,6 +193,9 @@ public class ScoreController {
     
     
     public ArrayList<Meeple> scoreRoad(Node start){
+        
+        System.out.println("REACHED SCORING ROAD");
+        
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
         int[] meeplesReturned = new int[2];
         roadIdentifier++;
@@ -253,38 +223,30 @@ public class ScoreController {
              */
         }
         
+        uniqueTiles.add(start.owningTileId);
+        if(start.meeple != null){
+            meeplesReturned[start.meeple.owner]++;
+            meeplesToReturn.add(new Meeple(start.meeple.owner, start.meeple.ID));
+        }
+        
         while(!bfsQueue.isEmpty()){
             Node buffer = bfsQueue.poll();
-            buffer.featureID = roadIdentifier;
+            uniqueTiles.add(buffer.owningTileId);
             buffer.visited = true;
+            buffer.featureID = roadIdentifier;
             for(int i = 0; i < buffer.neighbors.size(); i++){
                 if(!buffer.neighbors.get(i).visited &&
-                   (buffer.neighbors.get(i).featureType == FeatureTypeEnum.Road || buffer.neighbors.get(i).featureType == FeatureTypeEnum.RoadEnd))
+                   (buffer.neighbors.get(i).featureType.toChar() == 'R' || buffer.neighbors.get(i).featureType.toChar() == 'E'))
                 {
-                    if(buffer.meeplePlacedInFeature && !uniqueTiles.contains(buffer.owningTileId)){
-                        
-                        uniqueTiles.add(buffer.owningTileId);
-                        if(this.gameTileReference.get(buffer.owningTileId).animalType != 0){
-                            uniqueAnimals.add(this.gameTileReference.get(buffer.owningTileId).animalType);
-                        }
-                        
-                        if(buffer.meeple != null){
-                            meeplesReturned[start.meeple.owner]++;
-                            meeplesToReturn.add(new Meeple(start.meeple.owner, start.meeple.ID));
-                        }
-                        /*
-                         if(buffer.meeple.owner == 0){
-                         meeplesReturned[0]++;
-                         meeplesToReturn.add(new Meeple(buffer.meeple.owner, buffer.meeple.ID));
-                         }
-                         else if(buffer.meeple.owner == 1){
-                         meeplesReturned[1]++;
-                         meeplesToReturn.add(new Meeple(buffer.meeple.owner, buffer.meeple.ID));
-                         }
-                         */
-                        bfsQueue.add(buffer.neighbors.get(i));
-                    }
+                    bfsQueue.add(buffer.neighbors.get(i));
+                    uniqueTiles.add(buffer.neighbors.get(i).owningTileId);
                     
+                    if(buffer.neighbors.get(i).meeple != null){
+                        
+                        meeplesReturned[buffer.neighbors.get(i).meeple.owner]++;
+                        meeplesToReturn.add(new Meeple(buffer.neighbors.get(i).meeple.owner, buffer.neighbors.get(i).meeple.ID));
+                        
+                    }
                 }
             }
         }
@@ -427,6 +389,9 @@ public class ScoreController {
     
     
     public ArrayList<Meeple> scoreCompleteCity(Node start){
+        
+        System.out.println("CALLED SCORING CITY");
+        
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
         lakeIdentifier++;
         int[] meeplesReturned = new int[2];
@@ -446,6 +411,7 @@ public class ScoreController {
         
         while(!bfsQueue.isEmpty()){
             Node buffer = bfsQueue.poll();
+            uniqueTiles.add(buffer.owningTileId);
             buffer.visited = true;
             buffer.featureID = lakeIdentifier;
             for(int i = 0; i < buffer.neighbors.size(); i++){
@@ -453,20 +419,15 @@ public class ScoreController {
                    (buffer.neighbors.get(i).featureType.toChar() == 'W' || buffer.neighbors.get(i).featureType.toChar() == 'I'
                     ||buffer.neighbors.get(i).featureType.toChar() == 'C'))
                 {
-                    if(buffer.meeplePlacedInFeature && !uniqueTiles.contains(buffer.owningTileId)){
-                        
-                        uniqueTiles.add(buffer.owningTileId);
-                        if(this.gameTileReference.get(buffer.owningTileId).animalType != 0){
-                            uniqueAnimals.add(this.gameTileReference.get(buffer.owningTileId).animalType);
-                        }
-                        
-                        if(buffer.meeple != null){
-                            meeplesReturned[start.meeple.owner]++;
-                            meeplesToReturn.add(new Meeple(start.meeple.owner, start.meeple.ID));
-                        }
-                        bfsQueue.add(buffer.neighbors.get(i));
-                    }
+                    bfsQueue.add(buffer.neighbors.get(i));
+                    uniqueTiles.add(buffer.neighbors.get(i).owningTileId);
                     
+                    if(buffer.neighbors.get(i).meeple != null){
+                        
+                        meeplesReturned[buffer.neighbors.get(i).meeple.owner]++;
+                        meeplesToReturn.add(new Meeple(buffer.neighbors.get(i).meeple.owner, buffer.neighbors.get(i).meeple.ID));
+                        
+                    }
                 }
             }
         }
@@ -602,6 +563,13 @@ public class ScoreController {
             }
         }
         //INNER WALL CYCLE EDGE CASE END ******************************************************************
+        
+        System.out.println("CYCLE");
+        if(cycle){
+            for(Node nodeToUnvisit : nodesInCycle){
+                nodeToUnvisit.visited = false;
+            }
+        }
         
         return nodesInCycle;		//actual cycle;
         
