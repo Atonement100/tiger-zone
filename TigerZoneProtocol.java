@@ -80,13 +80,13 @@ public class TigerZoneProtocol {
     
     public String SendGameAMove(String theInput) {
     	parseInput = theInput.split(" ");
-    	String theOutput = "GAME A MOVE " + moveNumber + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10] + " " + parseInput[11];
+    	String theOutput = "GAME A MOVE " + moveNumber + " PLAYER Red PLACED " + parseInput[3] + " AT " + parseInput[5] + " " + parseInput[6] + " " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9];
     	return theOutput;
     }
 
     public String SendGameBMove(String theInput) {
     	parseInput = theInput.split(" ");
-    	String theOutput = "GAME B MOVE " + moveNumber + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10] + " " + parseInput[11];
+    	String theOutput = "GAME B MOVE " + moveNumber + " PLAYER Blue PLACED " + parseInput[3] + " AT " + parseInput[5] + " " + parseInput[6] + " " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9];
     	currentTile++;
     	moveNumber++;
     	return theOutput;
