@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class TigerZoneProtocol {
     private static final int WAITING = 0;
@@ -9,7 +11,17 @@ public class TigerZoneProtocol {
     private int state = WAITING;
     private int currentTile = 0;
     private int moveNumber = 1;
-    private String[] tiles = { "TLTTP", "LJTJ-", "JLJL-", "JJTJX", "LTTJB", "TLLT" };
+    private String[] tiles = new String[] { "JJJJ-", "JJJJX", "JJJJX", "JJJJX", "JJJJX", 
+    		"JJTJX", "JJTJX", "TTTT-", "TJTJ-", "TJTJ-", "TJTJ-", "TJTJ-",
+    		"TJTJ-","TJTJ-","TJTJ-","TJTJ-", "TJJT-", "TJJT-", "TJJT-", "TJJT-", 
+    		"TJJT-", "TJJT-", "TJJT-", "TJJT-", "TJJT-", "TJTT-", "TJTT-", "TJTT-", 
+    		"TJTT-", "LLLL-", "JLLL-", "JLLL-", "JLLL-", "JLLL-", "LLJJ-", 
+    		"LLJJ-", "LLJJ-", "LLJJ-", "LLJJ-", "JLJL-", "JLJL-", "JLJL-", 
+    		"LJLJ-", "LJLJ-", "LJLJ-", "LJJJ-", "LJJJ-", "LJJJ-", "LJJJ-", 
+    		"LJJJ-", "JLLJ-", "JLLJ-", "TLJT-", "TLJTP", "TLJTP", "JLTT-",
+    		"JLTTB", "JLTTB", "TLTJ-", "TLTJ-", "TLTJD", "TLTJD", "TLLL-", 
+    		"TLTT-", "TLTTP", "TLTTP", "TLLT-", "TLLT-", "TLLT-", "TLLTB",
+    		"TLLTB", "LJTJ-", "LJTJD", "LJTJD", "TLLLC", "TLLLC"};
     private String gameA = "GAME A";
     private String gameB = "GAME B";
     private String[] parseInput = null;
@@ -41,7 +53,10 @@ public class TigerZoneProtocol {
     }
     public String StartGame() {
         String theOutput = null;
-        theOutput = "THE REMAINING " + tiles.length + " TILES ARE " + Arrays.toString(tiles);
+        ArrayList<String> newTile = new ArrayList<String>();
+        Collections.addAll(newTile, tiles);
+        Collections.shuffle(newTile);
+        theOutput = "THE REMAINING " + tiles.length + " TILES ARE " + Arrays.toString(newTile.toArray());
         return theOutput;
     }
     
