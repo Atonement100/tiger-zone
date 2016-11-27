@@ -16,7 +16,7 @@ public class NetworkAdapter{
 	
 	//Creates array of local tiles from input file
 	public NetworkAdapter(){
-		String filePath = "tileset.txt";
+		String filePath = "uniquetileset.txt";
 		staticTiles = new TileRetriever(filePath).tiles;
 	}
 
