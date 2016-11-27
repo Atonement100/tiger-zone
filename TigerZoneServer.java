@@ -5,8 +5,8 @@ public class TigerZoneServer {
     public static void main(String[] args) throws IOException {
         
         if (args.length != 1) {
-            System.err.println("Usage: java KnockKnockServer <port number>");
-            System.exit(1);
+            System.err.println("Usage: java TigerZoneServer <port number>");
+          	return;
         }
 
         System.out.println("Server started");
