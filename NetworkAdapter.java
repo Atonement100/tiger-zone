@@ -78,12 +78,12 @@ public class NetworkAdapter{
 		tileID = convertTileToID(tokens[12]);
 		Tile nextTile = convertFromTileID(tileID);
 		gid = tokens[5];
-
+		//get moveID somewhere!!! **************************************
 		if (gid.equals(gameIDs[0])){
-			return processMoveInformation(gameControllers[0].processNetworkedPlayerMove(nextTile), gid, tileID);
+			return processMoveInformation(gameControllers[0].processNetworkedPlayerMove(nextTile), gid, moveNum, tileID);
 		}
 		else if (gid.equals(gameIDs[1])){
-			return processMoveInformation(gameControllers[1].processNetworkedPlayerMove(nextTile), gid, tileID);
+			return processMoveInformation(gameControllers[1].processNetworkedPlayerMove(nextTile), gid, moveNum, tileID);
 		}
 		else if (!gameIDhasBeenReset){
 			gameIDs[0] = gid;
@@ -261,11 +261,11 @@ public class NetworkAdapter{
 		//Empty shuffledTiles array
 	}
 
-	String processMoveInformation(MoveInformation moveInfo, String gid, String tileID){
+	String processMoveInformation(MoveInformation moveInfo, String gid, int moveNum, String tileID){
 		String messageToReturn;
 
 		if (moveInfo.tileLocation.isEqual(new Location(-1, -1))){
-			messageToReturn = formatMove(3, gid, tileID, -1, -1, -1, -1);
+			messageToReturn = formatMove(3, gid, moveNum, tileID, -1, -1, -1, -1);
 		}
 		else {
 			int rotation = moveInfo.tileRotation;
@@ -276,10 +276,10 @@ public class NetworkAdapter{
 			int y = moveInfo.tileLocation.Row - gameControllers[0].getBoardCenter().Row;
 
 			if(moveInfo.meepleLocation == -1){
-				messageToReturn = formatMove(0, gid, tileID, x, y, rotation, moveInfo.meepleZone);
+				messageToReturn = formatMove(0, gid, moveNum, tileID, x, y, rotation, moveInfo.meepleZone);
 			}
 			else{
-				messageToReturn = formatMove(2, gid, tileID, x, y, rotation, moveInfo.meepleZone);
+				messageToReturn = formatMove(2, gid, moveNum, tileID, x, y, rotation, moveInfo.meepleZone);
 			}
 
 		}
@@ -289,20 +289,20 @@ public class NetworkAdapter{
 
 	//Creates message to be sent through the network for a tile placement
 	//messageStatus denotes type of move
-	public String formatMove(int messageStatus, String gid, String tileID, int x, int y, int orientation, int zone){
+	public String formatMove(int messageStatus, String gid, int moveNum, String tileID, int x, int y, int orientation, int zone){
 		String message = "";
 		switch(messageStatus){
-			case 0: message = "GAME " + gid + " PLACE " + convertTileToString(tileID) + " AT " + x + " " + y + " " + orientation + " NONE";
+			case 0: message = "GAME " + gid + " MOVE " + moveNum + " PLACE " + convertTileToString(tileID) + " AT " + x + " " + y + " " + orientation + " NONE";
 					break;
-			case 1: message = "GAME " + gid + " PLACE " + convertTileToString(tileID) + " AT " + x + " " + y + " " + orientation + " CROCODILE";
+			case 1: message = "GAME " + gid + " MOVE " + moveNum + " PLACE " + convertTileToString(tileID) + " AT " + x + " " + y + " " + orientation + " CROCODILE";
 					break;
-			case 2: message = "GAME " + gid + " PLACE " + convertTileToString(tileID) + " AT " + x + " " + y + " " + orientation + " TIGER " + zone;
+			case 2: message = "GAME " + gid + " MOVE " + moveNum + " PLACE " + convertTileToString(tileID) + " AT " + x + " " + y + " " + orientation + " TIGER " + zone;
 					break;
-			case 3: message = "GAME " + gid + " TILE " + convertTileToString(tileID) + " UNPLACEABLE PASS";
+			case 3: message = "GAME " + gid + " MOVE " + moveNum + " TILE " + convertTileToString(tileID) + " UNPLACEABLE PASS";
 					break;
-			case 4: message = "GAME " + gid + " TILE " + convertTileToString(tileID) + " UNPLACEABLE RETRIEVE TIGER AT " + x + " " + y;
+			case 4: message = "GAME " + gid + " MOVE " + moveNum + " TILE " + convertTileToString(tileID) + " UNPLACEABLE RETRIEVE TIGER AT " + x + " " + y;
 					break;
-			case 5: message = "GAME " + gid + " TILE " + convertTileToString(tileID) + " UNPLACEABLE ADD ANOTHER TIGER TO " + x + " " + y;
+			case 5: message = "GAME " + gid + " MOVE " + moveNum + " TILE " + convertTileToString(tileID) + " UNPLACEABLE ADD ANOTHER TIGER TO " + x + " " + y;
 					break;
 		}
 		return message;
