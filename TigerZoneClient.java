@@ -7,7 +7,7 @@ public class TigerZoneClient {
         if (args.length != 5) {
             System.err.println(
                 "Usage: java TigerZoneClient <host name> <port number> <tournament password> <username> <password>");
-            System.exit(1);
+           return;
         }
 
 		System.err.println("Client opened");
@@ -111,14 +111,9 @@ public class TigerZoneClient {
        			}
         	} 
         
-        catch (UnknownHostException e) {
-            System.err.println("Don't know about host " + hostName);
-            System.exit(1);
-        } 
         catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to " +
                 hostName);
-            System.exit(1);
         }
 
 		System.err.println("Client shutting down");
