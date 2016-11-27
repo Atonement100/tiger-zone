@@ -1,7 +1,7 @@
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class NetAdapterTest {
+public class NetworkAdapterTest {
 	@Test
 	public void testSendMoveNoTiger(){
 	NetworkAdapter networkAdapter = new NetworkAdapter();
