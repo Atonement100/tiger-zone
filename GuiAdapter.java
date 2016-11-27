@@ -223,6 +223,9 @@ public class GuiAdapter {
             tileIDChar = 'b';
         }
         addTile(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tileRotation, Character.toString(tileIDChar));
+        if(moveInfo.meepleLocation >= 0){
+            Gui.placeTiger(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.meepleLocation, moveInfo.tileRotation);
+        }
     }
 
     public void updateScores(int player1Score, int player2Score){

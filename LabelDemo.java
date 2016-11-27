@@ -72,7 +72,6 @@ public class LabelDemo extends JFrame {
         };
         try {
             ICON = ImageIO.read(new File("Gui/assets/icon.png"));
-
         } catch (IOException e) {
 
         }
@@ -103,11 +102,11 @@ public class LabelDemo extends JFrame {
         JPanel scorePanel = new JPanel();
         scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.LINE_AXIS));
         JPanel player1Panel = new JPanel();
-        p1ScoreLabel = new JLabel("Player 1 Score: ");
+        p1ScoreLabel = new JLabel("Player 1 Score: 0");
         player1Panel.add(p1ScoreLabel);
         player1Panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         JPanel player2Panel = new JPanel();
-        p2ScoreLabel = new JLabel("Player 2 Score: ");
+        p2ScoreLabel = new JLabel("Player 2 Score: 0");
         player2Panel.add(p2ScoreLabel);
         player2Panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         scorePanel.add(player1Panel);
@@ -272,6 +271,25 @@ public class LabelDemo extends JFrame {
             tiles[row][col].setTileIcon(findImg(guiID).getImageIcon_3());
         }
 
+    }
+    
+    // Place a tiger icon (orange dot) on the tile.
+    public void placeTiger(int row, int col, int tigerPos, int tileRotation){
+        int rotatedTigerPosition = getRotatedTigerPosition(tigerPos, tileRotation);
+        tiles[row][col].setTiger(rotatedTigerPosition);
+    }
+    
+    // Get the tiger position relative to the north edge.
+    private int getRotatedTigerPosition(int relativeTigerPosition, int rotation){
+        if(relativeTigerPosition == -1 || relativeTigerPosition == 12){
+            return relativeTigerPosition;
+        }else{
+            int rotPos = relativeTigerPosition + 3 * rotation;
+            if(rotPos > 12){
+                rotPos -= 12;
+            }
+            return rotPos;
+        }
     }
     
     public void updateScores(int p1Score, int p2Score){

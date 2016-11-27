@@ -1,6 +1,11 @@
 
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.image.BufferedImage;
 import javax.swing.*;
 
 /**
@@ -12,6 +17,7 @@ public class TileSet {
     private  JButton tileButton = new JButton();
     private int X,Y;
     private  ImageIcon tileIcon = new ImageIcon();
+    private int[] tigerToGridPos = new int[]{0, 1, 2, 2, 5, 8, 8, 7, 6, 6, 3, 0, 4};
 
     public int getX() {
         return X;
@@ -47,6 +53,7 @@ public class TileSet {
     public void setTileIcon(ImageIcon tileIcon) {
         this.tileIcon = tileIcon;
         tileButton.setIcon(tileIcon);
+        tileButton.setText("");
     }
 
 
@@ -70,8 +77,21 @@ public class TileSet {
 
     public TileSet() {
         tileButton.setPreferredSize(new Dimension(50, 50));
+        tileButton.setLayout(new GridLayout(3, 3));
     }
-
+    
+    // Loads the corresponding image for the specified absolute tiger position and combines it with
+    // the current tile image.
+    public void setTiger(int absolutePosition){
+        ImageIcon tigerIcon = new ImageIcon("Gui/Tigers/" + absolutePosition + ".png");
+        ImageIcon untigeredTileIcon = getTileIcon();
+        BufferedImage combinedImg = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = combinedImg.createGraphics();
+        g.drawImage(untigeredTileIcon.getImage(), 0, 0, null);
+        g.drawImage(tigerIcon.getImage(), 0, 0, null);
+        g.dispose();
+        setTileIcon(new ImageIcon(combinedImg));
+    }
 }
 
 

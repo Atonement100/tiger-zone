@@ -350,7 +350,7 @@ public class GameBoard {
         		//Monasteries are also not connected to anything, so they don't need to be verified for adjacency.
         	}
         	if(meeplePlacement == -1){
-        		System.out.println("Placement = -1 meaning don't want to place a meeple");
+        		//System.out.println("Placement = -1 meaning don't want to place a meeple");
         		return false;
         	}
         	dummyFunc(0);
