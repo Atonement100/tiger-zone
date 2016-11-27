@@ -26,8 +26,8 @@ public class GameBoard {
         return new Location(board.length, board[board.length-1].length);
     }
     
-    void placeTile(Tile tileToPlace, Location targetLocation, int rotations){
-        tileToPlace.rotateClockwise(rotations);
+    void placeTile(Tile tileToPlace, Location targetLocation, int clockwiseRotations){
+        tileToPlace.rotateClockwise(clockwiseRotations);
         board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
         
         for(int direction = 0; direction < 4; direction++){

@@ -9,6 +9,8 @@ public class TigerZoneServer {
             System.exit(1);
         }
 
+        System.out.println("Server started");
+
         int portNumber = Integer.parseInt(args[0]);
 
         try ( 
@@ -71,5 +73,8 @@ public class TigerZoneServer {
                 + portNumber + " or listening for a connection");
             System.out.println(e.getMessage());
         }
+
+        System.out.println("Server shutting down");
+
     }
 }

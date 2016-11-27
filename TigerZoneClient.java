@@ -10,7 +10,9 @@ public class TigerZoneClient {
             System.exit(1);
         }
 
-        String hostName = args[0];
+		System.err.println("Client opened");
+
+		String hostName = args[0];
         int portNumber = Integer.parseInt(args[1]);
         String tournamentPassword = args[2];
         String username = args[3];
@@ -18,8 +20,8 @@ public class TigerZoneClient {
 
         try (
             Socket tzSocket = new Socket(hostName, portNumber);
-            PrintWriter out = new PrintWriter(tzSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(tzSocket.getInputStream()));
+            PrintWriter networkOut = new PrintWriter(tzSocket.getOutputStream(), true);
+            BufferedReader networkIn = new BufferedReader(new InputStreamReader(tzSocket.getInputStream()));
         ) {
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
             String fromServer;
@@ -31,19 +33,19 @@ public class TigerZoneClient {
             // Getting verified by server
             while (!isVerified) 
             {
-           		fromServer = in.readLine();
+           		fromServer = networkIn.readLine();
            		System.out.println("Server: " + fromServer);
            		if(fromServer.equals("THIS IS SPARTA!")){
-           			out.println("JOIN " + tournamentPassword);
+           			networkOut.println("JOIN " + tournamentPassword);
            		}
            		else if (fromServer.equals("HELLO!")){
            			isVerified = true;
-           			out.println("I AM " + username + " " + password);
+           			networkOut.println("I AM " + username + " " + password);
            		}
            	}
             
             // Find out how many challenges will be played
-            fromServer = in.readLine();
+            fromServer = networkIn.readLine();
        		serverText = fromServer.split(" ");
        		if(serverText[0].equalsIgnoreCase("NEW")){
        			totalNumberOfRounds = Integer.parseInt(serverText[6]);
@@ -54,7 +56,7 @@ public class TigerZoneClient {
        		NetworkAdapter netAdapter = new NetworkAdapter();
             // Getting game info - Player ID - Starting Tile - Order of Tiles 
        			while(isWaiting){
-       				fromServer = in.readLine();
+       				fromServer = networkIn.readLine();
        				serverText = fromServer.split(" ");
        				System.out.println("Server: " + fromServer);
        				if(serverText[0].equals("MATCH"))
@@ -62,25 +64,27 @@ public class TigerZoneClient {
        					isWaiting = false;
        				}
        				else {
-       				netAdapter.parseMatchProtocol(fromServer);
+       					netAdapter.parseMatchProtocol(fromServer);
        				}
        			}
        			int gamesEnded = 0;
        			// Where we start Receiving notification to send move / Send our moves. 
        			while(isPlaying){
-       				fromServer = in.readLine();
+       				fromServer = networkIn.readLine();
        				System.out.println("Server: " + fromServer);
        				serverText = fromServer.split(" ");
        				switch(serverText[0]){
        					case "MAKE":
-       						//TODO: SEND MOVES FROM AI
-       						netAdapter.parseMakeMove(fromServer);
-       						//AI should probably call this method and client gets the string in another method 
-       						String makeMove = netAdapter.sendMove(messageStatus, gid, tileID, x, y, orientation, zone);
+       						String returnMessage = netAdapter.parseMakeMove(fromServer);
+							System.out.println(returnMessage);
+							networkOut.println(returnMessage);
+
+							//AI should probably call this method and client gets the string in another method
+       						//String makeMove = netAdapter.sendMove(messageStatus, gid, tileID, x, y, orientation, zone);
        						//System.out just lets us know what we're sending. 
-       						System.out.println("Client: " + makeMove);
+       						//System.out.println("Client: " + makeMove);
        						// Sends move to Server
-       						out.println(makeMove);
+       						//networkOut.println(makeMove);
        						break;
        				
        					case "GAME":
@@ -116,5 +120,8 @@ public class TigerZoneClient {
                 hostName);
             System.exit(1);
         }
-    }
+
+		System.err.println("Client shutting down");
+
+	}
 }

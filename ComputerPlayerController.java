@@ -26,6 +26,8 @@ class ComputerPlayerController extends PlayerController {
         MoveInformation noMeepleMoveInfo = new MoveInformation(),
                 meepleMoveInfo = new MoveInformation();
         boolean meepleMoveFound = false;
+
+        noMeepleMoveInfo.tileLocation = new Location(-1, -1);
         noMeepleMoveInfo.meepleLocation = -1;
         meepleMoveInfo.meepleLocation = -1;
 
@@ -157,8 +159,7 @@ class ComputerPlayerController extends PlayerController {
             if(currentTile.edges[leadingEdge].nodes[2].featureType == FeatureTypeEnum.Field){
                 //If both nodes considered are fields, doesn't matter which we use. Otherwise pick the one that is a field.
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, leadingEdge * 3 + 2, this.playerID)){
-                    // return new IntegerTuple(1, leadingEdge * 3 + 2);
-                    return new IntegerTuple(-1, -1);
+                    return new IntegerTuple(1, leadingEdge * 3 + 2);
                 }
             }
             else if (currentTile.edges[followingEdge].nodes[0].featureType == FeatureTypeEnum.Field){
@@ -196,6 +197,25 @@ class ComputerPlayerController extends PlayerController {
 
     @Override
     void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed) {
+        //super.processConfirmedMove(confirmedTile, moveInfo, playerConfirmed);
+        //System.out.println("Computer player has confirmed the recent move Row: " + moveInfo.tileLocation.Row + " Col: " + moveInfo.tileLocation.Col + " Rotation: " + moveInfo.tileRotation);
+
+        Location moveLocation = moveInfo.tileLocation;
+
+        for (Location loc : localGameBoard.getEmptyNeighboringLocations(moveLocation)){
+            if (loc != null){
+                possibleTargets.add(loc);
+            }
+        }
+        possibleTargets.remove(moveLocation);
+
+        for (Location loc : possibleTargets){
+            System.out.println("target: " + loc.Row + ", " + loc.Col);
+        }
+    }
+
+    @Override
+    void processConfirmedMove(MoveInformation moveInfo) {
         //super.processConfirmedMove(confirmedTile, moveInfo, playerConfirmed);
         //System.out.println("Computer player has confirmed the recent move Row: " + moveInfo.tileLocation.Row + " Col: " + moveInfo.tileLocation.Col + " Rotation: " + moveInfo.tileRotation);
 

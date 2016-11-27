@@ -1,4 +1,3 @@
-import com.sun.org.apache.xalan.internal.utils.FeatureManager;
 import javafx.scene.transform.Rotate;
 
 import javax.smartcardio.TerminalFactory;
