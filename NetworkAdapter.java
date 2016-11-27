@@ -14,6 +14,7 @@ public class NetworkAdapter{
 	private GameController[] gameControllers;
 	private String[] gameIDs;
 	private boolean gameIDhasBeenReset = false;
+	private int moveNum = 1;
 	/* Initialize AI's with game ID 
 	Don't know if hard coding gameID is a good idea or not */
 	//AI ai1 = new AI("A");
@@ -78,12 +79,12 @@ public class NetworkAdapter{
 		tileID = convertTileToID(tokens[12]);
 		Tile nextTile = convertFromTileID(tileID);
 		gid = tokens[5];
-		//get moveID somewhere!!! **************************************
+		
 		if (gid.equals(gameIDs[0])){
-			return processMoveInformation(gameControllers[0].processNetworkedPlayerMove(nextTile), gid, moveNum, tileID);
+			return processMoveInformation(gameControllers[0].processNetworkedPlayerMove(nextTile), gid, tileID);
 		}
 		else if (gid.equals(gameIDs[1])){
-			return processMoveInformation(gameControllers[1].processNetworkedPlayerMove(nextTile), gid, moveNum, tileID);
+			return processMoveInformation(gameControllers[1].processNetworkedPlayerMove(nextTile), gid, tileID);
 		}
 		else if (!gameIDhasBeenReset){
 			gameIDs[0] = gid;
@@ -261,11 +262,11 @@ public class NetworkAdapter{
 		//Empty shuffledTiles array
 	}
 
-	String processMoveInformation(MoveInformation moveInfo, String gid, int moveNum, String tileID){
+	String processMoveInformation(MoveInformation moveInfo, String gid, String tileID){
 		String messageToReturn;
 
 		if (moveInfo.tileLocation.isEqual(new Location(-1, -1))){
-			messageToReturn = formatMove(3, gid, moveNum, tileID, -1, -1, -1, -1);
+			messageToReturn = formatMove(3, gid, tileID, -1, -1, -1, -1);
 		}
 		else {
 			int rotation = moveInfo.tileRotation;
@@ -276,10 +277,10 @@ public class NetworkAdapter{
 			int y = moveInfo.tileLocation.Row - gameControllers[0].getBoardCenter().Row;
 
 			if(moveInfo.meepleLocation == -1){
-				messageToReturn = formatMove(0, gid, moveNum, tileID, x, y, rotation, moveInfo.meepleZone);
+				messageToReturn = formatMove(0, gid, tileID, x, y, rotation, moveInfo.meepleZone);
 			}
 			else{
-				messageToReturn = formatMove(2, gid, moveNum, tileID, x, y, rotation, moveInfo.meepleZone);
+				messageToReturn = formatMove(2, gid, tileID, x, y, rotation, moveInfo.meepleZone);
 			}
 
 		}
@@ -289,7 +290,7 @@ public class NetworkAdapter{
 
 	//Creates message to be sent through the network for a tile placement
 	//messageStatus denotes type of move
-	public String formatMove(int messageStatus, String gid, int moveNum, String tileID, int x, int y, int orientation, int zone){
+	public String formatMove(int messageStatus, String gid, String tileID, int x, int y, int orientation, int zone){
 		String message = "";
 		switch(messageStatus){
 			case 0: message = "GAME " + gid + " MOVE " + moveNum + " PLACE " + convertTileToString(tileID) + " AT " + x + " " + y + " " + orientation + " NONE";
@@ -305,6 +306,7 @@ public class NetworkAdapter{
 			case 5: message = "GAME " + gid + " MOVE " + moveNum + " TILE " + convertTileToString(tileID) + " UNPLACEABLE ADD ANOTHER TIGER TO " + x + " " + y;
 					break;
 		}
+		moveNum++;
 		return message;
 	}
 
