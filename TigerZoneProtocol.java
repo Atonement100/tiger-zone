@@ -26,6 +26,8 @@ public class TigerZoneProtocol {
     private String gameB = "GAME B";
     private String[] parseInput = null;
     private boolean switchGames = true;
+    private boolean switchPlayersGameA = true;
+    private boolean switchPlayersGameB = true;
     
     public String VerifyAuthentication(String theInput) {
         String theOutput = null;
@@ -56,14 +58,15 @@ public class TigerZoneProtocol {
         ArrayList<String> newTile = new ArrayList<String>();
         Collections.addAll(newTile, tiles);
         Collections.shuffle(newTile);
-        theOutput = "THE REMAINING " + tiles.length + " TILES ARE " + Arrays.toString(newTile.toArray());
+        String trimmedArray = Arrays.toString(newTile.toArray()).replace(",", "").replace("[", "").replace("]", "").trim();
+        theOutput = "THE REMAINING " + tiles.length + " TILES ARE " + "[ "+ trimmedArray + " ]";
         return theOutput;
     }
     
     public String NotifyPlayer() {
     	String theOutput = null;
-    	if(currentTile == tiles.length){
-    		theOutput = "END OF ROUND";
+    	if(currentTile == tiles.length - 1){
+    		theOutput = "END GAME";
     	}
     	else{
     		if(switchGames){
@@ -75,20 +78,62 @@ public class TigerZoneProtocol {
     			switchGames = true;
     		}
     	}
+    	
     	return theOutput;
     }
     
     public String SendGameAMove(String theInput) {
     	parseInput = theInput.split(" ");
-    	String theOutput = "GAME A MOVE " + moveNumber + " PLAYER Red PLACED " + parseInput[3] + " AT " + parseInput[5] + " " + parseInput[6] + " " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9];
-    	return theOutput;
+    	String Output = null;
+    	if(switchPlayersGameA){
+    		if(parseInput.length == 12){
+    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+    		}
+    		else{
+    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+    		}
+    	
+    	switchPlayersGameA = false;
+    	}
+    	else{
+    		if(parseInput.length == 12){
+    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+    		}
+    		else{
+    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+    		}
+    	switchPlayersGameA = true;
+    	}
+    	return Output;	
+    	
     }
 
     public String SendGameBMove(String theInput) {
     	parseInput = theInput.split(" ");
-    	String theOutput = "GAME B MOVE " + moveNumber + " PLAYER Blue PLACED " + parseInput[3] + " AT " + parseInput[5] + " " + parseInput[6] + " " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9];
+    	String Output = null;
+    	if(switchPlayersGameA){
+    		if(parseInput.length == 12){
+    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+    		}
+    		else{
+    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+    		}
+    	
+    	switchPlayersGameB = false;
+    	}
+    	else{
+    		if(parseInput.length == 12){
+    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+    		}
+    		else{
+    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+    		}
+    	switchPlayersGameB = true;
+    	}
     	currentTile++;
     	moveNumber++;
-    	return theOutput;
+        return Output;	
+   
+    	
     }
 }
