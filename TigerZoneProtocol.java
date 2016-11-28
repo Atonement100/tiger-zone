@@ -22,10 +22,13 @@ public class TigerZoneProtocol {
     		"JLTTB", "JLTTB", "TLTJ-", "TLTJ-", "TLTJD", "TLTJD", "TLLL-", 
     		"TLTT-", "TLTTP", "TLTTP", "TLLT-", "TLLT-", "TLLT-", "TLLTB",
     		"TLLTB", "LJTJ-", "LJTJD", "LJTJD", "TLLLC", "TLLLC"};
-    private String gameA = "GAME A";
-    private String gameB = "GAME B";
+    private String gameA = "GAME C";
+    private String gameB = "GAME D";
     private String[] parseInput = null;
     private boolean switchGames = true;
+    private boolean switchPlayersGameA = true;
+    private boolean switchPlayersGameB = true;
+    
     
     public String VerifyAuthentication(String theInput) {
         String theOutput = null;
@@ -87,28 +90,54 @@ public class TigerZoneProtocol {
     
     public String SendGameAMove(String theInput) {
     	parseInput = theInput.split(" ");
-    	String theOutput;
-		if(parseInput.length == 12){
-			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
-		}
-		else{
-			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
-		}
-    	return theOutput;
+    	String Output = null;
+    	if(switchPlayersGameA){
+    		if(parseInput.length == 12){
+    			Output = "GAME C MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+    		}
+    		else{
+    			Output = "GAME C MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+    		}
+    	
+    	switchPlayersGameA = false;
+    	}
+    	else{
+    		if(parseInput.length == 12){
+    			Output = "GAME C MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+    		}
+    		else{
+    			Output = "GAME C MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+    		}
+    	switchPlayersGameA = true;
+    	}
+    	return Output;	
+    	
     }
 
     public String SendGameBMove(String theInput) {
     	parseInput = theInput.split(" ");
-    	String theOutput;
-		if(parseInput.length == 12){
-			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
-		}
-		else{
-			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
-		}
-
+    	String Output = null;
+    	if(switchPlayersGameB){
+    		if(parseInput.length == 12){
+    			Output = "GAME D MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+    		}
+    		else{ 
+    			Output = "GAME D MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+    		}
+    	
+    	switchPlayersGameB = false;
+    	}
+    	else{
+    		if(parseInput.length == 12){
+    			Output = "GAME D MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+    		}
+    		else{
+    			Output = "GAME D MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+    		}
+    	switchPlayersGameB = true;
+    	}
     	currentTile++;
     	moveNumber++;
-    	return theOutput;
+        return Output;
     }
 }
