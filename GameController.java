@@ -64,8 +64,8 @@ public class GameController {
         while(!gameTiles.isEmpty()){
             currentTile = drawTile();
             handleMove(currentTile);
-            //System.out.println("Player 1 score: " + scoreController.player1Score);
-            //System.out.println("Player 2 score: " + scoreController.player2Score);
+            System.out.println("Player 0 score: " + scoreController.player1Score);
+            System.out.println("Player 1 score: " + scoreController.player2Score);
             guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
             if(spectating){
                 System.out.print("Press enter to continue.");
@@ -76,52 +76,99 @@ public class GameController {
         
         
         endOfGameScoring();
-        
+        guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
         return 0;
     }
     
     private void endOfGameScoring(){
+    	
+    	System.out.println("END OF GAME SCORING");
+    	
         for(int playerIndex = 0; playerIndex < board.playerMeeples.length; playerIndex++){
             for (int meepleIndex = 0; meepleIndex < board.playerMeeples[playerIndex].length; meepleIndex++){
+            	
+            	
+            	
+            	
+            	
                 if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onMonastery){
-                    scoreController.scoreIncompleteDen(board.playerMeeples[playerIndex][meepleIndex].location);
+                	
+                	System.out.println("END OF GAME SCORING");
+                	System.out.println("BEFORE SCORING INCOMPLETE DEN at" +board.playerMeeples[playerIndex][meepleIndex].location.Row + " " + board.playerMeeples[playerIndex][meepleIndex].location.Col );
+                	System.out.println("Player 0 " + scoreController.player1Score);
+                	System.out.println("Player 1 " + scoreController.player2Score);
+                	
+                	
+                	scoreController.scoreIncompleteDen(board.playerMeeples[playerIndex][meepleIndex].location);
+                    
+                	System.out.println("AFTER SCORING INCOMPLETE DEN at" +board.playerMeeples[playerIndex][meepleIndex].location.Row + " " + board.playerMeeples[playerIndex][meepleIndex].location.Col );
+
+                	
+                	System.out.println("Player 0 " + scoreController.player1Score);
+                	System.out.println("Player 1 " + scoreController.player2Score);
+                    
                 }
+                
+                
                 else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onCity){
                     Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
                             if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+
                                 scoreController.scoreIncompleteCity(node);
+
                                 break;
                             }
                         }
                     }
                 }
+                
+                
+                
                 else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onRoad){
                     Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
                             if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
-                                scoreController.scoreField(node);
+                            	
+                            	
+                            	
+                                scoreController.scoreRoad(node);
                                 break;
                             }
                         }
                     }
                 }
+                
+                
                 else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onField){
                     Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
                             if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+                            	
+                            	System.out.println("BEFORE SCORING FARM AT " + board.playerMeeples[playerIndex][meepleIndex].location.Row + " " + board.playerMeeples[playerIndex][meepleIndex].location.Col);
+                            	System.out.println("player 0 " + scoreController.player1Score);
+                            	System.out.println("player 1 " + scoreController.player2Score);
+                            	
                                 scoreController.scoreField(node);
+                                
+                                System.out.println("AFter SCORING FARM AT " + board.playerMeeples[playerIndex][meepleIndex].location.Row + " " + board.playerMeeples[playerIndex][meepleIndex].location.Col);
+                            	System.out.println("player 0 " + scoreController.player1Score);
+                            	System.out.println("player 1 " + scoreController.player2Score);
+                                
+                            	System.out.println("");
+                            	
                                 break;
                             }
                         }
                     }
                 }
+                
             }
         }
     }

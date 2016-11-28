@@ -234,6 +234,9 @@ public class GameBoard {
     
     //places a meeple in the valid position
     void placeMeeple(Tile tileToPlace, Location targetLocation, int placement, int currentPlayer){
+    	
+    	System.out.println("CALLED PLACE MEEPLE ********************************************************************");
+    	
         if (placement < 0 || placement > 12) return;
         
         int edge = placement / 3; //Nodes per edge
@@ -266,10 +269,12 @@ public class GameBoard {
                     updateMeepleInfoForNewMeeple(targetLocation, placement);    //No need to propagate changes for monastery, only do it here
                 }
                 //Updates location and status of meeple
+                
+
+                
                 playerMeeples[currentPlayer][meepleIndex].location.Row = targetLocation.Row;
                 playerMeeples[currentPlayer][meepleIndex].location.Col = targetLocation.Col;
-                playerMeeples[currentPlayer][meepleIndex].setStatus(feature.toInt()); // This processes the int value of the feature and sets it to the appropriate status :)
-                
+                playerMeeples[currentPlayer][meepleIndex].setStatus(feature.toInt()); // This processes the int value of the feature and sets it to the appropriate status :)    
                 break;
             }
         }

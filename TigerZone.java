@@ -19,5 +19,10 @@ public class TigerZone {
 		GameController game = new GameController(numPlayers);
 
 		game.gameLoop();
+		
+		
+		System.out.println("END GAME SCORE");
+		System.out.println(game.scoreController.player1Score);
+		System.out.println(game.scoreController.player2Score);
 	}
 }
