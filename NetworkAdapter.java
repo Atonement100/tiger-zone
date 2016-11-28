@@ -15,10 +15,6 @@ public class NetworkAdapter{
 	private String[] gameIDs;
 	private boolean gameIDhasBeenReset = false;
 	private int moveNum = 1;
-	/* Initialize AI's with game ID 
-	Don't know if hard coding gameID is a good idea or not */
-	//AI ai1 = new AI("A");
-	//AI ai2 = new AI("B");
 	Scanner s = new Scanner(System.in);
 	
 	//Creates array of local tiles from input file
