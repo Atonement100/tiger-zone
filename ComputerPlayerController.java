@@ -217,6 +217,6 @@ class ComputerPlayerController extends PlayerController {
     @Override
     public void processFreedMeeple(int ownerID, int meepleID){
         super.processFreedMeeple(ownerID, meepleID);
-
+        numMeeples++;
     }
 }
