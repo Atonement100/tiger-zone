@@ -388,7 +388,7 @@ public class GameBoard {
 
     //checks if a meeple can be placed at the spot indicated
     boolean aiVerifyMeeplePlacement(Tile tileToPlace, int meeplePlacement, int currentPlayer){
-        boolean noMeepleAvailable = true;
+  /*      boolean noMeepleAvailable = true;
         for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
             if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
                 noMeepleAvailable = false;
@@ -398,7 +398,7 @@ public class GameBoard {
         if (noMeepleAvailable) return false;
 
         return isValidMeeplePlacementOnNode(tileToPlace, meeplePlacement);
-/*
+*/
         if (meeplePlacement < 0 || meeplePlacement > 11){
             if(meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None){
                 return true; //It can be larger than 11 only if it is 12, which must also be a monastery placement
@@ -430,7 +430,7 @@ public class GameBoard {
             }
         }
         return false;
-        */
+        
 
 
     }
