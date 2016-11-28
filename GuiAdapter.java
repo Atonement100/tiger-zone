@@ -224,7 +224,7 @@ public class GuiAdapter {
         }
         addTile(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tileRotation, Character.toString(tileIDChar));
         if(moveInfo.meepleLocation >= 0){
-            Gui.placeTiger(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.meepleLocation, moveInfo.tileRotation);
+            Gui.placeTiger(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.meepleLocation);
         }
     }
 

@@ -82,8 +82,9 @@ public class TileSet {
     
     // Loads the corresponding image for the specified absolute tiger position and combines it with
     // the current tile image.
-    public void setTiger(int absolutePosition){
-        ImageIcon tigerIcon = new ImageIcon("Gui/Tigers/" + absolutePosition + ".png");
+    public void setTiger(int position){
+    	System.out.println("placing tiger at " + position);
+        ImageIcon tigerIcon = new ImageIcon("Gui/Tigers/" + position + ".png");
         ImageIcon untigeredTileIcon = getTileIcon();
         BufferedImage combinedImg = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = combinedImg.createGraphics();

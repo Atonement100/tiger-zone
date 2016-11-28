@@ -274,23 +274,10 @@ public class LabelDemo extends JFrame {
     }
     
     // Place a tiger icon (orange dot) on the tile.
-    public void placeTiger(int row, int col, int tigerPos, int tileRotation){
-        int rotatedTigerPosition = getRotatedTigerPosition(tigerPos, tileRotation);
-        tiles[row][col].setTiger(rotatedTigerPosition);
+    public void placeTiger(int row, int col, int tigerPos){
+        tiles[row][col].setTiger(tigerPos);
     }
     
-    // Get the tiger position relative to the north edge.
-    private int getRotatedTigerPosition(int relativeTigerPosition, int rotation){
-        if(relativeTigerPosition == -1 || relativeTigerPosition == 12){
-            return relativeTigerPosition;
-        }else{
-            int rotPos = relativeTigerPosition + 3 * rotation;
-            if(rotPos > 12){
-                rotPos -= 12;
-            }
-            return rotPos;
-        }
-    }
     
     public void updateScores(int p1Score, int p2Score){
         p1ScoreLabel.setText("Player 1 Score: " + p1Score);

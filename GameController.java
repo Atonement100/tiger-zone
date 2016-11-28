@@ -139,7 +139,8 @@ public class GameController {
             }
             playerMoveInfo = players[currentPlayer].processPlayerMove(tileForPlayer);
             firstAttempt = false;
-        } while (!board.verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation));
+        } while (!board.verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation)
+        		);
         
         System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation + " Meeple Location: " + playerMoveInfo.meepleLocation);
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
