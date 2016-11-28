@@ -274,8 +274,8 @@ public class LabelDemo extends JFrame {
     }
     
     // Place a tiger icon (orange dot) on the tile.
-    public void placeTiger(int row, int col, int tigerPos){
-        tiles[row][col].setTiger(tigerPos);
+    public void placeTiger(int row, int col, int tigerPos, int playerNum){
+        tiles[row][col].setTiger(tigerPos, playerNum);
     }
     
     

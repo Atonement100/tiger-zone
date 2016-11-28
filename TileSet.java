@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 
@@ -82,16 +83,56 @@ public class TileSet {
     
     // Loads the corresponding image for the specified absolute tiger position and combines it with
     // the current tile image.
-    public void setTiger(int position){
-    	System.out.println("placing tiger at " + position);
-        ImageIcon tigerIcon = new ImageIcon("Gui/Tigers/" + position + ".png");
+    public void setTiger(int position, int playerNum){
         ImageIcon untigeredTileIcon = getTileIcon();
         BufferedImage combinedImg = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = combinedImg.createGraphics();
         g.drawImage(untigeredTileIcon.getImage(), 0, 0, null);
-        g.drawImage(tigerIcon.getImage(), 0, 0, null);
+        //g.drawImage(tigerIcon.getImage(), 0, 0, null);
+        Point tigerPixelPos = getPositionCoordinate(position);
+        if(playerNum == 0){
+            g.setColor(Color.ORANGE);
+        }else{
+        	g.setColor(Color.BLUE);
+        }
+        g.fillOval(tigerPixelPos.x - 4, tigerPixelPos.y - 4, 8, 8);
+        g.setColor(Color.BLACK);
+        g.drawOval(tigerPixelPos.x - 4, tigerPixelPos.y - 4, 8, 8);
         g.dispose();
         setTileIcon(new ImageIcon(combinedImg));
+    }
+    
+    private Point getPositionCoordinate(int position){
+    	switch(position){
+    	case 0:
+    		return new Point(10, 35);
+    	case 1:
+    		return new Point(10, 25);
+    	case 2:
+    		return new Point(10, 35);
+    	case 3:
+    		return new Point(15, 10);
+    	case 4:
+    		return new Point(25, 10);
+    	case 5:
+    		return new Point(35, 10);
+    	case 6:
+    		return new Point(40, 15);
+    	case 7:
+    		return new Point(40, 25);
+    	case 8:
+    		return new Point(40, 35);
+    	case 9:
+    		return new Point(35, 40);
+    	case 10:
+    		return new Point(25, 40);
+    	case 11:
+    		return new Point(15, 40);
+    	case 12:
+    		return new Point(25, 25);
+		default:
+			return new Point(-1, -1);
+    	}
     }
 }
 
