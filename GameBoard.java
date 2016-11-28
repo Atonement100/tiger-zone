@@ -114,13 +114,49 @@ public class GameBoard {
                         if (currNode.featureType.isSameFeature(neighbor.featureType)) {
                             if (neighbor.meeplePlacedInFeature) {
                                 shouldMarkVisited = true;
-                            } else if (!visitedQueue.contains(neighbor)) {     //Only add to nodequeue if we haven't seen it before
+                            } else if (!visitedQueue.contains(neighbor) && neighbor.owningTileId == currNode.owningTileId) {     //Only add to nodequeue if we haven't seen it before
                                 nodeQueue.add(neighbor);
                             }
                         }
                     }
                 }
                 
+                if (shouldMarkVisited) {
+                    for (Node visitedNode : visitedQueue) {
+                        visitedNode.meeplePlacedInFeature = true;
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateMeepleInfoForTemporaryTile(Location tileLocation){
+        Tile tileToUpdate = board[tileLocation.Row][tileLocation.Col];
+
+        for (Edge edge : tileToUpdate.edges) {
+            for (Node node : edge.nodes){           //For each node...
+                if (node.meeplePlacedInFeature) continue; //If this node already knows it has a meeple, continue
+
+                ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
+                ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
+
+                boolean shouldMarkVisited = false;
+
+                nodeQueue.add(node);
+                while (!nodeQueue.isEmpty()) {      //While there are some neighbors that have not been visited...
+                    Node currNode = nodeQueue.removeFirst();
+                    visitedQueue.add(currNode);
+                    for (Node neighbor : currNode.neighbors) {
+                        if (currNode.featureType.isSameFeature(neighbor.featureType)) {
+                            if (neighbor.meeplePlacedInFeature) {
+                                shouldMarkVisited = true;
+                            } else if (!visitedQueue.contains(neighbor)) {     //Only add to nodequeue if we haven't seen it before
+                                nodeQueue.add(neighbor);
+                            }
+                        }
+                    }
+                }
+
                 if (shouldMarkVisited) {
                     for (Node visitedNode : visitedQueue) {
                         visitedNode.meeplePlacedInFeature = true;
@@ -355,7 +391,7 @@ public class GameBoard {
         		//Monasteries are also not connected to anything, so they don't need to be verified for adjacency.
         	}
         	if(meeplePlacement == -1){
-        		System.out.println("Placement = -1 meaning don't want to place a meeple");
+        		//System.out.println("Placement = -1 meaning don't want to place a meeple");
         		return false;
         	}
         	//dummyFunc(0);
@@ -388,7 +424,7 @@ public class GameBoard {
 
     //checks if a meeple can be placed at the spot indicated
     boolean aiVerifyMeeplePlacement(Tile tileToPlace, int meeplePlacement, int currentPlayer){
-        boolean noMeepleAvailable = true;
+ /*       boolean noMeepleAvailable = true;
         for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
             if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
                 noMeepleAvailable = false;
@@ -398,7 +434,7 @@ public class GameBoard {
         if (noMeepleAvailable) return false;
 
         return isValidMeeplePlacementOnNode(tileToPlace, meeplePlacement);
-/*
+*/
         if (meeplePlacement < 0 || meeplePlacement > 11){
             if(meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None){
                 return true; //It can be larger than 11 only if it is 12, which must also be a monastery placement
@@ -429,7 +465,7 @@ public class GameBoard {
             }
         }
         return false;
-        */
+
 
 
     }

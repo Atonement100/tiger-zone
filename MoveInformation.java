@@ -26,4 +26,9 @@ public class MoveInformation {
         this.meepleZone = meepleZone;
     }
 
+    @Override
+    public String toString(){
+        String str = "(" + tileLocation.Row + ", " + tileLocation.Col + "), " + tileRotation + ", " + meepleLocation;
+        return str;
+    }
 }

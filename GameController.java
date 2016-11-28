@@ -1,6 +1,7 @@
 import java.util.*;
 import java.util.ArrayList;
 public class GameController {
+    protected GuiAdapter guiAdapter;
     private static final char startingTileChar = 'S';
     static final int NUM_PLAYERS = 2;
     static final int NUM_MEEPLES = 7;
@@ -37,13 +38,13 @@ public class GameController {
         this.gameTiles = retrieveGameTiles();
         this.gameTileReference = retrieveGameTiles();
         board = new GameBoard(gameTiles.size(), gameTiles.size());
-        
+        guiAdapter= new GuiAdapter(gameTiles.size());
         for (int numCreated = 0; numCreated < NUM_PLAYERS; numCreated++){
             if (numCreated < numHumanPlayers){
-                players[numCreated] = new HumanPlayerController(board);
+                players[numCreated] = new HumanPlayerController(guiAdapter);
             }
             else {
-                players[numCreated] = new ComputerPlayerController(board);
+                players[numCreated] = new ComputerPlayerController(guiAdapter, board);
             }
         }
 
@@ -52,6 +53,7 @@ public class GameController {
         Tile startingTile = prepareTiles();
         Location boardDimensions = board.getBoardDimensions();
         board.placeTile(startingTile, new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
+        guiAdapter.placeFirstTile(boardDimensions.Row / 2,boardDimensions.Col /2 , String.format("%s", startingTile.tileType));
 
         for (PlayerController playerController : players) {
             playerController.processConfirmedMove(new Tile(startingTile), new MoveInformation(new Location(boardDimensions.Row / 2, boardDimensions.Col / 2), 0, -1), currentPlayer);
@@ -71,18 +73,20 @@ public class GameController {
     
     int gameLoop(){
         Tile currentTile;
-        
+        boolean spectating = false;
         
         while(!gameTiles.isEmpty()){
             currentTile = drawTile();
             handleMove(currentTile);
             //board.printBoard();
-            
-            
-            System.out.println("");
-            System.out.println("Player 1 score: " + scoreController.player1Score);
-            System.out.println("Player 2 score: " + scoreController.player2Score);
-            
+           // System.out.println("Player 1 score: " + scoreController.player1Score);
+           // System.out.println("Player 2 score: " + scoreController.player2Score);
+            guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
+            if (spectating){
+                System.out.print("Press enter to continue.");
+                Scanner scanner = new Scanner(System.in);
+                scanner.nextLine();
+            }
         }
         
         
@@ -170,15 +174,18 @@ public class GameController {
     }
 
     private void handleMove(Tile tileForPlayer){
-        System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
-        Tile.printTile(tileForPlayer);
+        //System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
+        //Tile.printTile(tileForPlayer);
 
         MoveInformation playerMoveInfo;
+        boolean firstAttempt = true;
         do {
+            if (!firstAttempt) System.out.println("Invalid move.");
             playerMoveInfo = players[currentPlayer].processPlayerMove(tileForPlayer);
+            firstAttempt = false;
         } while (!board.verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation));
         
-        System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation + " Meeple Location: " + playerMoveInfo.meepleLocation);
+        //System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation + " Meeple Location: " + playerMoveInfo.meepleLocation);
         
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
         
@@ -196,7 +203,8 @@ public class GameController {
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
         }
-        
+
+        guiAdapter.proccessConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
         
         for (Meeple meeple : meeplesToReturn){
             board.freeMeeple(meeple.owner, meeple.ID);
@@ -234,6 +242,7 @@ public class GameController {
     }
     
     private ArrayList<Tile> retrieveGameTiles(){
+        Tile.resetTileIdentify();
         Scanner scanner = new Scanner(System.in);
         String filePath = "tileset.txt";// scanner.next();
         return new TileRetriever(filePath).tiles;

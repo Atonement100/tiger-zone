@@ -22,6 +22,10 @@ public class Tile {
 			citiesAreIndependent;
 	int animalType;
 
+	public static void resetTileIdentify(){
+		identify = 0;
+	}
+
 	public Tile(Tile tileToCopy){
 		Tile newTile = new Tile(tileToCopy.hasMonastery, tileToCopy.roadsEnd, tileToCopy.citiesAreIndependent, tileToCopy.animalType, tileToCopy.edgeValues, tileToCopy.tileType);
 		this.hasMonastery = newTile.hasMonastery;

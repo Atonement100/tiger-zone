@@ -2,6 +2,13 @@ import java.util.*;
 
 public class HumanPlayerController extends PlayerController {
 
+    public GuiAdapter guiAdapter;
+
+    HumanPlayerController(GuiAdapter g){
+        this.guiAdapter = g;
+    }
+
+
     HumanPlayerController(GameBoard board){
         this.localMeeples = new Meeple[7];
         this.localGameBoard = board;
@@ -21,9 +28,9 @@ public class HumanPlayerController extends PlayerController {
 
     @Override
     protected MoveInformation getPlayerMove(Tile currentTile){
-        System.out.println("human processing move");
-
-        return getPlayerMoveFromConsole();
+        //System.out.println("human processing move");
+        return getPlayerMoveFromGui(currentTile);
+        //return getPlayerMoveFromConsole();
     }
 
     private MoveInformation getPlayerMoveFromConsole(){
@@ -35,6 +42,12 @@ public class HumanPlayerController extends PlayerController {
         }
 
         return new MoveInformation(new Location(inputs[0], inputs[1]), inputs[2], inputs[3]);
+    }
+
+    private MoveInformation getPlayerMoveFromGui(Tile currentTile){
+        guiAdapter.setTileID(""+currentTile.tileType);
+        MoveInformation move = new MoveInformation(new Location(guiAdapter.getX(), guiAdapter.getY()), guiAdapter.getRotation(), guiAdapter.getMeeple());
+        return move;
     }
 
 }

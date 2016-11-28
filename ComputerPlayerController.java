@@ -41,12 +41,13 @@ class ComputerPlayerController extends PlayerController {
         meepleMoveInfo.meepleLocation = -1;
 
         int maxConnections = 0;
+        int highestScore = 0;
 
         for (Location possibleLoc : possibleTargets){
             Location[] neighborLocs = localGameBoard.getEmptyNeighboringLocations(possibleLoc);
             int connections = 0;
             for (Location loc : neighborLocs){
-                if (loc != null) connections++;
+                if (loc == null) connections++;
             }
 
             if (connections <= maxConnections) continue;
@@ -64,7 +65,7 @@ class ComputerPlayerController extends PlayerController {
                         //These must be considered in this order because of the... interesting zoning requirements.
                         //The idea here is to keep a running total of the highest scoring node and only replace the intended target if we /exceed/
                         //The current highest. If we only replace on higher values, we'll never pick a later zone is the same as a previous zone.
-                        int highestScore = 0;
+
                         //int[] zoneScores = new int[9], nodeIndices = new int[9];
                         IntegerTuple[] zoneValues = new IntegerTuple[9];
 
@@ -124,7 +125,7 @@ class ComputerPlayerController extends PlayerController {
         //Middle zone
         if (currentTile.hasMonastery){
             //Value monastery
-            return new IntegerTuple(1, 12);
+            return new IntegerTuple(9, 12);
         }
         else{
             int numRoads = 0;
@@ -160,7 +161,7 @@ class ComputerPlayerController extends PlayerController {
             //Guaranteed to be a city zone
             //Use edges[1].nodes[0]
             if(localGameBoard.aiVerifyMeeplePlacement(currentTile, followingEdge * 3, this.playerID)){
-                return new IntegerTuple(1, followingEdge * 3);
+                return new IntegerTuple(3, followingEdge * 3);
             }
         }
         else{
@@ -188,20 +189,31 @@ class ComputerPlayerController extends PlayerController {
     }
 
     IntegerTuple getValueOfSide(Tile currentTile, int edgeNum){
+        IntegerTuple move = new IntegerTuple(-1, -1);
+
         switch (currentTile.edges[edgeNum].nodes[1].featureType){
             case Field:
+                if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
+                    move = new IntegerTuple(1, edgeNum * 3 + 1);
+                }
             case Road:
+                if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
+                    move = new IntegerTuple(2, edgeNum * 3 + 1);
+                }
             case RoadEnd:
+                if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
+                    move = new IntegerTuple(3, edgeNum * 3 + 1);
+                }
             case City:
             case Wall:
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                    return new IntegerTuple(1, edgeNum * 3 + 1);
+                    move = new IntegerTuple(3, edgeNum * 3 + 1);
                 }
                 break;
             default: //Realistically should throw exception but let's just pretend like the node doesn't exist and move on with our lives
                 break;
         }
-        return new IntegerTuple(-1, -1);
+        return move;
     }
 
     @Override
@@ -245,6 +257,6 @@ class ComputerPlayerController extends PlayerController {
     @Override
     public void processFreedMeeple(int ownerID, int meepleID){
         super.processFreedMeeple(ownerID, meepleID);
-
+        if (ownerID == this.playerID) numMeeples++;
     }
 }

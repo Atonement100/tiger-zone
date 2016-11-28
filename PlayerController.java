@@ -1,4 +1,5 @@
 public class PlayerController {
+    public GuiAdapter guiAdapter;
     protected Meeple[] localMeeples;
     protected GameBoard localGameBoard;
     protected int playerID;
