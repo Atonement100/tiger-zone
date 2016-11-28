@@ -166,7 +166,7 @@ public class GameController {
                 playerController.processFreedMeeple(meeple.owner, meeple.ID);
             }
         }
-        board.printBoard();
+        //board.printBoard();
     }
 
     private void handleMove(Tile tileForPlayer){

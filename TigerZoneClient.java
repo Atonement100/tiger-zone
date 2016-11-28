@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class TigerZoneNClient {
+public class TigerZoneClient {
     public static void main(String[] args) throws IOException {
         
         if (args.length != 5) {
@@ -43,7 +43,11 @@ public class TigerZoneNClient {
            			networkOut.println("I AM " + username + " " + password);
            		}
            	}
-            
+
+			fromServer = networkIn.readLine();
+			System.out.println("Server: " + fromServer);
+			serverText = fromServer.split(" ");
+			String pid = serverText[1];
             // Find out how many challenges will be played
             fromServer = networkIn.readLine();
        		serverText = fromServer.split(" ");
@@ -54,6 +58,7 @@ public class TigerZoneNClient {
        		while(currentRound < totalNumberOfRounds)
        		{
        		NetworkAdapter netAdapter = new NetworkAdapter();
+				netAdapter.pid = pid;
             // Getting game info - Player ID - Starting Tile - Order of Tiles 
        			while(isWaiting){
        				fromServer = networkIn.readLine();
@@ -76,12 +81,11 @@ public class TigerZoneNClient {
        				switch(serverText[0]){
        					case "MAKE":
        						String returnMessage = netAdapter.parseMakeMove(fromServer);
-							System.out.println(returnMessage);
 							networkOut.println(returnMessage);
 
 							//AI should probably call this method and client gets the string in another method
        						//String makeMove = netAdapter.sendMove(messageStatus, gid, tileID, x, y, orientation, zone);
-       						//System.out just lets us know what we're sending. 
+       						//System.out just lets us know what we're sending.
        						//System.out.println("Client: " + makeMove);
        						// Sends move to Server
        						//networkOut.println(makeMove);
@@ -101,7 +105,7 @@ public class TigerZoneNClient {
        						break;
        				}
        				
-   					if(gamesEnded == 2){
+   					if(gamesEnded >= 2){
    						// After Endgame / forfeited has happened twice, exit loop
    						isPlaying = false;
    					}

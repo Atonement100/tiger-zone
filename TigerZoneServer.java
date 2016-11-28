@@ -35,7 +35,7 @@ public class TigerZoneServer {
                 if (outputLine.equals("WELCOME Red PLEASE WAIT FOR THE NEXT CHALLENGE"))
                     break;
             }
-            outputLine = "NEW CHALLENGE 1 Red YOU WILL PLAY 1 MATCH";
+            outputLine = "NEW CHALLENGE 1 YOU WILL PLAY 1 MATCH";
             out.println(outputLine);
             outputLine = "BEGIN ROUND 1 OF 1";
             out.println(outputLine);

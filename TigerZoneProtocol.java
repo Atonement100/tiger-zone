@@ -53,10 +53,17 @@ public class TigerZoneProtocol {
     }
     public String StartGame() {
         String theOutput = null;
+        Collections.shuffle(Arrays.asList(tiles));
         ArrayList<String> newTile = new ArrayList<String>();
         Collections.addAll(newTile, tiles);
-        Collections.shuffle(newTile);
-        theOutput = "THE REMAINING " + tiles.length + " TILES ARE " + Arrays.toString(newTile.toArray());
+        //Collections.shuffle(newTile);
+
+		StringBuilder strBuilder = new StringBuilder();
+		for (String string : newTile){
+			strBuilder.append(string + " ");
+		}
+
+        theOutput = "THE REMAINING " + tiles.length + " TILES ARE [ " + strBuilder.toString() + "]";
         return theOutput;
     }
     
@@ -80,13 +87,26 @@ public class TigerZoneProtocol {
     
     public String SendGameAMove(String theInput) {
     	parseInput = theInput.split(" ");
-    	String theOutput = "GAME A MOVE " + moveNumber + " PLAYER Red PLACED " + parseInput[3] + " AT " + parseInput[5] + " " + parseInput[6] + " " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9];
+    	String theOutput;
+		if(parseInput.length == 12){
+			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+		}
+		else{
+			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+		}
     	return theOutput;
     }
 
     public String SendGameBMove(String theInput) {
     	parseInput = theInput.split(" ");
-    	String theOutput = "GAME B MOVE " + moveNumber + " PLAYER Blue PLACED " + parseInput[3] + " AT " + parseInput[5] + " " + parseInput[6] + " " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9];
+    	String theOutput;
+		if(parseInput.length == 12){
+			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+		}
+		else{
+			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+		}
+
     	currentTile++;
     	moveNumber++;
     	return theOutput;

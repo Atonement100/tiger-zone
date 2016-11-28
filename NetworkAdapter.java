@@ -9,10 +9,10 @@ public class NetworkAdapter{
 	private static final int NUM_EXPECTED_TILES = 77;
 	private ArrayList<Tile> shuffledTiles = new ArrayList<Tile>();
 	private static ArrayList<Tile> staticTiles = new ArrayList<Tile>();
-	private String pid; //Our playerID
+	String pid; //Our playerID
 	private String oid; // Opponent playerID
-	private GameController[] gameControllers;
-	private String[] gameIDs;
+	private GameController[] gameControllers = new GameController[2];
+	private String[] gameIDs = new String[2];
 	private boolean gameIDhasBeenReset = false;
 	private int moveNum = 1;
 	Scanner s = new Scanner(System.in);
@@ -34,10 +34,9 @@ public class NetworkAdapter{
 		String tileID, gid, x, y, orientation;
 		switch(tokens[0]){
 			case "BEGIN": //Create the game ctrlrs we are going to use
-				for (GameController gameController : gameControllers){
-					//This will also create our ai instances
-					gameController = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
-				}
+				gameControllers[0] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
+				gameControllers[1] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
+
 				break;
 			case "STARTING": //Place starting tile on AI's board
 				tileID = convertTileToID(tokens[3]);
@@ -396,6 +395,7 @@ public class NetworkAdapter{
 			case "V": return ("TLTT-");
 			case "W": return ("TLTTP");
 			case "X": return ("TLLT-");
+			case "Y": return ("TLLTB");
 			case "Z": return ("LJTJ-");
 			case "a": return ("LJTJD");
 			case "b": return ("TLLLC");
