@@ -26,8 +26,6 @@ public class TigerZoneProtocol {
     private String gameB = "GAME B";
     private String[] parseInput = null;
     private boolean switchGames = true;
-    private boolean switchPlayersGameA = true;
-    private boolean switchPlayersGameB = true;
     
     public String VerifyAuthentication(String theInput) {
         String theOutput = null;
@@ -55,18 +53,24 @@ public class TigerZoneProtocol {
     }
     public String StartGame() {
         String theOutput = null;
+        Collections.shuffle(Arrays.asList(tiles));
         ArrayList<String> newTile = new ArrayList<String>();
         Collections.addAll(newTile, tiles);
-        Collections.shuffle(newTile);
-        String trimmedArray = Arrays.toString(newTile.toArray()).replace(",", "").replace("[", "").replace("]", "").trim();
-        theOutput = "THE REMAINING " + tiles.length + " TILES ARE " + "[ "+ trimmedArray + " ]";
+        //Collections.shuffle(newTile);
+
+		StringBuilder strBuilder = new StringBuilder();
+		for (String string : newTile){
+			strBuilder.append(string + " ");
+		}
+
+        theOutput = "THE REMAINING " + tiles.length + " TILES ARE [ " + strBuilder.toString() + "]";
         return theOutput;
     }
     
     public String NotifyPlayer() {
     	String theOutput = null;
-    	if(currentTile == tiles.length - 1){
-    		theOutput = "END GAME";
+    	if(currentTile == tiles.length){
+    		theOutput = "END OF ROUND";
     	}
     	else{
     		if(switchGames){
@@ -78,62 +82,33 @@ public class TigerZoneProtocol {
     			switchGames = true;
     		}
     	}
-    	
     	return theOutput;
     }
     
     public String SendGameAMove(String theInput) {
     	parseInput = theInput.split(" ");
-    	String Output = null;
-    	if(switchPlayersGameA){
-    		if(parseInput.length == 12){
-    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
-    		}
-    		else{
-    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
-    		}
-    	
-    	switchPlayersGameA = false;
-    	}
-    	else{
-    		if(parseInput.length == 12){
-    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
-    		}
-    		else{
-    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
-    		}
-    	switchPlayersGameA = true;
-    	}
-    	return Output;	
-    	
+    	String theOutput;
+		if(parseInput.length == 12){
+			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+		}
+		else{
+			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+		}
+    	return theOutput;
     }
 
     public String SendGameBMove(String theInput) {
     	parseInput = theInput.split(" ");
-    	String Output = null;
-    	if(switchPlayersGameA){
-    		if(parseInput.length == 12){
-    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
-    		}
-    		else{
-    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
-    		}
-    	
-    	switchPlayersGameB = false;
-    	}
-    	else{
-    		if(parseInput.length == 12){
-    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
-    		}
-    		else{
-    			Output = "GAME A MOVE " + parseInput[3] + " PLAYER Red PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
-    		}
-    	switchPlayersGameB = true;
-    	}
+    	String theOutput;
+		if(parseInput.length == 12){
+			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " TIGER " + parseInput[11];
+		}
+		else{
+			theOutput = "GAME A MOVE " + parseInput[3] + " PLAYER Blue PLACED " + parseInput[5] + " AT " + parseInput[7] + " " + parseInput[8] + " " + parseInput[9] + " " + parseInput[10];
+		}
+
     	currentTile++;
     	moveNumber++;
-        return Output;	
-   
-    	
+    	return theOutput;
     }
 }

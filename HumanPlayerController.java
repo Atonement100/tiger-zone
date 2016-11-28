@@ -1,10 +1,6 @@
 import java.util.*;
 
 public class HumanPlayerController extends PlayerController {
-    public GuiAdapter guiAdapter;
-    public HumanPlayerController(GuiAdapter g) {
-        this.guiAdapter = g;
-    }
 
     HumanPlayerController(GameBoard board){
         this.localMeeples = new Meeple[7];
@@ -25,12 +21,9 @@ public class HumanPlayerController extends PlayerController {
 
     @Override
     protected MoveInformation getPlayerMove(Tile currentTile){
+        System.out.println("human processing move");
 
-       System.out.println("human processing move");
-        //guiAdapter.setTileID(""+currentTile.tileType);
-       return getPlayerMoveFromGui(currentTile);
-      // return getPlayerMoveFromConsole();
-       // return null;
+        return getPlayerMoveFromConsole();
     }
 
     private MoveInformation getPlayerMoveFromConsole(){
@@ -43,19 +36,5 @@ public class HumanPlayerController extends PlayerController {
 
         return new MoveInformation(new Location(inputs[0], inputs[1]), inputs[2], inputs[3]);
     }
-    private MoveInformation getPlayerMoveFromGui(Tile currentTile){
-        guiAdapter.setTileID(""+currentTile.tileType);
-
-//        Scanner scanner = new Scanner(System.in);
-//        System.out.println("Input row, column, clockwise rotations, and meeple location [-1,12]");
-//        int[] inputs = new int[4];
-//        for (int index = 0; index < inputs.length; index++){
-//            inputs[index] = scanner.nextInt();
-//        }
-       // System.out.print(""+guiAdapter.getX()+","+guiAdapter.getY()+","+guiAdapter.getRotation()+","+guiAdapter.getMeeple());
-        MoveInformation move = new MoveInformation(new Location(guiAdapter.getX(),guiAdapter.getY()),guiAdapter.getRotation(),guiAdapter.getMeeple());
-        return move;
-    }
-
 
 }

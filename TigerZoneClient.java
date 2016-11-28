@@ -23,29 +23,44 @@ public class TigerZoneClient {
             PrintWriter networkOut = new PrintWriter(tzSocket.getOutputStream(), true);
             BufferedReader networkIn = new BufferedReader(new InputStreamReader(tzSocket.getInputStream()));
         ) {
+            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
             String fromServer;
             String[] serverText = null;
+            int totalNumberOfRounds = 0;
+            boolean isVerified = false;
             boolean isWaiting = true;
             boolean isPlaying = true;
-            boolean startingMatch = true;
             // Getting verified by server
-
+            while (!isVerified) 
+            {
            		fromServer = networkIn.readLine();
            		System.out.println("Server: " + fromServer);
            		if(fromServer.equals("THIS IS SPARTA!")){
            			networkOut.println("JOIN " + tournamentPassword);
            		}
-           		fromServer = networkIn.readLine();
-           		if (fromServer.equals("HELLO!")){           			
+           		else if (fromServer.equals("HELLO!")){
+           			isVerified = true;
            			networkOut.println("I AM " + username + " " + password);
            		}
-           	
-           	while(startingMatch){
+           	}
+
+			fromServer = networkIn.readLine();
+			System.out.println("Server: " + fromServer);
+			serverText = fromServer.split(" ");
+			String pid = serverText[1];
+            // Find out how many challenges will be played
+            fromServer = networkIn.readLine();
+       		serverText = fromServer.split(" ");
+       		if(serverText[0].equalsIgnoreCase("NEW")){
+       			totalNumberOfRounds = Integer.parseInt(serverText[6]);
+       		}
+       		int currentRound = 0;
+       		while(currentRound < totalNumberOfRounds)
+       		{
        		NetworkAdapter netAdapter = new NetworkAdapter();
+				netAdapter.pid = pid;
             // Getting game info - Player ID - Starting Tile - Order of Tiles 
-       			isWaiting = true;
        			while(isWaiting){
-       				
        				fromServer = networkIn.readLine();
        				serverText = fromServer.split(" ");
        				System.out.println("Server: " + fromServer);
@@ -57,45 +72,48 @@ public class TigerZoneClient {
        					netAdapter.parseMatchProtocol(fromServer);
        				}
        			}
-       			// Where we start Receiving notification to send move / Send our moves.
-       			isPlaying = true;
+       			int gamesEnded = 0;
+       			// Where we start Receiving notification to send move / Send our moves. 
        			while(isPlaying){
        				fromServer = networkIn.readLine();
-       				
        				System.out.println("Server: " + fromServer);
        				serverText = fromServer.split(" ");
        				switch(serverText[0]){
        					case "MAKE":
        						String returnMessage = netAdapter.parseMakeMove(fromServer);
-       						System.out.println(returnMessage);
 							networkOut.println(returnMessage);
+
+							//AI should probably call this method and client gets the string in another method
+       						//String makeMove = netAdapter.sendMove(messageStatus, gid, tileID, x, y, orientation, zone);
+       						//System.out just lets us know what we're sending.
+       						//System.out.println("Client: " + makeMove);
+       						// Sends move to Server
+       						//networkOut.println(makeMove);
        						break;
        				
        					case "GAME":
-       						if(serverText[6].equals("FORFEITED:")){
-       						}
-       						else if(serverText[2].equals("OVER")){
-       							
-       						}
-       						else{
+       						//TODO: Update gameboard for AI for both players move
        						netAdapter.parseUpdateGameBoard(fromServer);
+       						if(serverText[6].equalsIgnoreCase("FORFEITED:")){
+       							gamesEnded++;
        						}
        						break;
        				
        					case "END":
-       						isPlaying = false;
+       						netAdapter.endGame();
+       						gamesEnded++;
        						break;
        				}
+       				
+   					if(gamesEnded >= 2){
+   						// After Endgame / forfeited has happened twice, exit loop
+   						isPlaying = false;
+   					}
        			}
-       			fromServer = networkIn.readLine();
-   				System.out.println("Server: " + fromServer);
-   				serverText = fromServer.split(" ");
-   				if(serverText[0].equals("THANK")){
-   					startingMatch = false;
-   				}
-           	}
-		}
-        	
+				// if its only 1 challenge end, if not go back to top for 2 or more challenges
+       			currentRound++;
+       			}
+        	} 
         
         catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to " +
