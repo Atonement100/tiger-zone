@@ -112,6 +112,42 @@ public class GameBoard {
                         if (currNode.featureType.isSameFeature(neighbor.featureType)) {
                             if (neighbor.meeplePlacedInFeature) {
                                 shouldMarkVisited = true;
+                            } else if (!visitedQueue.contains(neighbor) && neighbor.owningTileId == currNode.owningTileId) {     //Only add to nodequeue if we haven't seen it before
+                                nodeQueue.add(neighbor);
+                            }
+                        }
+                    }
+                }
+                
+                if (shouldMarkVisited) {
+                    for (Node visitedNode : visitedQueue) {
+                        visitedNode.meeplePlacedInFeature = true;
+                    }
+                }
+            }
+        }
+    }
+    
+    private void updateMeepleInfoForTemporaryTile(Location tileLocation){
+        Tile tileToUpdate = board[tileLocation.Row][tileLocation.Col];
+
+        for (Edge edge : tileToUpdate.edges) {
+            for (Node node : edge.nodes){           //For each node...
+                if (node.meeplePlacedInFeature) continue; //If this node already knows it has a meeple, continue
+
+                ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
+                ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
+                
+                boolean shouldMarkVisited = false;
+                
+                nodeQueue.add(node);
+                while (!nodeQueue.isEmpty()) {      //While there are some neighbors that have not been visited...
+                    Node currNode = nodeQueue.removeFirst();
+                    visitedQueue.add(currNode);
+                    for (Node neighbor : currNode.neighbors) {
+                        if (currNode.featureType.isSameFeature(neighbor.featureType)) {
+                            if (neighbor.meeplePlacedInFeature) {
+                                shouldMarkVisited = true;
                             } else if (!visitedQueue.contains(neighbor)) {     //Only add to nodequeue if we haven't seen it before
                                 nodeQueue.add(neighbor);
                             }
