@@ -22,6 +22,16 @@ public class GameController {
         this.gameTileReference = retrieveGameTiles();
         scoreController = new ScoreController(gameTileReference, board);
     }
+    
+    public GameController(int row, int col, ArrayList<Tile> tiles){
+        board = new GameBoard(row, col);
+
+        players[0] = new ComputerPlayerController(board);
+        players[1] = new HumanPlayerController(board); // Humans don't waste processor power
+
+        this.gameTileReference = tiles;
+        scoreController = new ScoreController(gameTileReference, board);
+    }
 
     public GameController(int numHumanPlayers){
         this.gameTiles = retrieveGameTiles();
@@ -66,7 +76,7 @@ public class GameController {
         while(!gameTiles.isEmpty()){
             currentTile = drawTile();
             handleMove(currentTile);
-            board.printBoard();
+            //board.printBoard();
             
             
             System.out.println("");

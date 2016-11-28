@@ -209,9 +209,9 @@ class ComputerPlayerController extends PlayerController {
         }
         possibleTargets.remove(moveLocation);
 
-        for (Location loc : possibleTargets){
-            System.out.println("target: " + loc.Row + ", " + loc.Col);
-        }
+     //   for (Location loc : possibleTargets){
+     //       System.out.println("target: " + loc.Row + ", " + loc.Col);
+     //   }
     }
 
     @Override

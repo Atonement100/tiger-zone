@@ -19,7 +19,7 @@ public class NetworkAdapter{
 	
 	//Creates array of local tiles from input file
 	public NetworkAdapter(){
-		String filePath = "uniquetileset.txt";
+		String filePath = "tileset.txt";
 		staticTiles = new TileRetriever(filePath).tiles;
 
 		gameIDs[0] = "A";
@@ -34,7 +34,7 @@ public class NetworkAdapter{
 			case "BEGIN": //Create the game ctrlrs we are going to use
 				for (GameController gameController : gameControllers){
 					//This will also create our ai instances
-					gameController = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1);
+					gameController = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
 				}
 				break;
 			case "STARTING": //Place starting tile on AI's board
@@ -405,32 +405,32 @@ public class NetworkAdapter{
 		switch(tileID){
 			case "A": return (staticTiles.get(0));
 			case "B": return (staticTiles.get(1));
-			case "C": return (staticTiles.get(2));
-			case "D": return (staticTiles.get(3));
-			case "E": return (staticTiles.get(4));
-			case "F": return (staticTiles.get(5));
-			case "G": return (staticTiles.get(6));
-			case "H": return (staticTiles.get(7));
-			case "I": return (staticTiles.get(8));
-			case "J": return (staticTiles.get(9));
-			case "K": return (staticTiles.get(10));
-			case "L": return (staticTiles.get(11));
-			case "M": return (staticTiles.get(12));
-			case "N": return (staticTiles.get(13));
-			case "O": return (staticTiles.get(14));
-			case "P": return (staticTiles.get(15));
-			case "Q": return (staticTiles.get(16));
-			case "R": return (staticTiles.get(17));
-			case "S": return (staticTiles.get(18));
-			case "T": return (staticTiles.get(19));
-			case "U": return (staticTiles.get(20));
-			case "V": return (staticTiles.get(21));
-			case "W": return (staticTiles.get(22));
-			case "X": return (staticTiles.get(23));
-			case "Y": return (staticTiles.get(24));
-			case "Z": return (staticTiles.get(25));
-			case "a": return (staticTiles.get(26));
-			case "b": return (staticTiles.get(27));
+			case "C": return (staticTiles.get(5));
+			case "D": return (staticTiles.get(7));
+			case "E": return (staticTiles.get(8));
+			case "F": return (staticTiles.get(16));
+			case "G": return (staticTiles.get(25));
+			case "H": return (staticTiles.get(29));
+			case "I": return (staticTiles.get(30));
+			case "J": return (staticTiles.get(34));
+			case "K": return (staticTiles.get(39));
+			case "L": return (staticTiles.get(42));
+			case "M": return (staticTiles.get(45));
+			case "N": return (staticTiles.get(50));
+			case "O": return (staticTiles.get(52));
+			case "P": return (staticTiles.get(53));
+			case "Q": return (staticTiles.get(55));
+			case "R": return (staticTiles.get(56));
+			case "S": return (staticTiles.get(58));
+			case "T": return (staticTiles.get(61));
+			case "U": return (staticTiles.get(63));
+			case "V": return (staticTiles.get(64));
+			case "W": return (staticTiles.get(65));
+			case "X": return (staticTiles.get(67));
+			case "Y": return (staticTiles.get(70));
+			case "Z": return (staticTiles.get(72));
+			case "a": return (staticTiles.get(73));
+			case "b": return (staticTiles.get(75));
 			default: return null;
 		}
 	}
