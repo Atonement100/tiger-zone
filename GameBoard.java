@@ -29,7 +29,6 @@ public class GameBoard {
     void placeTile(Tile tileToPlace, Location targetLocation, int clockwiseRotations){
         tileToPlace.rotateClockwise(clockwiseRotations);
         board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
-        
         for(int direction = 0; direction < 4; direction++){
             Tile[] neighborTiles = getNeighboringTiles(targetLocation);
             
@@ -49,21 +48,20 @@ public class GameBoard {
         //This previously differed from the original placetile function, leave in place in the event things need to be different again
         tileToPlace.rotateClockwise(rotations);
         board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
-
         for(int direction = 0; direction < 4; direction++){
             Tile[] neighborTiles = getNeighboringTiles(targetLocation);
-
+            
             if(neighborTiles[direction] == null) continue;			//if there is no tile, no check is necessary, continue
-
+            
             for (int nodeIndex = 0; nodeIndex < tileToPlace.edges[direction].nodes.length; nodeIndex++){
                 tileToPlace.edges[direction].nodes[nodeIndex].neighbors.add(neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex]);
                 neighborTiles[direction].edges[(direction + 2) % 4].nodes[2-nodeIndex].neighbors.add(tileToPlace.edges[direction].nodes[nodeIndex]);
             }
         }
-
+        
         updateMeepleInfoForNewTile(targetLocation);
     }
-
+    
     void removeTemporaryTile(Location targetLocation){
         Tile tileToRemove = board[targetLocation.Row][targetLocation.Col];
 
@@ -101,6 +99,42 @@ public class GameBoard {
                  *  We can't break early from the loop to ensure that we get all connected unmarked nodes
                  *  This is to cover the case where a tile placed connects two independent feature zones.
                  */
+                ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
+                ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
+                
+                boolean shouldMarkVisited = false;
+                
+                nodeQueue.add(node);
+                while (!nodeQueue.isEmpty()) {      //While there are some neighbors that have not been visited...
+                    Node currNode = nodeQueue.removeFirst();
+                    visitedQueue.add(currNode);
+                    for (Node neighbor : currNode.neighbors) {
+                        if (currNode.featureType.isSameFeature(neighbor.featureType)) {
+                            if (neighbor.meeplePlacedInFeature) {
+                                shouldMarkVisited = true;
+                            } else if (!visitedQueue.contains(neighbor) && neighbor.owningTileId == currNode.owningTileId) {     //Only add to nodequeue if we haven't seen it before
+                                nodeQueue.add(neighbor);
+                            }
+                        }
+                    }
+                }
+                
+                if (shouldMarkVisited) {
+                    for (Node visitedNode : visitedQueue) {
+                        visitedNode.meeplePlacedInFeature = true;
+                    }
+                }
+            }
+        }
+    }
+    
+    private void updateMeepleInfoForTemporaryTile(Location tileLocation){
+        Tile tileToUpdate = board[tileLocation.Row][tileLocation.Col];
+
+        for (Edge edge : tileToUpdate.edges) {
+            for (Node node : edge.nodes){           //For each node...
+                if (node.meeplePlacedInFeature) continue; //If this node already knows it has a meeple, continue
+
                 ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
                 ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
                 
@@ -161,7 +195,6 @@ public class GameBoard {
         int edge = meepleLocation / 3; //Nodes per edge
         int node = meepleLocation % 3;
         Tile tile = board[targetLocation.Row][targetLocation.Col];
-
         if (tile == null) return false;
 
         if(tile.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
@@ -170,7 +203,6 @@ public class GameBoard {
         
         Node startingNode = tile.edges[edge].nodes[node];
         if (startingNode.meeplePlacedInFeature) return false;
-        
         
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
         ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
@@ -238,6 +270,9 @@ public class GameBoard {
     
     //places a meeple in the valid position
     void placeMeeple(Tile tileToPlace, Location targetLocation, int placement, int currentPlayer){
+    	
+    	System.out.println("CALLED PLACE MEEPLE ********************************************************************");
+    	
         if (placement < 0 || placement > 12) return;
         
         int edge = placement / 3; //Nodes per edge
@@ -269,17 +304,18 @@ public class GameBoard {
                     board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].meeple = playerMeeples[currentPlayer][meepleIndex];
                     updateMeepleInfoForNewMeeple(targetLocation, placement);    //No need to propagate changes for monastery, only do it here
                 }
-
                 //Updates location and status of meeple
+                
+
+                
                 playerMeeples[currentPlayer][meepleIndex].location.Row = targetLocation.Row;
                 playerMeeples[currentPlayer][meepleIndex].location.Col = targetLocation.Col;
-                playerMeeples[currentPlayer][meepleIndex].setStatus(feature.toInt()); // This processes the int value of the feature and sets it to the appropriate status :)
-                
+                playerMeeples[currentPlayer][meepleIndex].setStatus(feature.toInt()); // This processes the int value of the feature and sets it to the appropriate status :)    
                 break;
             }
         }
     }
-
+    
     boolean verifyTilePlacement(Tile tileToPlace, Location targetLocation, int rotations){
         tileToPlace.rotateClockwise(rotations);
         
@@ -355,7 +391,7 @@ public class GameBoard {
         		//Monasteries are also not connected to anything, so they don't need to be verified for adjacency.
         	}
         	if(meeplePlacement == -1){
-        		System.out.println("Placement = -1 meaning don't want to place a meeple");
+        		//System.out.println("Placement = -1 meaning don't want to place a meeple");
         		return false;
         	}
         	dummyFunc(0);
@@ -375,7 +411,6 @@ public class GameBoard {
         	dummyFunc(1);
             return false;
         }
-        
         //checks if the player has any meeples to place
         for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
             if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
@@ -389,7 +424,7 @@ public class GameBoard {
 
     //checks if a meeple can be placed at the spot indicated
     boolean aiVerifyMeeplePlacement(Tile tileToPlace, int meeplePlacement, int currentPlayer){
-        boolean noMeepleAvailable = true;
+  /*      boolean noMeepleAvailable = true;
         for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
             if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
                 noMeepleAvailable = false;
@@ -399,7 +434,7 @@ public class GameBoard {
         if (noMeepleAvailable) return false;
 
         return isValidMeeplePlacementOnNode(tileToPlace, meeplePlacement);
-/*
+*/
         if (meeplePlacement < 0 || meeplePlacement > 11){
             if(meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None){
                 return true; //It can be larger than 11 only if it is 12, which must also be a monastery placement
@@ -424,7 +459,6 @@ public class GameBoard {
         if(tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature){
             return false;
         }
-
         //checks if the player has any meeples to place
         for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
             if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
@@ -432,7 +466,7 @@ public class GameBoard {
             }
         }
         return false;
-        */
+        
 
 
     }

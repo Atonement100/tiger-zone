@@ -5,6 +5,7 @@ public class GameController {
     static final int NUM_PLAYERS = 2;
     static final int NUM_MEEPLES = 7;
     GameBoard board;
+    protected GuiAdapter guiAdapter;
     private PlayerController[] players = new PlayerController[NUM_PLAYERS];
     //private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
     
@@ -37,22 +38,25 @@ public class GameController {
         this.gameTiles = retrieveGameTiles();
         this.gameTileReference = retrieveGameTiles();
         board = new GameBoard(gameTiles.size(), gameTiles.size());
-        
+        guiAdapter= new GuiAdapter(gameTiles.size());
         for (int numCreated = 0; numCreated < NUM_PLAYERS; numCreated++){
             if (numCreated < numHumanPlayers){
-                players[numCreated] = new HumanPlayerController(board);
+                players[numCreated] = new HumanPlayerController(guiAdapter);
             }
             else {
-                players[numCreated] = new ComputerPlayerController(board);
+                players[numCreated] = new ComputerPlayerController(guiAdapter, board);
             }
         }
-
         scoreController = new ScoreController(gameTileReference, board);
         
         Tile startingTile = prepareTiles();
         Location boardDimensions = board.getBoardDimensions();
         board.placeTile(startingTile, new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
-
+        guiAdapter.placeFirstTile(boardDimensions.Row / 2,boardDimensions.Col /2 , String.format("%s", startingTile.tileType));
+        /*scoreController.localBoard.placeTile(new Tile(startingTile), new Location( boardDimensions.Row / 2, boardDimensions.Col / 2 ), 0);
+         */
+        
+        
         for (PlayerController playerController : players) {
             playerController.processConfirmedMove(new Tile(startingTile), new MoveInformation(new Location(boardDimensions.Row / 2, boardDimensions.Col / 2), 0, -1), currentPlayer);
         }
@@ -71,68 +75,117 @@ public class GameController {
     
     int gameLoop(){
         Tile currentTile;
-        
-        
+        // Edit this to watch AI games play out move by move.
+        boolean spectating = false;
         while(!gameTiles.isEmpty()){
             currentTile = drawTile();
             handleMove(currentTile);
-            //board.printBoard();
             
-            
-            System.out.println("");
-            System.out.println("Player 1 score: " + scoreController.player1Score);
-            System.out.println("Player 2 score: " + scoreController.player2Score);
-            
+            System.out.println("Player 0 score: " + scoreController.player1Score);
+            System.out.println("Player 1 score: " + scoreController.player2Score);
+            guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
+            if(spectating){
+                System.out.print("Press enter to continue.");
+                Scanner scanner = new Scanner(System.in);
+                scanner.nextLine();
+            }
         }
         
         
         endOfGameScoring();
-        
+        guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
         return 0;
     }
     
     private void endOfGameScoring(){
+    	
+    	System.out.println("END OF GAME SCORING");
+    	
         for(int playerIndex = 0; playerIndex < board.playerMeeples.length; playerIndex++){
             for (int meepleIndex = 0; meepleIndex < board.playerMeeples[playerIndex].length; meepleIndex++){
+            	
+            	
+            	
+            	
+            	
                 if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onMonastery){
-                    scoreController.scoreIncompleteDen(board.playerMeeples[playerIndex][meepleIndex].location);
+                	
+                	System.out.println("END OF GAME SCORING");
+                	System.out.println("BEFORE SCORING INCOMPLETE DEN at" +board.playerMeeples[playerIndex][meepleIndex].location.Row + " " + board.playerMeeples[playerIndex][meepleIndex].location.Col );
+                	System.out.println("Player 0 " + scoreController.player1Score);
+                	System.out.println("Player 1 " + scoreController.player2Score);
+                	
+                	
+                	scoreController.scoreIncompleteDen(board.playerMeeples[playerIndex][meepleIndex].location);
+                    
+                	System.out.println("AFTER SCORING INCOMPLETE DEN at" +board.playerMeeples[playerIndex][meepleIndex].location.Row + " " + board.playerMeeples[playerIndex][meepleIndex].location.Col );
+
+                	
+                	System.out.println("Player 0 " + scoreController.player1Score);
+                	System.out.println("Player 1 " + scoreController.player2Score);
+                    
                 }
+                
+                
                 else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onCity){
                     Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
                             if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+
                                 scoreController.scoreIncompleteCity(node);
+
                                 break;
                             }
                         }
                     }
                 }
+                
+                
+                
                 else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onRoad){
                     Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
                             if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
-                                scoreController.scoreField(node);
+                            	
+                            	
+                            	
+                                scoreController.scoreRoad(node);
                                 break;
                             }
                         }
                     }
                 }
+                
+                
                 else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onField){
                     Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
                     Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
                     for (Edge edge : meepleTile.edges){
                         for (Node node: edge.nodes){
                             if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
+                            	
+                            	System.out.println("BEFORE SCORING FARM AT " + board.playerMeeples[playerIndex][meepleIndex].location.Row + " " + board.playerMeeples[playerIndex][meepleIndex].location.Col);
+                            	System.out.println("player 0 " + scoreController.player1Score);
+                            	System.out.println("player 1 " + scoreController.player2Score);
+                            	
                                 scoreController.scoreField(node);
+                                
+                                System.out.println("AFter SCORING FARM AT " + board.playerMeeples[playerIndex][meepleIndex].location.Row + " " + board.playerMeeples[playerIndex][meepleIndex].location.Col);
+                            	System.out.println("player 0 " + scoreController.player1Score);
+                            	System.out.println("player 1 " + scoreController.player2Score);
+                                
+                            	System.out.println("");
+                            	
                                 break;
                             }
                         }
                     }
                 }
+                
             }
         }
     }
@@ -171,17 +224,22 @@ public class GameController {
 
     private void handleMove(Tile tileForPlayer){
         System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
-        Tile.printTile(tileForPlayer);
-
+        //Tile.printTile(tileForPlayer); Unneeded for GUI mode.
+        
+        
         MoveInformation playerMoveInfo;
+        boolean firstAttempt = true;
         do {
+            if(!firstAttempt){
+                System.out.println("Invalid move.");
+            }
             playerMoveInfo = players[currentPlayer].processPlayerMove(tileForPlayer);
-        } while (!board.verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation));
+            firstAttempt = false;
+        } while (!board.verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation)
+        		);
         
         System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation + " Meeple Location: " + playerMoveInfo.meepleLocation);
-        
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
-        
         if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.meepleLocation, currentPlayer) ) {
             board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
         }
@@ -198,7 +256,7 @@ public class GameController {
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
         }
-        
+        guiAdapter.proccessConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
         
         for (Meeple meeple : meeplesToReturn){
             board.freeMeeple(meeple.owner, meeple.ID);
