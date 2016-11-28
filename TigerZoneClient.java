@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class TigerZoneNClient {
+public class TigerZoneClient {
     public static void main(String[] args) throws IOException {
         
         if (args.length != 5) {
