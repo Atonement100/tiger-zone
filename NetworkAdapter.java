@@ -87,11 +87,11 @@ public class NetworkAdapter{
 		else if (!gameIDhasBeenReset){
 			gameIDs[0] = gid;
 			gameIDhasBeenReset = true;
-			parseMakeMove(message);
+			return parseMakeMove(message);
 		}
 		else if (gameIDhasBeenReset){
 			gameIDs[1] = gid;
-			parseMakeMove(message);
+			return parseMakeMove(message);
 		}
 
 		return "";
