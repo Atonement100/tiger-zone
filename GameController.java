@@ -244,8 +244,6 @@ public class GameController {
             board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
         }
         else{
-            System.out.println("Bad meeple placement, discarding");
-            System.out.println("Bad Meeple: " + playerMoveInfo.meepleLocation);
             playerMoveInfo.meepleLocation = -1;
             //Just throw away bad meeple placements so score ctrlr and players don't get false signal
         }

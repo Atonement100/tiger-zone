@@ -271,8 +271,6 @@ public class GameBoard {
     //places a meeple in the valid position
     void placeMeeple(Tile tileToPlace, Location targetLocation, int placement, int currentPlayer){
     	
-    	System.out.println("CALLED PLACE MEEPLE ********************************************************************");
-    	
         if (placement < 0 || placement > 12) return;
         
         int edge = placement / 3; //Nodes per edge
@@ -372,7 +370,7 @@ public class GameBoard {
         return isCompatible;
     }
     
-    void dummyFunc(int stat){
+    /* void dummyFunc(int stat){
     	switch (stat){
     	case 0: System.out.println("Placement value is not within -1 to 12");
     		throw new IllegalStateException();
@@ -381,7 +379,7 @@ public class GameBoard {
     	case 2: System.out.println("You are out of meeples to place, cannot place a meeple");
     		throw new IllegalStateException();
     	}
-    }
+    } */
     
     //checks if a meeple can be placed at the spot indicated
     boolean verifyMeeplePlacement(Tile tileToPlace, int meeplePlacement, int currentPlayer){
@@ -394,7 +392,7 @@ public class GameBoard {
         		//System.out.println("Placement = -1 meaning don't want to place a meeple");
         		return false;
         	}
-        	dummyFunc(0);
+        	//dummyFunc(0);
         }
         
         //initializes necessary values
@@ -402,13 +400,12 @@ public class GameBoard {
         int node = meeplePlacement % 3;
         
         if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
-        	System.out.println("Meeple placed on inner wall, changed node to middle node");
             node = 1;
         }
         
         //checks if there is already a meeple on the feature that the player is trying to place a meeple on
         if(tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature){
-        	dummyFunc(1);
+        	//dummyFunc(1);
             return false;
         }
         //checks if the player has any meeples to place
@@ -418,7 +415,7 @@ public class GameBoard {
             }
         }
         
-        dummyFunc(2);
+        //dummyFunc(2);
         return false;
     }
 
@@ -441,7 +438,6 @@ public class GameBoard {
                 //Monasteries are also not connected to anything, so they don't need to be verified for adjacency.
             }
             if(meeplePlacement == -1){
-                System.out.println("Placement = -1 meaning don't want to place a meeple");
                 return false;
             }
         }
@@ -451,7 +447,6 @@ public class GameBoard {
         int node = meeplePlacement % 3;
 
         if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
-            System.out.println("Meeple placed on inner wall, changed node to middle node");
             node = 1;
         }
 
