@@ -35,15 +35,18 @@ public class TigerZoneServer {
                 if (outputLine.equals("WELCOME Red PLEASE WAIT FOR THE NEXT CHALLENGE"))
                     break;
             }
-            outputLine = "NEW CHALLENGE 1 YOU WILL PLAY 1 MATCH";
+            outputLine = "NEW CHALLENGE 1 YOU WILL PLAY 3 MATCHES";
             out.println(outputLine);
-            outputLine = "BEGIN ROUND 1 OF 1";
+            int i = 0;
+            while(i < 3){
+            TigerZoneProtocol tzProtocol = new TigerZoneProtocol();
+            outputLine = "BEGIN ROUND 1 OF 3";
             out.println(outputLine);
             outputLine = "YOUR OPPONENT IS PLAYER Blue";
             out.println(outputLine);
             outputLine = "STARTING TILE IS TLTJ- AT 0 0 0";
             out.println(outputLine);
-            outputLine = tzp.StartGame();
+            outputLine = tzProtocol.StartGame();
             out.println(outputLine);
             outputLine = "MATCH BEGINS IN 15 SECONDS";
             out.println(outputLine);
@@ -57,17 +60,25 @@ public class TigerZoneServer {
             boolean isGamePlaying = true;
             while(isGamePlaying)
             {
-            	outputLine = tzp.NotifyPlayer();
+            	outputLine = tzProtocol.NotifyPlayer();
             	out.println(outputLine);
             	if(outputLine.equals("END OF ROUND"))
             		isGamePlaying = false;
+            	else{
             	inputLine = in.readLine();
-            	outputLine = tzp.SendGameAMove(inputLine);
+            	}
+            	outputLine = tzProtocol.SendGameAMove(inputLine);
             	out.println(outputLine);
-            	outputLine = tzp.SendGameBMove(inputLine);
+            	outputLine = tzProtocol.SendGameBMove(inputLine);
             	out.println(outputLine);
             			
+            }i++;
+            outputLine = "PLEASE WAIT FOR NEXT CHALLENGE TO BEGIN";
+            out.println(outputLine);
             }
+            outputLine = "THANK YOU FOR PLAYING! GOODBYE ";
+            out.println(outputLine);
+            
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "
                 + portNumber + " or listening for a connection");
