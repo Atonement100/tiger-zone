@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class NetworkAdapter{
 	private static final int NUM_EXPECTED_TILES = 77;
 	private ArrayList<Tile> shuffledTiles = new ArrayList<Tile>();
-	private ArrayList<Tile> staticTiles = new ArrayList<Tile>();
+	private static ArrayList<Tile> staticTiles = new ArrayList<Tile>();
 	private String pid; //Our playerID
 	private String oid; // Opponent playerID
 	private GameController[] gameControllers;
@@ -19,8 +19,10 @@ public class NetworkAdapter{
 	
 	//Creates array of local tiles from input file
 	public NetworkAdapter(){
-		String filePath = "tileset.txt";
-		staticTiles = new TileRetriever(filePath).tiles;
+		if (staticTiles.isEmpty()){
+			String filePath = "tileset.txt";
+			staticTiles = new TileRetriever(filePath).tiles;
+		}
 
 		gameIDs[0] = "A";
 		gameIDs[1] = "B";
