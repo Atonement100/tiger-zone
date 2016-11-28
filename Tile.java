@@ -1,4 +1,3 @@
-import com.sun.org.apache.xalan.internal.utils.FeatureManager;
 import javafx.scene.transform.Rotate;
 
 import javax.smartcardio.TerminalFactory;
@@ -44,7 +43,7 @@ public class Tile {
 		this.edgeValues = edgeValues;
 		this.animalType = animalType;
 		this.ID = identify++;
-
+		System.out.println(this.tileType + " : " + this.ID);
 
 		//Count number of road + city edges
 		int numRoads = 0, numCities = 0;

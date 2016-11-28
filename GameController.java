@@ -16,8 +16,24 @@ public class GameController {
     
     public GameController(int row, int col){
         board = new GameBoard(row, col);
+
+        players[0] = new ComputerPlayerController(board);
+        players[1] = new HumanPlayerController(board); // Humans don't waste processor power
+
+        this.gameTileReference = retrieveGameTiles();
+        scoreController = new ScoreController(gameTileReference, board);
     }
     
+    public GameController(int row, int col, ArrayList<Tile> tiles){
+        board = new GameBoard(row, col);
+
+        players[0] = new ComputerPlayerController(board);
+        players[1] = new HumanPlayerController(board); // Humans don't waste processor power
+
+        this.gameTileReference = tiles;
+        scoreController = new ScoreController(gameTileReference, board);
+    }
+
     public GameController(int numHumanPlayers){
         this.gameTiles = retrieveGameTiles();
         this.gameTileReference = retrieveGameTiles();
@@ -64,6 +80,7 @@ public class GameController {
         while(!gameTiles.isEmpty()){
             currentTile = drawTile();
             handleMove(currentTile);
+            
             System.out.println("Player 0 score: " + scoreController.player1Score);
             System.out.println("Player 1 score: " + scoreController.player2Score);
             guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
@@ -172,7 +189,39 @@ public class GameController {
             }
         }
     }
-    
+
+    void processNetworkStart(Tile startingTile, MoveInformation startMoveInfo){
+        board.placeTile(startingTile, startMoveInfo.tileLocation, startMoveInfo.tileRotation);
+        players[0].processConfirmedMove(startMoveInfo);
+    }
+
+    MoveInformation processNetworkedPlayerMove(Tile tileForPlayer){
+        return players[0].processPlayerMove(tileForPlayer);
+    }
+
+    void processConfirmedNetworkedMove(Tile tileForPlayer, MoveInformation playerMoveInfo, int currentPlayer){
+        board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
+
+        if (playerMoveInfo.meepleLocation != -1) {
+            board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
+        }
+
+        ArrayList<Meeple> meeplesToReturn = scoreController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer, false);
+
+        for (PlayerController playerController : players){
+            playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
+        }
+
+        for (Meeple meeple : meeplesToReturn){
+            board.freeMeeple(meeple.owner, meeple.ID);
+            scoreController.processFreedMeeple(meeple.owner, meeple.ID);
+            for (PlayerController playerController : players){
+                playerController.processFreedMeeple(meeple.owner, meeple.ID);
+            }
+        }
+        board.printBoard();
+    }
+
     private void handleMove(Tile tileForPlayer){
         System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
         //Tile.printTile(tileForPlayer); Unneeded for GUI mode.
@@ -209,11 +258,11 @@ public class GameController {
         }
         guiAdapter.proccessConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
         
-        for (Meeple info : meeplesToReturn){
-            board.freeMeeple(info.owner, info.ID);
-            scoreController.processFreedMeeple(info.owner, info.ID);
+        for (Meeple meeple : meeplesToReturn){
+            board.freeMeeple(meeple.owner, meeple.ID);
+            scoreController.processFreedMeeple(meeple.owner, meeple.ID);
             for (PlayerController playerController : players){
-                playerController.processFreedMeeple(info.owner, info.ID);
+                playerController.processFreedMeeple(meeple.owner, meeple.ID);
             }
         }
         
@@ -249,5 +298,8 @@ public class GameController {
         String filePath = "tileset.txt";// scanner.next();
         return new TileRetriever(filePath).tiles;
     }
-    
+
+    Location getBoardCenter(){
+        return new Location(board.board.length / 2, board.board[0].length / 2);
+    }
 }

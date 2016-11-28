@@ -29,6 +29,9 @@ public class PlayerController {
         //localGameBoard.placeMeeple(confirmedTile, moveInfo.tileLocation, moveInfo.meepleLocation, playerConfirmed);
     }
 
+    void processConfirmedMove(MoveInformation moveInfo) {
+    }
+
     MoveInformation processPlayerMove(Tile currentTile){
         System.out.println("PlayerController processMove() not overridden");
         return new MoveInformation(new Location(-1, -1), -1, -1);

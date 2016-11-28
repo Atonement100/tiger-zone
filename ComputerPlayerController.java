@@ -29,6 +29,8 @@ class ComputerPlayerController extends PlayerController {
         MoveInformation noMeepleMoveInfo = new MoveInformation(),
         meepleMoveInfo = new MoveInformation();
         boolean meepleMoveFound = false;
+
+        noMeepleMoveInfo.tileLocation = new Location(-1, -1);
         noMeepleMoveInfo.meepleLocation = -1;
         meepleMoveInfo.meepleLocation = -1;
         int maxConnections = 0;
@@ -161,7 +163,6 @@ class ComputerPlayerController extends PlayerController {
                 //If both nodes considered are fields, doesn't matter which we use. Otherwise pick the one that is a field.
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, leadingEdge * 3 + 2, this.playerID)){
                     return new IntegerTuple(1, leadingEdge * 3 + 2);
-                    //return new IntegerTuple(-1, -1);
                 }
             }
             else if (currentTile.edges[followingEdge].nodes[0].featureType == FeatureTypeEnum.Field){
