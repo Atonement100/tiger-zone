@@ -2,13 +2,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 class ComputerPlayerController extends PlayerController {
-    public GuiAdapter guiAdapter;
     private HashSet<Location> possibleTargets = new HashSet<>();
     private int numMeeples;
     private int numCrocodiles;
-    
-    public ComputerPlayerController(GuiAdapter g, GameBoard board) {
-        this.guiAdapter = g;
+
+    ComputerPlayerController(GameBoard board){
         this.localMeeples = new Meeple[7];
         this.localGameBoard = board;
         this.numMeeples = 7;
@@ -25,27 +23,25 @@ class ComputerPlayerController extends PlayerController {
     protected MoveInformation getPlayerMove(Tile currentTile){
         //AI Logic / fx calls may come from here
         // System.out.println("computer processing move");
-
         MoveInformation noMeepleMoveInfo = new MoveInformation(),
-        meepleMoveInfo = new MoveInformation();
+                meepleMoveInfo = new MoveInformation();
         boolean meepleMoveFound = false;
 
         noMeepleMoveInfo.tileLocation = new Location(-1, -1);
         noMeepleMoveInfo.meepleLocation = -1;
         meepleMoveInfo.meepleLocation = -1;
+
         int maxConnections = 0;
-        int highestScore = 0;
 
         for (Location possibleLoc : possibleTargets){
             Location[] neighborLocs = localGameBoard.getEmptyNeighboringLocations(possibleLoc);
             int connections = 0;
             for (Location loc : neighborLocs){
-                if (loc == null){ 
-                	connections++;                	
-                }
+                if (loc != null) connections++;
             }
 
             if (connections <= maxConnections) continue;
+
             for (int possibleRot = 0; possibleRot < 4; possibleRot++){
                 if (this.localGameBoard.verifyTilePlacement(currentTile, possibleLoc, possibleRot)){
                     noMeepleMoveInfo.tileLocation = possibleLoc;
@@ -59,7 +55,7 @@ class ComputerPlayerController extends PlayerController {
                         //These must be considered in this order because of the... interesting zoning requirements.
                         //The idea here is to keep a running total of the highest scoring node and only replace the intended target if we /exceed/
                         //The current highest. If we only replace on higher values, we'll never pick a later zone is the same as a previous zone.
-                        
+                        int highestScore = 0;
                         //int[] zoneScores = new int[9], nodeIndices = new int[9];
                         IntegerTuple[] zoneValues = new IntegerTuple[9];
 
@@ -81,6 +77,7 @@ class ComputerPlayerController extends PlayerController {
                                 meepleMoveInfo.tileRotation = possibleRot;
                                 meepleMoveInfo.tileLocation = possibleLoc;
                                 meepleMoveFound = true;
+
                             }
                         }
 
@@ -118,7 +115,7 @@ class ComputerPlayerController extends PlayerController {
         //Middle zone
         if (currentTile.hasMonastery){
             //Value monastery
-            return new IntegerTuple(9, 12);
+            return new IntegerTuple(1, 12);
         }
         else{
             int numRoads = 0;
@@ -182,34 +179,20 @@ class ComputerPlayerController extends PlayerController {
     }
 
     IntegerTuple getValueOfSide(Tile currentTile, int edgeNum){
-        IntegerTuple move = new IntegerTuple(-1, -1);
-    	
-    	switch (currentTile.edges[edgeNum].nodes[1].featureType){
+        switch (currentTile.edges[edgeNum].nodes[1].featureType){
             case Field:
-            	  if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                      move = new IntegerTuple(1, edgeNum * 3 + 1);
-                  }
-                  break;
             case Road:
-            	  if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                      move = new IntegerTuple(2, edgeNum * 3 + 1);
-                  }
-                  break;
             case RoadEnd:
-            	  if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                      move = new IntegerTuple(3, edgeNum * 3 + 1);
-                  }
-                  break;
-            case City:   
+            case City:
             case Wall:
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                    move = new IntegerTuple(3, edgeNum * 3 + 1);
+                    return new IntegerTuple(1, edgeNum * 3 + 1);
                 }
                 break;
             default: //Realistically should throw exception but let's just pretend like the node doesn't exist and move on with our lives
                 break;
         }
-        return move;
+        return new IntegerTuple(-1, -1);
     }
 
     @Override
@@ -226,14 +209,33 @@ class ComputerPlayerController extends PlayerController {
         }
         possibleTargets.remove(moveLocation);
 
-        /*for (Location loc : possibleTargets){
-            System.out.println("target: " + loc.Row + ", " + loc.Col); //Commented out to free console space.
-        }*/
+     //   for (Location loc : possibleTargets){
+     //       System.out.println("target: " + loc.Row + ", " + loc.Col);
+     //   }
+    }
+
+    @Override
+    void processConfirmedMove(MoveInformation moveInfo) {
+        //super.processConfirmedMove(confirmedTile, moveInfo, playerConfirmed);
+        //System.out.println("Computer player has confirmed the recent move Row: " + moveInfo.tileLocation.Row + " Col: " + moveInfo.tileLocation.Col + " Rotation: " + moveInfo.tileRotation);
+
+        Location moveLocation = moveInfo.tileLocation;
+
+        for (Location loc : localGameBoard.getEmptyNeighboringLocations(moveLocation)){
+            if (loc != null){
+                possibleTargets.add(loc);
+            }
+        }
+        possibleTargets.remove(moveLocation);
+
+        for (Location loc : possibleTargets){
+            System.out.println("target: " + loc.Row + ", " + loc.Col);
+        }
     }
 
     @Override
     public void processFreedMeeple(int ownerID, int meepleID){
         super.processFreedMeeple(ownerID, meepleID);
-        if (ownerID == this.playerID) numMeeples++;
+
     }
 }
