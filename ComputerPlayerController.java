@@ -7,6 +7,14 @@ class ComputerPlayerController extends PlayerController {
     private int numMeeples;
     private int numCrocodiles;
     
+    public ComputerPlayerController(GameBoard board){
+    	this.localMeeples = new Meeple[7];
+        this.localGameBoard = board;
+        this.numMeeples = 7;
+        this.numCrocodiles = 2;
+        this.playerID = defaultID++ % 2;
+    }
+    
     public ComputerPlayerController(GuiAdapter g, GameBoard board) {
         this.guiAdapter = g;
         this.localMeeples = new Meeple[7];
