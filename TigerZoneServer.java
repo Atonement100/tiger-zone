@@ -48,11 +48,11 @@ public class TigerZoneServer {
             outputLine = "MATCH BEGINS IN 15 SECONDS";
             out.println(outputLine);
             
-            try {
+           /* try {
                 Thread.sleep(15000);
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
-            }
+            } */
             
             boolean isGamePlaying = true;
             while(isGamePlaying)
