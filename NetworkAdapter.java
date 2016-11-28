@@ -76,7 +76,8 @@ public class NetworkAdapter{
 		tileID = convertTileToID(tokens[12]);
 		Tile nextTile = convertFromTileID(tileID);
 		gid = tokens[5];
-		
+		moveNum = Integer.parseInt(tokens[10]);
+
 		if (gid.equals(gameIDs[0])){
 			return processMoveInformation(gameControllers[0].processNetworkedPlayerMove(nextTile), gid, tileID);
 		}
@@ -303,7 +304,7 @@ public class NetworkAdapter{
 			case 5: message = "GAME " + gid + " MOVE " + moveNum + " TILE " + convertTileToString(tileID) + " UNPLACEABLE ADD ANOTHER TIGER TO " + x + " " + y;
 					break;
 		}
-		moveNum++;
+		//moveNum++;
 		return message;
 	}
 
