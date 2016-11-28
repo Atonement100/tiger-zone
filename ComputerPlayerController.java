@@ -2,11 +2,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 class ComputerPlayerController extends PlayerController {
+    public GuiAdapter guiAdapter;
     private HashSet<Location> possibleTargets = new HashSet<>();
     private int numMeeples;
     private int numCrocodiles;
-
-    ComputerPlayerController(GameBoard board){
+    
+    public ComputerPlayerController(GuiAdapter g, GameBoard board) {
+        this.guiAdapter = g;
         this.localMeeples = new Meeple[7];
         this.localGameBoard = board;
         this.numMeeples = 7;
@@ -23,12 +25,12 @@ class ComputerPlayerController extends PlayerController {
     protected MoveInformation getPlayerMove(Tile currentTile){
         //AI Logic / fx calls may come from here
         // System.out.println("computer processing move");
+
         MoveInformation noMeepleMoveInfo = new MoveInformation(),
-                meepleMoveInfo = new MoveInformation();
+        meepleMoveInfo = new MoveInformation();
         boolean meepleMoveFound = false;
         noMeepleMoveInfo.meepleLocation = -1;
         meepleMoveInfo.meepleLocation = -1;
-
         int maxConnections = 0;
 
         for (Location possibleLoc : possibleTargets){
@@ -39,7 +41,6 @@ class ComputerPlayerController extends PlayerController {
             }
 
             if (connections <= maxConnections) continue;
-
             for (int possibleRot = 0; possibleRot < 4; possibleRot++){
                 if (this.localGameBoard.verifyTilePlacement(currentTile, possibleLoc, possibleRot)){
                     noMeepleMoveInfo.tileLocation = possibleLoc;
@@ -209,7 +210,7 @@ class ComputerPlayerController extends PlayerController {
         possibleTargets.remove(moveLocation);
 
         for (Location loc : possibleTargets){
-            System.out.println("target: " + loc.Row + ", " + loc.Col);
+            //System.out.println("target: " + loc.Row + ", " + loc.Col); Commented out to free console space.
         }
     }
 

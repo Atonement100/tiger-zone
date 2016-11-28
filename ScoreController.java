@@ -312,8 +312,8 @@ public class ScoreController {
                 }
             }
         }
-        
-        System.out.println("endpoints: " + endpointsReached);
+        // Commented out to free console space.
+        //System.out.println("endpoints: " + endpointsReached);
         
         return ((endpointsReached == 0 && cycleDetected) || endpointsReached == 2); //Either 2 endpoints need to have been reached or a cycle was detected.
         /* Old code used to return tile ids instead of boolean
@@ -461,7 +461,7 @@ public class ScoreController {
         //first mark start as visited, and add it in the cycle list
         start.visited = true;
         nodesInCycle.add(start);
-        System.out.println("START\n" + start.featureType.toChar() + " " + start.owningTileId + " " + start.hashCode());
+        //System.out.println("START\n" + start.featureType.toChar() + " " + start.owningTileId + " " + start.hashCode()); Freeing console space, uncomment as needed.
         
         //get one of start node's neighbors of the same feature type and add it in the cycle list
         for(int neighborIndex = 0; neighborIndex < start.neighbors.size(); neighborIndex++)
@@ -469,7 +469,8 @@ public class ScoreController {
             if(start.neighbors.get(neighborIndex).featureType.toChar() == 'W' || start.neighbors.get(neighborIndex).featureType.toChar() == 'I')
             {
                 nodesInCycle.add(start.neighbors.get(neighborIndex));
-                System.out.println(start.neighbors.get(neighborIndex).featureType.toChar() + " " + start.neighbors.get(neighborIndex).owningTileId + " " + start.neighbors.get(neighborIndex).hashCode());
+                // Freeing console space, uncomment as needed.
+                //System.out.println(start.neighbors.get(neighborIndex).featureType.toChar() + " " + start.neighbors.get(neighborIndex).owningTileId + " " + start.neighbors.get(neighborIndex).hashCode());
                 start.neighbors.get(neighborIndex).visited = true;
                 break;
             }
@@ -523,7 +524,8 @@ public class ScoreController {
             Node buffer = queue.poll();
             buffer.visited = true;
             nodesInCycle.add(buffer);
-            System.out.println(buffer.featureType.toChar() + " "+ buffer.owningTileId + " " + buffer.hashCode());
+            // Commented out to free console space.
+            //System.out.println(buffer.featureType.toChar() + " "+ buffer.owningTileId + " " + buffer.hashCode());
             for(int i = 0; i < buffer.neighbors.size(); i++){
                 if(buffer.neighbors.get(i).visited && buffer.neighbors.get(i) == start)
                 {
