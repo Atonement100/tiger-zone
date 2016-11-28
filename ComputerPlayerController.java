@@ -32,12 +32,15 @@ class ComputerPlayerController extends PlayerController {
         noMeepleMoveInfo.meepleLocation = -1;
         meepleMoveInfo.meepleLocation = -1;
         int maxConnections = 0;
+        int highestScore = 0;
 
         for (Location possibleLoc : possibleTargets){
             Location[] neighborLocs = localGameBoard.getEmptyNeighboringLocations(possibleLoc);
             int connections = 0;
             for (Location loc : neighborLocs){
-                if (loc != null) connections++;
+                if (loc == null){ 
+                	connections++;                	
+                }
             }
 
             if (connections <= maxConnections) continue;
@@ -54,7 +57,7 @@ class ComputerPlayerController extends PlayerController {
                         //These must be considered in this order because of the... interesting zoning requirements.
                         //The idea here is to keep a running total of the highest scoring node and only replace the intended target if we /exceed/
                         //The current highest. If we only replace on higher values, we'll never pick a later zone is the same as a previous zone.
-                        int highestScore = 0;
+                        
                         //int[] zoneScores = new int[9], nodeIndices = new int[9];
                         IntegerTuple[] zoneValues = new IntegerTuple[9];
 
@@ -76,7 +79,6 @@ class ComputerPlayerController extends PlayerController {
                                 meepleMoveInfo.tileRotation = possibleRot;
                                 meepleMoveInfo.tileLocation = possibleLoc;
                                 meepleMoveFound = true;
-
                             }
                         }
 
@@ -223,14 +225,14 @@ class ComputerPlayerController extends PlayerController {
         }
         possibleTargets.remove(moveLocation);
 
-        for (Location loc : possibleTargets){
-            //System.out.println("target: " + loc.Row + ", " + loc.Col); Commented out to free console space.
-        }
+        /*for (Location loc : possibleTargets){
+            System.out.println("target: " + loc.Row + ", " + loc.Col); //Commented out to free console space.
+        }*/
     }
 
     @Override
     public void processFreedMeeple(int ownerID, int meepleID){
         super.processFreedMeeple(ownerID, meepleID);
-        numMeeples++;
+        if (ownerID == this.playerID) numMeeples++;
     }
 }

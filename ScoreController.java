@@ -97,7 +97,7 @@ public class ScoreController {
             //kinda redundant to check if these have monastery here since I am adding to the arrayList only tiles with monasteries
             if(fullySurrounded && localBoard.board[row][col].hasMonastery && localBoard.board[row][col].middle.meeple != null){
                 scoreCompleteDen(localBoard.board[row][col].middle);
-                meeplesToReturn.add(new Meeple(confirmedTile.middle.meeple.owner, confirmedTile.middle.meeple.ID));
+                meeplesToReturn.add(new Meeple(localBoard.board[row][col].middle.meeple.owner, localBoard.board[row][col].middle.meeple.ID));
             }
             
         }
