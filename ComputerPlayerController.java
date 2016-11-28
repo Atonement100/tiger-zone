@@ -114,7 +114,7 @@ class ComputerPlayerController extends PlayerController {
         //Middle zone
         if (currentTile.hasMonastery){
             //Value monastery
-            return new IntegerTuple(1, 12);
+            return new IntegerTuple(9, 12);
         }
         else{
             int numRoads = 0;
@@ -158,8 +158,8 @@ class ComputerPlayerController extends PlayerController {
             if(currentTile.edges[leadingEdge].nodes[2].featureType == FeatureTypeEnum.Field){
                 //If both nodes considered are fields, doesn't matter which we use. Otherwise pick the one that is a field.
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, leadingEdge * 3 + 2, this.playerID)){
-                    // return new IntegerTuple(1, leadingEdge * 3 + 2);
-                    return new IntegerTuple(-1, -1);
+                    return new IntegerTuple(1, leadingEdge * 3 + 2);
+                    //return new IntegerTuple(-1, -1);
                 }
             }
             else if (currentTile.edges[followingEdge].nodes[0].featureType == FeatureTypeEnum.Field){
@@ -179,20 +179,34 @@ class ComputerPlayerController extends PlayerController {
     }
 
     IntegerTuple getValueOfSide(Tile currentTile, int edgeNum){
-        switch (currentTile.edges[edgeNum].nodes[1].featureType){
+        IntegerTuple move = new IntegerTuple(-1, -1);
+    	
+    	switch (currentTile.edges[edgeNum].nodes[1].featureType){
             case Field:
+            	  if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
+                      move = new IntegerTuple(1, edgeNum * 3 + 1);
+                  }
+                  break;
             case Road:
+            	  if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
+                      move = new IntegerTuple(2, edgeNum * 3 + 1);
+                  }
+                  break;
             case RoadEnd:
-            case City:
+            	  if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
+                      move = new IntegerTuple(3, edgeNum * 3 + 1);
+                  }
+                  break;
+            case City:   
             case Wall:
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                    return new IntegerTuple(1, edgeNum * 3 + 1);
+                    move = new IntegerTuple(3, edgeNum * 3 + 1);
                 }
                 break;
             default: //Realistically should throw exception but let's just pretend like the node doesn't exist and move on with our lives
                 break;
         }
-        return new IntegerTuple(-1, -1);
+        return move;
     }
 
     @Override
