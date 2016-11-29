@@ -40,7 +40,7 @@ public class TigerZoneServer {
             int i = 0;
             while(i < 3){
             TigerZoneProtocol tzProtocol = new TigerZoneProtocol();
-            outputLine = "BEGIN ROUND 1 OF 3";
+            outputLine = "BEGIN ROUND " + (i+1) + " OF 3";
             out.println(outputLine);
             outputLine = "YOUR OPPONENT IS PLAYER Blue";
             out.println(outputLine);
