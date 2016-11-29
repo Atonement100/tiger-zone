@@ -81,7 +81,7 @@ public class GameController {
             //board.printBoard();
            // System.out.println("Player 1 score: " + scoreController.player1Score);
            // System.out.println("Player 2 score: " + scoreController.player2Score);
-            guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
+            //guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
             if (spectating){
                 System.out.print("Press enter to continue.");
                 Scanner scanner = new Scanner(System.in);
@@ -91,7 +91,7 @@ public class GameController {
         
         
         endOfGameScoring();
-        
+        guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
         return 0;
     }
     
