@@ -58,6 +58,7 @@ class ComputerPlayerController extends PlayerController {
                     noMeepleMoveInfo.tileRotation = possibleRot;
                     maxConnections = connections;
 
+                    if (numMeeples == 0) continue;
                    // if (currentTile.tileType == 'N' || currentTile.tileType == 'Z') continue;
                     
                     localGameBoard.placeTemporaryTile(currentTile, possibleLoc, possibleRot);
@@ -101,7 +102,6 @@ class ComputerPlayerController extends PlayerController {
                         //moveInfo.meepleZone = best zone (for networking)
                     }
 
-
                     /* End meeple placement analysis */
 
                     localGameBoard.removeTemporaryTile(possibleLoc);
@@ -111,6 +111,7 @@ class ComputerPlayerController extends PlayerController {
 
             }
         }
+
 
         if (meepleMoveFound){
             numMeeples--;
