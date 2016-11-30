@@ -30,43 +30,80 @@ public class NetworkAdapter{
 
 	//Parses the string and decides which method to call
 	public void parseMatchProtocol(String message){
+		
+		
+		
 		String[] tokens = message.split(" ");
-		String tileID, gid, x, y, orientation;
-		switch(tokens[0]){
-			case "BEGIN": //Create the game ctrlrs we are going to use
-				gameControllers[0] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
-				gameControllers[1] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
+	
 
+		
+		String tileID, gid, x, y, orientation;
+
+
+		
+		if(tokens[0].equals("BEGIN")){
+
+			
+			gameControllers[0] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
+			gameControllers[1] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
+
+		}
+		else if(tokens[0].equals("STARTING")){
+
+			
+			tileID = convertTileToID(tokens[3]);
+			Tile startingTile = convertFromTileID(tileID);
+			x = tokens[5];
+			y = tokens[6];
+			orientation = tokens[7];
+			//Place on both AI boards
+			int rotation = Integer.parseInt(orientation);
+			rotation = convertDegreesToRotations(rotation);
+			rotation = convertAnticlockwiseToClockwise(rotation);
+
+			for (GameController gameController : gameControllers){
+				Location tileLocation = gameController.getBoardCenter();
+				tileLocation.Col += Integer.parseInt(x);
+				tileLocation.Row += ((Integer.parseInt(y))*(-1));
+
+				System.out.println("receiving col, row, rot: " + tileLocation.Col + ", " + tileLocation.Row + ", " + rotation);
+				
+				
+				gameController.processNetworkStart(startingTile, new MoveInformation(tileLocation, rotation, -1));
+			}
+		}
+		else if(tokens[0].equals("YOUR")){
+			oid = tokens[4];
+			
+			// THE REMAINING TILES ARE : - should push array of tiles into AI here
+		}
+		else if(tokens[0].equals("THE")){
+			initializeShuffledTiles(Integer.parseInt(tokens[2]), tokens);
+		}
+		else{
+			
+		}
+		
+		/*
+		switch(tokens[0]){
+		
+		
+			case "BEGIN": //Create the game ctrlrs we are going to use
+				
 				break;
 			case "STARTING": //Place starting tile on AI's board
-				tileID = convertTileToID(tokens[3]);
-				Tile startingTile = convertFromTileID(tileID);
-				x = tokens[5];
-				y = tokens[6];
-				orientation = tokens[7];
-				//Place on both AI boards
-				int rotation = Integer.parseInt(orientation);
-				rotation = convertDegreesToRotations(rotation);
-				rotation = convertAnticlockwiseToClockwise(rotation);
-
-				for (GameController gameController : gameControllers){
-					Location tileLocation = gameController.getBoardCenter();
-					tileLocation.Col += Integer.parseInt(x);
-					tileLocation.Row += Integer.parseInt(y);
-					gameController.processNetworkStart(startingTile, new MoveInformation(tileLocation, rotation, -1));
-				}
+				
+				
 				break;
 				
 			//Set opponent's player ID
 			case "YOUR": 
-				oid = tokens[4];
-				break;
 				
-				// THE REMAINING TILES ARE : - should push array of tiles into AI here
 			case "THE": //Create shuffled array of tiles
-				initializeShuffledTiles(Integer.parseInt(tokens[2]), tokens);
+				
 				break;
 		}
+		*/
 	}
 	
 	// Make Move string is parsed, should probably send AI the tile and GameID we get from parsing here
@@ -110,7 +147,7 @@ public class NetworkAdapter{
 			orientation = tokens[11];
 			String piece = "";
 			String zone = "";
-			if(!tokens[12].equals("NONE")){
+			if(tokens[12].equals("TIGER")){
 				piece = tokens[12];
 				zone = tokens[13];
 			}
@@ -120,8 +157,9 @@ public class NetworkAdapter{
 			int rotation = convertAnticlockwiseToClockwise(convertDegreesToRotations(Integer.parseInt(orientation)));
 			Location tileLocation = gameControllers[gameIndex].getBoardCenter();
 			tileLocation.Col += Integer.parseInt(x);
-			tileLocation.Row += Integer.parseInt(y);
+			tileLocation.Row += Integer.parseInt(y) * -1;
 
+			System.out.println("receiving col, row, rot: " + tileLocation.Col + ", " + tileLocation.Row + ", " + rotation);
 
 			if (zone.equals("")) {
 				gameControllers[gameIndex].processConfirmedNetworkedMove(tilePlaced, new MoveInformation(tileLocation, rotation, -1), activePlayer);
@@ -130,7 +168,6 @@ public class NetworkAdapter{
 				int meepleLocation = convertMeepleZoneToNode(tilePlaced, rotation, zone);
 				gameControllers[gameIndex].processConfirmedNetworkedMove(tilePlaced, new MoveInformation(tileLocation, rotation, meepleLocation), activePlayer);
 			}
-
 
 		}
 		else{
@@ -272,8 +309,11 @@ public class NetworkAdapter{
 			rotation = convertRotationsToDegrees(rotation);
 
 			int x = moveInfo.tileLocation.Col - gameControllers[0].getBoardCenter().Col;
-			int y = moveInfo.tileLocation.Row - gameControllers[0].getBoardCenter().Row;
+			int y = (gameControllers[0].getBoardCenter().Row - moveInfo.tileLocation.Row);
 
+			System.out.println("sending col, row: " + x + ", " + y);
+
+			
 			if(moveInfo.meepleLocation == -1){
 				messageToReturn = formatMove(0, gid, tileID, x, y, rotation, moveInfo.meepleZone);
 			}
@@ -320,10 +360,16 @@ public class NetworkAdapter{
 	}
 
 	private int convertAnticlockwiseToClockwise(int rotations){
+		if(rotations == 0){
+			return rotations;
+		}
 		return Math.abs(rotations - 4);
 	}
 
 	private int convertClockwisetoAnticlockwise(int rotations){
+		if(rotations == 0){
+			return rotations;
+		}
 		return Math.abs(rotations - 4);
 		// I know these are the same but...... I can't think of a good bidirectional name like switchCardinality or something
 	}
@@ -406,34 +452,34 @@ public class NetworkAdapter{
 
 	private Tile convertFromTileID(String tileID){
 		switch(tileID){
-			case "A": return (staticTiles.get(0));
-			case "B": return (staticTiles.get(1));
-			case "C": return (staticTiles.get(5));
-			case "D": return (staticTiles.get(7));
-			case "E": return (staticTiles.get(8));
-			case "F": return (staticTiles.get(16));
-			case "G": return (staticTiles.get(25));
-			case "H": return (staticTiles.get(29));
-			case "I": return (staticTiles.get(30));
-			case "J": return (staticTiles.get(34));
-			case "K": return (staticTiles.get(39));
-			case "L": return (staticTiles.get(42));
-			case "M": return (staticTiles.get(45));
-			case "N": return (staticTiles.get(50));
-			case "O": return (staticTiles.get(52));
-			case "P": return (staticTiles.get(53));
-			case "Q": return (staticTiles.get(55));
-			case "R": return (staticTiles.get(56));
-			case "S": return (staticTiles.get(58));
-			case "T": return (staticTiles.get(61));
-			case "U": return (staticTiles.get(63));
-			case "V": return (staticTiles.get(64));
-			case "W": return (staticTiles.get(65));
-			case "X": return (staticTiles.get(67));
-			case "Y": return (staticTiles.get(70));
-			case "Z": return (staticTiles.get(72));
-			case "a": return (staticTiles.get(73));
-			case "b": return (staticTiles.get(75));
+			case "A": return (new Tile(false, false, false, 0, new Integer[]{0, 0, 0, 0}, 'A'));
+			case "B": return (new Tile(true, false, false, 0, new Integer[]{0, 0, 0, 0}, 'B'));
+			case "C": return (new Tile(true, true, false, 0, new Integer[]{0, 0, 0, 1}, 'C'));
+			case "D": return (new Tile(false, true, false, 0, new Integer[]{1, 1, 1, 1}, 'D'));
+			case "E": return (new Tile(false, false, false, 0, new Integer[]{0, 1, 0, 1}, 'E'));
+			case "F": return (new Tile(false, false, false, 0, new Integer[]{1, 1, 0, 0}, 'F'));
+			case "G": return (new Tile(false, true, false, 0, new Integer[]{1, 1, 0, 1}, 'G'));
+			case "H": return (new Tile(false, false, false, 0, new Integer[]{2, 2, 2, 2}, 'H'));
+			case "I": return (new Tile(false, false, false, 0, new Integer[]{2, 0, 2, 2}, 'I'));
+			case "J": return (new Tile(false, false, false, 0, new Integer[]{0, 2, 2, 0}, 'J'));
+			case "K": return (new Tile(false, false, false, 0, new Integer[]{2, 0, 2, 0}, 'K'));
+			case "L": return (new Tile(false, false, true, 0, new Integer[]{0, 2, 0, 2}, 'L'));
+			case "M": return (new Tile(false, false, false, 0, new Integer[]{0, 2, 0, 0}, 'M'));
+			case "N": return (new Tile(false, false, true, 0, new Integer[]{0, 0, 2, 2}, 'N'));
+			case "O": return (new Tile(false, false, false, 0, new Integer[]{1, 1, 2, 0}, 'O'));
+			case "P": return (new Tile(false, false, false, 1, new Integer[]{1, 1, 2, 0}, 'P'));
+			case "Q": return (new Tile(false, false, false, 0, new Integer[]{1, 0, 2, 1}, 'Q'));
+			case "R": return (new Tile(false, false, false, 2, new Integer[]{1, 0, 2, 1}, 'R'));
+			case "S": return (new Tile(false, false, false, 0, new Integer[]{0, 1, 2, 1}, 'S'));
+			case "T": return (new Tile(false, false, false, 3, new Integer[]{0, 1, 2, 1}, 'T'));
+			case "U": return (new Tile(false, true, false, 0, new Integer[]{2, 1, 2, 2}, 'U'));
+			case "V": return (new Tile(false, true, false, 0, new Integer[]{1, 1, 2, 1}, 'V'));
+			case "W": return (new Tile(false, true, false, 1, new Integer[]{1, 1, 2, 1}, 'W'));
+			case "X": return (new Tile(false, false, false, 0, new Integer[]{1, 1, 2, 2}, 'X'));
+			case "Y": return (new Tile(false, false, false, 2, new Integer[]{1, 1, 2, 2}, 'Y'));
+			case "Z": return (new Tile(false, true, false, 0, new Integer[]{0, 2, 0, 1}, 'Z'));
+			case "a": return (new Tile(false, true, false, 3, new Integer[]{0, 2, 0, 1}, 'a'));
+			case "b": return (new Tile(false, true, false, 4, new Integer[]{2, 1, 2, 2}, 'b'));
 			default: return null;
 		}
 	}

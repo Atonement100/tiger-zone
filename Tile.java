@@ -36,7 +36,30 @@ public class Tile {
 		this.edgeValues = newTile.edgeValues;
 		this.animalType = newTile.animalType;
 		this.edges = newTile.edges;
+		this.middle = newTile.middle;
+		this.ID = tileToCopy.ID % 77;
 	}
+	
+	public Tile(Tile tileToCopy, boolean unrotate){
+		Tile newTile = new Tile(tileToCopy.hasMonastery, tileToCopy.roadsEnd, tileToCopy.citiesAreIndependent, tileToCopy.animalType, tileToCopy.edgeValues, tileToCopy.tileType);
+		
+		Tile.printTile(newTile);
+		if (unrotate) newTile.rotateClockwise(-tileToCopy.rotations);
+		Tile.printTile(newTile);
+		this.hasMonastery = newTile.hasMonastery;
+		this.roadsEnd = newTile.roadsEnd;
+		this.citiesAreIndependent = newTile.citiesAreIndependent;
+		this.tileType = newTile.tileType;
+		this.rotations = 0;
+		this.edgeValues = newTile.edgeValues;
+		this.animalType = newTile.animalType;
+		this.edges = newTile.edges;
+		this.middle = newTile.middle;
+		this.ID = tileToCopy.ID % 77;
+		Tile.printTile(this);
+	}
+	
+	
 
 	public Tile(boolean hasMonastery, boolean roadsEnd, boolean citiesAreIndependent, int animalType, Integer[] edgeValues, char tileType){
 		this.hasMonastery = hasMonastery;
@@ -46,7 +69,7 @@ public class Tile {
 		this.rotations = 0;
 		this.edgeValues = edgeValues;
 		this.animalType = animalType;
-		this.ID = identify++;
+		this.ID = identify++ % 77;
 
 		//Count number of road + city edges
 		int numRoads = 0, numCities = 0;
@@ -260,6 +283,8 @@ public class Tile {
 		else if (rotations < 0) rotations += EDGES_PER_TILE;
 
 		this.rotations = (this.rotations + rotations) % EDGES_PER_TILE;
+		
+		System.out.println("tile with id " + this.ID + " rotated to: " + this.rotations);
 
 		Collections.rotate(Arrays.asList(edges), rotations);
 		Collections.rotate(Arrays.asList(edgeValues), rotations);

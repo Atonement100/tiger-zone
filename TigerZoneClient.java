@@ -48,12 +48,20 @@ public class TigerZoneClient {
 				while(isWaiting){
 
 					fromServer = networkIn.readLine();
+					if (null == fromServer) continue; 
 					serverText = fromServer.split(" ");
 					System.out.println("Server: " + fromServer);
+					
+					if(serverText[0].equals("THANK")){
+						startingMatch = false;
+						System.exit(0);
+					}
+					
 					if(serverText[0].equals("MATCH"))
 					{
 						isWaiting = false;
 					}
+					
 					else {
 						netAdapter.parseMatchProtocol(fromServer);
 					}
@@ -87,12 +95,15 @@ public class TigerZoneClient {
 							break;
 					}
 				}
+				/*
 				fromServer = networkIn.readLine();
 				System.out.println("Server: " + fromServer);
 				serverText = fromServer.split(" ");
-				if(serverText[0].equals("THANK")){
-					startingMatch = false;
+				
+				if(serverText[0].equals("BEGIN"))){
+					
 				}
+				*/
 			}
 		}
 

@@ -27,6 +27,7 @@ public class GameBoard {
     }
     
     void placeTile(Tile tileToPlace, Location targetLocation, int clockwiseRotations){
+    	System.out.println("Placing tile at col, row, rot: " + targetLocation.Col + ", " + targetLocation.Row + ", " + clockwiseRotations);
         tileToPlace.rotateClockwise(clockwiseRotations);
         board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
         
@@ -48,6 +49,7 @@ public class GameBoard {
     void placeTemporaryTile(Tile tileToPlace, Location targetLocation, int rotations){
         //This previously differed from the original placetile function, leave in place in the event things need to be different again
         tileToPlace.rotateClockwise(rotations);
+        
         board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
 
         for(int direction = 0; direction < 4; direction++){
@@ -86,6 +88,7 @@ public class GameBoard {
 
         board[targetLocation.Row][targetLocation.Col] = null;
         tileToRemove.rotateAntiClockwise(tileToRemove.rotations);
+        System.out.print("REMOVE TEMPORARY TILE LN 90: ROTATED TO " + tileToRemove.rotations);
     }
     
     private void updateMeepleInfoForNewTile(Location tileLocation){
@@ -318,7 +321,8 @@ public class GameBoard {
 
     boolean verifyTilePlacement(Tile tileToPlace, Location targetLocation, int rotations){
         tileToPlace.rotateClockwise(rotations);
-        
+        System.out.print("VERIFY TILE PLACEMENT LN 324: ROTATED TO " + tileToPlace.rotations);
+
         int row = targetLocation.Row;
         int col = targetLocation.Col;
         
@@ -522,7 +526,7 @@ public class GameBoard {
     }
     
     void printBoard(){
-        int lower = 23, upper = 53;
+        int lower = 67, upper = 87;
         for (int row = lower; row < upper; row++) {
             for (int col = lower; col < upper; col++) {
                 

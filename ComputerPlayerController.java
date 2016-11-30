@@ -80,6 +80,7 @@ class ComputerPlayerController extends PlayerController {
                         zoneValues[8] = getValueOfCorner(currentTile, 2, 3);    //9
 
                         for (int zoneIndex = 0; zoneIndex < zoneValues.length; zoneIndex++){
+                        	System.out.println("score: " + zoneValues[zoneIndex].left);
                             if (zoneValues[zoneIndex].left > highestScore){
                                 highestScore = zoneValues[zoneIndex].left;
                                 meepleMoveInfo.meepleZone = zoneIndex + 1;
