@@ -148,10 +148,10 @@ public class GameBoard {
                     Node currNode = nodeQueue.removeFirst();
                     visitedQueue.add(currNode);
                     for (Node neighbor : currNode.neighbors) {
-                        if (currNode.featureType.isSameFeature(neighbor.featureType) && neighbor.owningTileId == currNode.owningTileId) {
+                        if (currNode.featureType.isSameFeature(neighbor.featureType)) {
                             if (neighbor.meeplePlacedInFeature) {
                                 shouldMarkVisited = true;
-                            } else if (!visitedQueue.contains(neighbor)) {     //Only add to nodequeue if we haven't seen it before
+                            } else if (!visitedQueue.contains(neighbor) && neighbor.owningTileId == currNode.owningTileId) {     //Only add to nodequeue if we haven't seen it before
                                 nodeQueue.add(neighbor);
                             }
                         }

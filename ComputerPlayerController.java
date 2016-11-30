@@ -58,7 +58,7 @@ class ComputerPlayerController extends PlayerController {
                     noMeepleMoveInfo.tileRotation = possibleRot;
                     maxConnections = connections;
 
-                    if (currentTile.tileType == 'N' || currentTile.tileType == 'Z') continue;
+                   // if (currentTile.tileType == 'N' || currentTile.tileType == 'Z') continue;
                     
                     localGameBoard.placeTemporaryTile(currentTile, possibleLoc, possibleRot);
                     
@@ -82,7 +82,6 @@ class ComputerPlayerController extends PlayerController {
                         zoneValues[8] = getValueOfCorner(currentTile, 2, 3);    //9
 
                         for (int zoneIndex = 0; zoneIndex < zoneValues.length; zoneIndex++){
-                        	System.out.println("zone: " + (zoneIndex+1) + " score: " + zoneValues[zoneIndex].left);
                             if (zoneValues[zoneIndex].left > highestScore){
                                 highestScore = zoneValues[zoneIndex].left;
                                 meepleMoveInfo.meepleZone = zoneIndex + 1;
