@@ -58,8 +58,10 @@ class ComputerPlayerController extends PlayerController {
                     noMeepleMoveInfo.tileRotation = possibleRot;
                     maxConnections = connections;
 
+                    if (currentTile.tileType == 'N' || currentTile.tileType == 'Z') continue;
+                    
                     localGameBoard.placeTemporaryTile(currentTile, possibleLoc, possibleRot);
-
+                    
                     /* Analyze meeple placements */
                     if (numMeeples > 0){
                         //These must be considered in this order because of the... interesting zoning requirements.
@@ -80,7 +82,7 @@ class ComputerPlayerController extends PlayerController {
                         zoneValues[8] = getValueOfCorner(currentTile, 2, 3);    //9
 
                         for (int zoneIndex = 0; zoneIndex < zoneValues.length; zoneIndex++){
-                        	System.out.println("score: " + zoneValues[zoneIndex].left);
+                        	System.out.println("zone: " + (zoneIndex+1) + " score: " + zoneValues[zoneIndex].left);
                             if (zoneValues[zoneIndex].left > highestScore){
                                 highestScore = zoneValues[zoneIndex].left;
                                 meepleMoveInfo.meepleZone = zoneIndex + 1;
@@ -88,7 +90,7 @@ class ComputerPlayerController extends PlayerController {
                                 meepleMoveInfo.tileRotation = possibleRot;
                                 meepleMoveInfo.tileLocation = possibleLoc;
                                 meepleMoveFound = true;
-
+                                
                             }
                         }
 
@@ -197,14 +199,17 @@ class ComputerPlayerController extends PlayerController {
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
                     move = new IntegerTuple(1, edgeNum * 3 + 1);
                 }
+                break;
             case Road:
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
                     move = new IntegerTuple(2, edgeNum * 3 + 1);
                 }
+                break;
             case RoadEnd:
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
                     move = new IntegerTuple(3, edgeNum * 3 + 1);
                 }
+                break;
             case City:
             case Wall:
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){

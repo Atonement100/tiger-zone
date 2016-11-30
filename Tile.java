@@ -284,8 +284,6 @@ public class Tile {
 
 		this.rotations = (this.rotations + rotations) % EDGES_PER_TILE;
 		
-		System.out.println("tile with id " + this.ID + " rotated to: " + this.rotations);
-
 		Collections.rotate(Arrays.asList(edges), rotations);
 		Collections.rotate(Arrays.asList(edgeValues), rotations);
 		return;

@@ -64,10 +64,7 @@ public class NetworkAdapter{
 			for (GameController gameController : gameControllers){
 				Location tileLocation = gameController.getBoardCenter();
 				tileLocation.Col += Integer.parseInt(x);
-				tileLocation.Row += ((Integer.parseInt(y))*(-1));
-
-				System.out.println("receiving col, row, rot: " + tileLocation.Col + ", " + tileLocation.Row + ", " + rotation);
-				
+				tileLocation.Row += ((Integer.parseInt(y))*(-1));				
 				
 				gameController.processNetworkStart(startingTile, new MoveInformation(tileLocation, rotation, -1));
 			}
@@ -158,8 +155,6 @@ public class NetworkAdapter{
 			Location tileLocation = gameControllers[gameIndex].getBoardCenter();
 			tileLocation.Col += Integer.parseInt(x);
 			tileLocation.Row += Integer.parseInt(y) * -1;
-
-			System.out.println("receiving col, row, rot: " + tileLocation.Col + ", " + tileLocation.Row + ", " + rotation);
 
 			if (zone.equals("")) {
 				gameControllers[gameIndex].processConfirmedNetworkedMove(tilePlaced, new MoveInformation(tileLocation, rotation, -1), activePlayer);
@@ -310,9 +305,6 @@ public class NetworkAdapter{
 
 			int x = moveInfo.tileLocation.Col - gameControllers[0].getBoardCenter().Col;
 			int y = (gameControllers[0].getBoardCenter().Row - moveInfo.tileLocation.Row);
-
-			System.out.println("sending col, row: " + x + ", " + y);
-
 			
 			if(moveInfo.meepleLocation == -1){
 				messageToReturn = formatMove(0, gid, tileID, x, y, rotation, moveInfo.meepleZone);
