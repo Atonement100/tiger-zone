@@ -13,8 +13,7 @@ public class Tile {
 	int ID,
 		rotations = 0;
 	Integer[] edgeValues;
-	Edge[] edges = new Edge[
-			EDGES_PER_TILE];
+	Edge[] edges = new Edge[EDGES_PER_TILE];
 	Node middle;
 	char tileType;
 	boolean hasMonastery,
@@ -37,15 +36,12 @@ public class Tile {
 		this.animalType = newTile.animalType;
 		this.edges = newTile.edges;
 		this.middle = newTile.middle;
-		this.ID = tileToCopy.ID % 77;
+		this.ID = tileToCopy.ID;
 	}
 	
 	public Tile(Tile tileToCopy, boolean unrotate){
 		Tile newTile = new Tile(tileToCopy.hasMonastery, tileToCopy.roadsEnd, tileToCopy.citiesAreIndependent, tileToCopy.animalType, tileToCopy.edgeValues, tileToCopy.tileType);
-		
-		Tile.printTile(newTile);
 		if (unrotate) newTile.rotateClockwise(-tileToCopy.rotations);
-		Tile.printTile(newTile);
 		this.hasMonastery = newTile.hasMonastery;
 		this.roadsEnd = newTile.roadsEnd;
 		this.citiesAreIndependent = newTile.citiesAreIndependent;
@@ -55,8 +51,7 @@ public class Tile {
 		this.animalType = newTile.animalType;
 		this.edges = newTile.edges;
 		this.middle = newTile.middle;
-		this.ID = tileToCopy.ID % 77;
-		Tile.printTile(this);
+		this.ID = tileToCopy.ID;
 	}
 	
 	
@@ -69,7 +64,7 @@ public class Tile {
 		this.rotations = 0;
 		this.edgeValues = edgeValues;
 		this.animalType = animalType;
-		this.ID = identify++ % 77;
+		this.ID = identify++;
 
 		//Count number of road + city edges
 		int numRoads = 0, numCities = 0;

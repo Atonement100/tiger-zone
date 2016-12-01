@@ -140,7 +140,7 @@ public class LabelDemo extends JFrame {
         frame.add(scorePanel, BorderLayout.NORTH);
         frame.setSize(800, 600);
         frame.setResizable(true);
-        frame.setVisible(true);
+        frame.setVisible(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 

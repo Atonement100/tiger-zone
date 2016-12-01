@@ -164,7 +164,7 @@ class ComputerPlayerController extends PlayerController {
             //Guaranteed to be a city zone
             //Use edges[1].nodes[0]
             if(localGameBoard.aiVerifyMeeplePlacement(currentTile, followingEdge * 3, this.playerID)){
-                return new IntegerTuple(3, followingEdge * 3);
+                return new IntegerTuple(localGameBoard.valueCity(currentTile.edges[followingEdge].nodes[0]), followingEdge * 3);
             }
         }
         else{
@@ -172,19 +172,19 @@ class ComputerPlayerController extends PlayerController {
             if(currentTile.edges[leadingEdge].nodes[2].featureType == FeatureTypeEnum.Field){
                 //If both nodes considered are fields, doesn't matter which we use. Otherwise pick the one that is a field.
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, leadingEdge * 3 + 2, this.playerID)){
-                    return new IntegerTuple(1, leadingEdge * 3 + 2);
+                    return new IntegerTuple(localGameBoard.valueField(currentTile.edges[leadingEdge].nodes[2]), leadingEdge * 3 + 2);
                 }
             }
             else if (currentTile.edges[followingEdge].nodes[0].featureType == FeatureTypeEnum.Field){
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, followingEdge * 3, this.playerID)){
-                    return new IntegerTuple(1, followingEdge * 3);
+                    return new IntegerTuple(localGameBoard.valueField(currentTile.edges[followingEdge].nodes[0]), followingEdge * 3);
                 }
             }
             else{
                 //If neither is a field node then we have the JLLJ- case.
                 //Have to use edges[2].nodes[0] and apply it here
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, ((followingEdge + 1) % 4) * 3, this.playerID)){
-                    return new IntegerTuple(1, ((followingEdge + 1) % 4) * 3);
+                    return new IntegerTuple(localGameBoard.valueField(currentTile.edges[(followingEdge + 1) % 4].nodes[0]), ((followingEdge + 1) % 4) * 3);
                 }
             }
         }
@@ -197,23 +197,23 @@ class ComputerPlayerController extends PlayerController {
         switch (currentTile.edges[edgeNum].nodes[1].featureType){
             case Field:
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                    move = new IntegerTuple(1, edgeNum * 3 + 1);
+                    move = new IntegerTuple(localGameBoard.valueField(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
                 }
                 break;
             case Road:
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                    move = new IntegerTuple(2, edgeNum * 3 + 1);
+                    move = new IntegerTuple(localGameBoard.valueRoad(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
                 }
                 break;
             case RoadEnd:
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                    move = new IntegerTuple(3, edgeNum * 3 + 1);
+                    move = new IntegerTuple(localGameBoard.valueRoad(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
                 }
                 break;
             case City:
             case Wall:
                 if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                    move = new IntegerTuple(3, edgeNum * 3 + 1);
+                    move = new IntegerTuple(localGameBoard.valueCity(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
                 }
                 break;
             default: //Realistically should throw exception but let's just pretend like the node doesn't exist and move on with our lives

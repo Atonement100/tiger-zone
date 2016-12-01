@@ -14,6 +14,7 @@ public class ScoreController {
     private static int denIdentifier = 0;
     private static int roadIdentifier = 0;
     ArrayList<Tile> gameTileReference;
+    ArrayList<Tile> placedTiles = new ArrayList<>();
     
     ScoreController(ArrayList<Tile> gameTileReference, Location boardDimensions){
         this.player1Score = 0;
@@ -29,10 +30,24 @@ public class ScoreController {
         this.gameTileReference = gameTileReference;
         this.localBoard = board;
     }
-    
+
+    Tile getTileById(int tileID){
+        for (Tile tile : placedTiles){
+            if (tileID == tile.ID){
+                return tile;
+            }
+        }
+        System.out.println("tile id " + tileID + " not found");
+        return null;
+    }
+
+    void notifyStartingTile(Tile startingTile){
+        placedTiles.add(startingTile);
+    }
+
     ArrayList<Meeple> processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed, boolean usingLocalBoard){
-        
-        
+        placedTiles.add(confirmedTile);
+
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
         
         meeplesToReturn.addAll(handleDens(confirmedTile, moveInfo));
@@ -103,44 +118,8 @@ public class ScoreController {
         return meeplesToReturn;
     }
     
-    /*
-     public void attemptScoring(Tile toCheck){
-     
-     ArrayList<Node> cycleBuffer;
-     
-     //WALL CYCLES
-     for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
-     for(int cornerNodeIndex = 0; cornerNodeIndex < toCheck.edges[edgeIndex].nodes.length; cornerNodeIndex += 2){
-     cycleBuffer = getWallCycleNodes(toCheck.edges[edgeIndex].nodes[cornerNodeIndex]);
-     //System.out.println("NODES IN WALL CYCLE " + cycleBuffer.size());
-     
-     //FOR TESTING *******************************
-     while(!cycleBuffer.isEmpty()){
-     cycleBuffer.remove(0).visited = false;
-     }
-     //*******************************************
-     //System.out.println("");
-     }
-     }
-     
-     //ROAD CYCLES
-     for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
-     cycleBuffer = getRoadCycleNodes(toCheck.edges[edgeIndex].nodes[1]);
-     //System.out.println("NODES IN ROAD CYCLE " + cycleBuffer.size());
-     
-     //FOR TESTING *******************************
-     while(!cycleBuffer.isEmpty()){
-     cycleBuffer.remove(0).visited = false;
-     }
-     //*******************************************
-     //System.out.println("");
-     }
-     }
-     */
-    
     void scoreField(Node start){
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
-        ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
 
         HashSet<Integer> uniqueCities = new HashSet<Integer>();
         HashSet<Integer> uniqueDens = new HashSet<Integer>();
@@ -151,7 +130,6 @@ public class ScoreController {
 
         while (!nodeQueue.isEmpty()){
             Node currNode = nodeQueue.removeFirst();
-            visitedNodes.add(currNode);
             currNode.visited = true;
             if (currNode.meeple != null) meeplesReturned[currNode.meeple.owner]++;
 
@@ -255,11 +233,12 @@ public class ScoreController {
         int crocodilesMet = 0, preyAnimalsMet = 0;
         while(!bfsQueue.isEmpty()){
             Node buffer = bfsQueue.poll();
+            Tile currTile = getTileById(buffer.owningTileId);
 
-            if(gameTileReference.get(start.owningTileId).animalType < 4 && gameTileReference.get(start.owningTileId).animalType > 0 && !uniqueTiles.contains(start.owningTileId)){
+            if(currTile.animalType < 4 && currTile.animalType > 0 && !uniqueTiles.contains(start.owningTileId)){
                 preyAnimalsMet++;
             }
-            else if (gameTileReference.get(start.owningTileId).animalType == 4 && !uniqueTiles.contains(gameTileReference.get(start.owningTileId))){
+            else if (currTile.animalType == 4 && !uniqueTiles.contains(start.owningTileId)){
                 crocodilesMet++;
             }
             uniqueTiles.add(buffer.owningTileId);
@@ -359,7 +338,10 @@ public class ScoreController {
          }
          */
     }
-    
+
+
+
+
     public ArrayList<Meeple> scoreIncompleteCity(Node start){
 
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
@@ -382,11 +364,12 @@ public class ScoreController {
 
         while(!bfsQueue.isEmpty()){
             Node buffer = bfsQueue.poll();
+            Tile currTile = getTileById(buffer.owningTileId);
 
-            if(gameTileReference.get(start.owningTileId).animalType < 4 && gameTileReference.get(start.owningTileId).animalType > 0 && !uniqueTiles.contains(buffer.owningTileId)){
+            if(currTile.animalType < 4 && currTile.animalType > 0 && !uniqueTiles.contains(buffer.owningTileId)){
                 preyAnimalsMet++;
             }
-            else if(gameTileReference.get(start.owningTileId).animalType == 4 && !uniqueTiles.contains(gameTileReference.get(start.owningTileId))){
+            else if(currTile.animalType == 4 && !uniqueTiles.contains(buffer.owningTileId)){
                 crocodilesMet++;
             }
 
@@ -395,8 +378,7 @@ public class ScoreController {
             buffer.featureID = lakeIdentifier;
             for(int i = 0; i < buffer.neighbors.size(); i++){
                 if(!buffer.neighbors.get(i).visited &&
-                        (buffer.neighbors.get(i).featureType.toChar() == 'W' || buffer.neighbors.get(i).featureType.toChar() == 'I'
-                                ||buffer.neighbors.get(i).featureType.toChar() == 'C'))
+                        (buffer.neighbors.get(i).featureType.isSameFeature(FeatureTypeEnum.City)))
                 {
                     bfsQueue.add(buffer.neighbors.get(i));
                     uniqueTiles.add(buffer.neighbors.get(i).owningTileId);
@@ -405,7 +387,6 @@ public class ScoreController {
 
                         meeplesReturned[buffer.neighbors.get(i).meeple.owner]++;
                         meeplesToReturn.add(new Meeple(buffer.neighbors.get(i).meeple.owner, buffer.neighbors.get(i).meeple.ID));
-
                     }
                 }
             }
@@ -430,8 +411,6 @@ public class ScoreController {
     
     
     public ArrayList<Meeple> scoreCompleteCity(Node start){
-
-
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
         lakeIdentifier++;
         int[] meeplesReturned = new int[2];
@@ -455,11 +434,12 @@ public class ScoreController {
         while(!bfsQueue.isEmpty()){
             Node buffer = bfsQueue.poll();
             nodesToUnvisit.add(buffer);
-            if(gameTileReference.get(start.owningTileId).animalType < 4 && gameTileReference.get(start.owningTileId).animalType > 0){
-                //System.out.println("MET AN ANIMAL");
-                uniqueAnimals.add(gameTileReference.get(start.owningTileId).animalType);
+            Tile currTile = getTileById(buffer.owningTileId);
+
+            if(currTile.animalType < 4 && currTile.animalType > 0){
+                uniqueAnimals.add(currTile.animalType);
             }
-            else if(gameTileReference.get(start.owningTileId).animalType < 4 && gameTileReference.get(start.owningTileId).animalType > 0 && !uniqueTiles.contains(gameTileReference.get(start.owningTileId))){
+            else if(currTile.animalType < 4 && currTile.animalType > 0 && !uniqueTiles.contains(start.owningTileId)){
                 crocodilesMet++;
             }
 

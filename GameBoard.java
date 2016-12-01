@@ -1,5 +1,4 @@
-import java.util.ArrayDeque;
-import java.util.HashSet;
+import java.util.*;
 
 public class GameBoard {
     Tile[][] board;
@@ -9,6 +8,7 @@ public class GameBoard {
     private static int[] dx = {0,-1,0,1}; // W, N, E, S
     private static int[] dy = {-1,0,1,0};
     private HashSet<Location> possibleTargets = new HashSet<>();
+    private ArrayList<Tile> placedTiles = new ArrayList<>();
     
     Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
     
@@ -43,10 +43,12 @@ public class GameBoard {
         
         updateMeepleInfoForNewTile(targetLocation);
         updateAvailablePlacements(targetLocation);
+        placedTiles.add(tileToPlace);
     }
 
     void placeTemporaryTile(Tile tileToPlace, Location targetLocation, int rotations){
         //This previously differed from the original placetile function, leave in place in the event things need to be different again
+        placedTiles.add(tileToPlace);
         tileToPlace.rotateClockwise(rotations);
         
         board[ targetLocation.Row ][ targetLocation.Col ] = tileToPlace;
@@ -87,6 +89,7 @@ public class GameBoard {
 
         board[targetLocation.Row][targetLocation.Col] = null;
         tileToRemove.rotateAntiClockwise(tileToRemove.rotations);
+        placedTiles.remove(tileToRemove);
     }
     
     private void updateMeepleInfoForNewTile(Location tileLocation){
@@ -575,5 +578,123 @@ public class GameBoard {
             }
             System.out.println("");
         }
+    }
+
+    Tile getTileById(int tileID){
+        for (Tile tile : placedTiles){
+            if (tileID == tile.ID){
+                return tile;
+            }
+        }
+        return null;
+    }
+
+    int valueCity(Node start){
+        HashSet<Integer> uniqueTiles = new HashSet<Integer>();
+        Queue<Node> bfsQueue = new LinkedList<Node>();
+        bfsQueue.add(start);
+
+        int crocodilesMet = 0;
+        int uniquePreyAnimalsMet = 0;
+        boolean[] hasBeenMet = new boolean[4];
+        for (boolean bool : hasBeenMet) bool = false;
+
+        while(!bfsQueue.isEmpty()){
+            Node buffer = bfsQueue.poll();
+            Tile currTile = getTileById(buffer.owningTileId);
+
+            if(currTile.animalType < 4 && currTile.animalType > 0 && !uniqueTiles.contains(currTile.ID) && !hasBeenMet[currTile.animalType - 1]){
+                uniquePreyAnimalsMet++;
+            }
+            else if(currTile.animalType == 4 && !uniqueTiles.contains(currTile.ID)){
+                crocodilesMet++;
+            }
+
+            uniqueTiles.add(buffer.owningTileId);
+            buffer.visited = true;
+            for(int i = 0; i < buffer.neighbors.size(); i++){
+                if(!buffer.neighbors.get(i).visited &&
+                        (buffer.neighbors.get(i).featureType.isSameFeature(buffer.featureType)))
+                {
+                    bfsQueue.add(buffer.neighbors.get(i));
+                    uniqueTiles.add(buffer.neighbors.get(i).owningTileId);
+                }
+            }
+        }
+
+        return (2*uniqueTiles.size()) * (1 + ((uniquePreyAnimalsMet - crocodilesMet > 0) ? uniquePreyAnimalsMet - crocodilesMet : 0));
+    }
+
+    int valueField(Node start) {
+        ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
+        ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
+
+        HashSet<Integer> uniqueCities = new HashSet<Integer>();
+        HashSet<Integer> uniqueDens = new HashSet<Integer>();
+
+        nodeQueue.add(start);
+
+        while (!nodeQueue.isEmpty()) {
+            Node currNode = nodeQueue.removeFirst();
+            visitedNodes.add(currNode);
+            currNode.visited = true;
+
+            for (Node neighbor : currNode.neighbors) {
+                if (!neighbor.visited) {
+                    if (neighbor.featureType == FeatureTypeEnum.Field) {
+                        nodeQueue.add(neighbor);
+                    } else if (neighbor.featureType == FeatureTypeEnum.Monastery && neighbor.featureID != -1) {
+                        if (!uniqueDens.contains(neighbor.featureID)) {
+                            uniqueDens.add(neighbor.featureID);
+                        }
+                    } else if (neighbor.featureType == FeatureTypeEnum.Wall && neighbor.featureID != -1) {
+                        if (!uniqueCities.contains(neighbor.featureID)) {
+                            uniqueCities.add(neighbor.featureID);
+                        }
+                    }
+                }
+            }
+        }
+
+        for (Node node : visitedNodes){
+            node.visited = false;
+        }
+
+        return 3*uniqueCities.size() + 5*uniqueDens.size();
+    }
+
+    int valueRoad(Node start){
+        HashSet<Integer> uniqueTiles = new HashSet<Integer>();
+
+        Queue<Node> bfsQueue = new LinkedList<Node>();
+        bfsQueue.add(start);
+
+        uniqueTiles.add(start.owningTileId);
+
+        int crocodilesMet = 0, preyAnimalsMet = 0;
+        while(!bfsQueue.isEmpty()){
+            Node buffer = bfsQueue.poll();
+            Tile currTile = getTileById(buffer.owningTileId);
+
+            if(currTile.animalType < 4 && currTile.animalType > 0 && !uniqueTiles.contains(buffer.owningTileId)){
+                preyAnimalsMet++;
+            }
+            else if (currTile.animalType == 4 && !uniqueTiles.contains(buffer.owningTileId)){
+                crocodilesMet++;
+            }
+            uniqueTiles.add(buffer.owningTileId);
+
+            buffer.visited = true;
+            for(int i = 0; i < buffer.neighbors.size(); i++){
+                if(!buffer.neighbors.get(i).visited &&
+                        (buffer.neighbors.get(i).featureType.isSameFeature(FeatureTypeEnum.Road)))
+                {
+                    bfsQueue.add(buffer.neighbors.get(i));
+                    uniqueTiles.add(buffer.neighbors.get(i).owningTileId);
+                }
+            }
+        }
+
+        return ((preyAnimalsMet - crocodilesMet > 0) ? preyAnimalsMet - crocodilesMet : 0);
     }
 }

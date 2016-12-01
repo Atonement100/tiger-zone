@@ -162,7 +162,7 @@ public class PreView extends JFrame {
         preview.add(leftLabel, BorderLayout.WEST);
         preview.pack();
         preview.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        preview.setVisible(true);
+        preview.setVisible(false);
     }
 
 
