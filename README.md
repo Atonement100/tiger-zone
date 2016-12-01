@@ -20,9 +20,16 @@ The remote game requires arguments (as a result of information being necessary t
 
 ## The Team
 Assigned the identifier 'Team G,' our members are as follows. 
+
 Timothy Russell-Wagner - atonement100
+
 Bobbie Isaly - bobbieisaly
+
 Michael Florica - michaelflorica
+
 Darshil Patel - darshil24
+
 David Wetzel - DavidW09
+
 Alec Hoffman - astrohoff
+
