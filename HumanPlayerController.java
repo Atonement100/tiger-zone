@@ -10,7 +10,7 @@ public class HumanPlayerController extends PlayerController {
 
 
     HumanPlayerController(GameBoard board){
-        this.localMeeples = new Meeple[7];
+        this.localTigers = new Tiger[7];
         this.localGameBoard = board;
     }
 
@@ -35,7 +35,7 @@ public class HumanPlayerController extends PlayerController {
 
     private MoveInformation getPlayerMoveFromConsole(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Input row, column, clockwise rotations, and meeple location [-1,12]");
+        System.out.println("Input row, column, clockwise rotations, and tiger location [-1,12]");
         int[] inputs = new int[4];
         for (int index = 0; index < inputs.length; index++){
             inputs[index] = scanner.nextInt();
@@ -46,7 +46,7 @@ public class HumanPlayerController extends PlayerController {
 
     private MoveInformation getPlayerMoveFromGui(Tile currentTile){
         guiAdapter.setTileID(""+currentTile.tileType);
-        MoveInformation move = new MoveInformation(new Location(guiAdapter.getX(), guiAdapter.getY()), guiAdapter.getRotation(), guiAdapter.getMeeple());
+        MoveInformation move = new MoveInformation(new Location(guiAdapter.getX(), guiAdapter.getY()), guiAdapter.getRotation(), guiAdapter.getTiger());
         return move;
     }
 

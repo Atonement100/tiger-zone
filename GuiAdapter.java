@@ -10,7 +10,7 @@ public class GuiAdapter {
     private int x;
     private int  y;
     private int rotation;
-    private int meeple;
+    private int tiger;
     public LabelDemo Gui;
     
     String[] Id = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJJT-", "TJTT-",
@@ -24,11 +24,11 @@ public class GuiAdapter {
 
     }
 
-    public GuiAdapter(int x, int y, int rotation, int meeple) {
+    public GuiAdapter(int x, int y, int rotation, int tiger) {
         this.x = x;
         this.y = y;
         this.rotation = rotation;
-        this.meeple = meeple;
+        this.tiger = tiger;
     }
     public int getX() {
         x= Gui.getX();
@@ -57,13 +57,13 @@ public class GuiAdapter {
         this.rotation = rotation;
     }
 
-    public int getMeeple() {
-        meeple = Gui.getMeeple();
-        return meeple;
+    public int getTiger() {
+        tiger = Gui.getTiger();
+        return tiger;
     }
 
-    public void setMeeple(int meeple) {
-        this.meeple = meeple;
+    public void setTiger(int tiger) {
+        this.tiger = tiger;
     }
 
     public String getTileID() {
@@ -203,11 +203,11 @@ public class GuiAdapter {
         mapTileid(id);
         //Gui.placeFirstTile(x,y,GuiID);
     }
-    public void tilePlaced(int x,int y,int rotation,int meeple){
+    public void tilePlaced(int x,int y,int rotation,int tiger){
         setX(x);
         setY(y);
         setRotation(rotation);
-        setMeeple(meeple);
+        setTiger(tiger);
     }
 
     public void addTile(int row, int col, int tileRotation, String s) {
@@ -223,8 +223,8 @@ public class GuiAdapter {
             tileIDChar = 'b';
         }
         addTile(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tileRotation, Character.toString(tileIDChar));
-        if(moveInfo.meepleLocation >= 0){
-            Gui.placeTiger(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.meepleLocation);
+        if(moveInfo.tigerLocation >= 0){
+            Gui.placeTiger(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tigerLocation);
         }
     }
 

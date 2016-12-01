@@ -4,10 +4,10 @@ public class GameController {
     protected GuiAdapter guiAdapter;
     private static final char startingTileChar = 'S';
     static final int NUM_PLAYERS = 2;
-    static final int NUM_MEEPLES = 7;
+    static final int NUM_TIGERS = 7;
     GameBoard board;
     private PlayerController[] players = new PlayerController[NUM_PLAYERS];
-    //private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
+    //private Tiger[][] playerTigers = new Tiger[NUM_PLAYERS][NUM_TIGERS];
     
     private ArrayList<Tile> gameTileReference; // Don't modify this one after constructor. Can be indexed in to with tile.ID.
     private ArrayList<Tile> gameTiles;
@@ -97,42 +97,42 @@ public class GameController {
     }
     
     private void endOfGameScoring(){
-        for(int playerIndex = 0; playerIndex < board.playerMeeples.length; playerIndex++){
-            for (int meepleIndex = 0; meepleIndex < board.playerMeeples[playerIndex].length; meepleIndex++){
-                if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onMonastery){
-                    scoreController.scoreIncompleteDen(board.playerMeeples[playerIndex][meepleIndex].location);
+        for(int playerIndex = 0; playerIndex < board.playerTigers.length; playerIndex++){
+            for (int tigerIndex = 0; tigerIndex < board.playerTigers[playerIndex].length; tigerIndex++){
+                if (board.playerTigers[playerIndex][tigerIndex].status == TigerStatusEnum.onDen){
+                    scoreController.scoreIncompleteDen(board.playerTigers[playerIndex][tigerIndex].location);
                 }
-                else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onCity){
-                    Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
-                    Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
-                    for (Edge edge : meepleTile.edges){
+                else if (board.playerTigers[playerIndex][tigerIndex].status == TigerStatusEnum.onLake){
+                    Location tigerLocation = board.playerTigers[playerIndex][tigerIndex].location;
+                    Tile tigerTile = board.board[tigerLocation.Row][tigerLocation.Col];
+                    for (Edge edge : tigerTile.edges){
                         for (Node node: edge.nodes){
-                            if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
-                                scoreController.scoreIncompleteCity(node);
+                            if (node.tiger != null && node.tiger.equals(board.playerTigers[playerIndex][tigerIndex])){
+                                scoreController.scoreIncompleteLake(node);
                                 break;
                             }
                         }
                     }
                 }
-                else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onRoad){
-                    Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
-                    Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
-                    for (Edge edge : meepleTile.edges){
+                else if (board.playerTigers[playerIndex][tigerIndex].status == TigerStatusEnum.onTrail){
+                    Location tigerLocation = board.playerTigers[playerIndex][tigerIndex].location;
+                    Tile tigerTile = board.board[tigerLocation.Row][tigerLocation.Col];
+                    for (Edge edge : tigerTile.edges){
                         for (Node node: edge.nodes){
-                            if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
-                                scoreController.scoreField(node);
+                            if (node.tiger != null && node.tiger.equals(board.playerTigers[playerIndex][tigerIndex])){
+                                scoreController.scoreJungle(node);
                                 break;
                             }
                         }
                     }
                 }
-                else if (board.playerMeeples[playerIndex][meepleIndex].status == MeepleStatusEnum.onField){
-                    Location meepleLocation = board.playerMeeples[playerIndex][meepleIndex].location;
-                    Tile meepleTile = board.board[meepleLocation.Row][meepleLocation.Col];
-                    for (Edge edge : meepleTile.edges){
+                else if (board.playerTigers[playerIndex][tigerIndex].status == TigerStatusEnum.onJungle){
+                    Location tigerLocation = board.playerTigers[playerIndex][tigerIndex].location;
+                    Tile tigerTile = board.board[tigerLocation.Row][tigerLocation.Col];
+                    for (Edge edge : tigerTile.edges){
                         for (Node node: edge.nodes){
-                            if (node.meeple != null && node.meeple.equals(board.playerMeeples[playerIndex][meepleIndex])){
-                                scoreController.scoreField(node);
+                            if (node.tiger != null && node.tiger.equals(board.playerTigers[playerIndex][tigerIndex])){
+                                scoreController.scoreJungle(node);
                                 break;
                             }
                         }
@@ -154,21 +154,21 @@ public class GameController {
     void processConfirmedNetworkedMove(Tile tileForPlayer, MoveInformation playerMoveInfo, int currentPlayer){
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
 
-        if (playerMoveInfo.meepleLocation != -1) {
-            board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
+        if (playerMoveInfo.tigerLocation != -1) {
+            board.placeTiger(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tigerLocation, currentPlayer);
         }
 
-        ArrayList<Meeple> meeplesToReturn = scoreController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer, false);
+        ArrayList<Tiger> tigersToReturn = scoreController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer, false);
 
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
         }
 
-        for (Meeple meeple : meeplesToReturn){
-            board.freeMeeple(meeple.owner, meeple.ID);
-            scoreController.processFreedMeeple(meeple.owner, meeple.ID);
+        for (Tiger tiger : tigersToReturn){
+            board.freeTiger(tiger.owner, tiger.ID);
+            scoreController.processFreedTiger(tiger.owner, tiger.ID);
             for (PlayerController playerController : players){
-                playerController.processFreedMeeple(meeple.owner, meeple.ID);
+                playerController.processFreedTiger(tiger.owner, tiger.ID);
             }
         }
         board.printBoard();
@@ -186,20 +186,20 @@ public class GameController {
             firstAttempt = false;
         } while (!board.verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation));
         
-        //System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation + " Meeple Location: " + playerMoveInfo.meepleLocation);
+        //System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation + " Tiger Location: " + playerMoveInfo.tigerLocation);
         
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
         
-        if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.meepleLocation, currentPlayer) ) {
-            board.placeMeeple(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.meepleLocation, currentPlayer);
+        if (board.verifyTigerPlacement(tileForPlayer, playerMoveInfo.tigerLocation, currentPlayer) ) {
+            board.placeTiger(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tigerLocation, currentPlayer);
         }
         else{
-            playerMoveInfo.meepleLocation = -1;
-            //Just throw away bad meeple placements so score ctrlr and players don't get false signal
+            playerMoveInfo.tigerLocation = -1;
+            //Just throw away bad tiger placements so score ctrlr and players don't get false signal
         }
         
         
-        ArrayList<Meeple> meeplesToReturn = scoreController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer, false);
+        ArrayList<Tiger> tigersToReturn = scoreController.processConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer, false);
         
         for (PlayerController playerController : players){
             playerController.processConfirmedMove(new Tile(tileForPlayer), playerMoveInfo, currentPlayer);
@@ -207,11 +207,11 @@ public class GameController {
 
         guiAdapter.proccessConfirmedMove(tileForPlayer, playerMoveInfo, currentPlayer);
         
-        for (Meeple meeple : meeplesToReturn){
-            board.freeMeeple(meeple.owner, meeple.ID);
-            scoreController.processFreedMeeple(meeple.owner, meeple.ID);
+        for (Tiger tiger : tigersToReturn){
+            board.freeTiger(tiger.owner, tiger.ID);
+            scoreController.processFreedTiger(tiger.owner, tiger.ID);
             for (PlayerController playerController : players){
-                playerController.processFreedMeeple(meeple.owner, meeple.ID);
+                playerController.processFreedTiger(tiger.owner, tiger.ID);
             }
         }
         

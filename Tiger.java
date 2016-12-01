@@ -1,20 +1,20 @@
 
-public class Meeple {
+public class Tiger {
 	int owner;
 	int ID;
-	MeepleStatusEnum status;
+	TigerStatusEnum status;
 	Location location;
 	
-	public Meeple(){
+	public Tiger(){
 		this.owner = -1;
-		this.status = MeepleStatusEnum.onNone;
+		this.status = TigerStatusEnum.onNone;
 		this.location = new Location(-1,-1);
 		this.ID = 0;
 	}
 	
-	public Meeple(int owner, int ID){
+	public Tiger(int owner, int ID){
 		this.owner = owner;
-		this.status = MeepleStatusEnum.onNone;
+		this.status = TigerStatusEnum.onNone;
 		this.location = new Location(-1, -1);
 		this.ID = ID;
 	}
@@ -24,10 +24,10 @@ public class Meeple {
 	}
 	
 	void setStatus(int newStatus){
-		this.status = convertIntToMeepleStatus(newStatus);
+		this.status = convertIntToTigerStatus(newStatus);
 	}
 
-	void setStatus(MeepleStatusEnum newStatus){
+	void setStatus(TigerStatusEnum newStatus){
 		this.status = newStatus;
 	}
 	
@@ -37,25 +37,25 @@ public class Meeple {
 	
 	Location getLocation() { return location; }
 
-	MeepleStatusEnum getStatus(){
+	TigerStatusEnum getStatus(){
 		return status;
 	}
 
-	public MeepleStatusEnum convertIntToMeepleStatus (int status){
+	public TigerStatusEnum convertIntToTigerStatus (int status){
 		switch (status) {
 			case 0:
-				return MeepleStatusEnum.onField;
+				return TigerStatusEnum.onJungle;
 			case 1:
 			case 4:
-				return MeepleStatusEnum.onRoad;
+				return TigerStatusEnum.onTrail;
 			case 2:
 			case 3:
 			case 5:
-				return MeepleStatusEnum.onCity;
+				return TigerStatusEnum.onLake;
 			case 6:
-				return MeepleStatusEnum.onMonastery;
+				return TigerStatusEnum.onDen;
 			case 9:
-				return MeepleStatusEnum.onNone;
+				return TigerStatusEnum.onNone;
 			default:
 				throw new IllegalStateException();
 

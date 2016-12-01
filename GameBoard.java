@@ -4,20 +4,20 @@ public class GameBoard {
     Tile[][] board;
     
     private static final int NUM_PLAYERS = GameController.NUM_PLAYERS;
-    private static final int NUM_MEEPLES = GameController.NUM_MEEPLES;
+    private static final int NUM_TIGERS = GameController.NUM_TIGERS;
     private static int[] dx = {0,-1,0,1}; // W, N, E, S
     private static int[] dy = {-1,0,1,0};
     private HashSet<Location> possibleTargets = new HashSet<>();
     private ArrayList<Tile> placedTiles = new ArrayList<>();
     
-    Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
+    Tiger[][] playerTigers = new Tiger[NUM_PLAYERS][NUM_TIGERS];
     
     GameBoard(int numRows, int numCols){
         board = new Tile[numRows][numCols];
         
         for (int playerIndex = 0; playerIndex < NUM_PLAYERS; playerIndex++){
-            for (int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
-                playerMeeples[playerIndex][meepleIndex] = new Meeple(playerIndex, meepleIndex);
+            for (int tigerIndex = 0; tigerIndex < NUM_TIGERS; tigerIndex++){
+                playerTigers[playerIndex][tigerIndex] = new Tiger(playerIndex, tigerIndex);
             }
         }
     }
@@ -41,7 +41,7 @@ public class GameBoard {
             }
         }
         
-        updateMeepleInfoForNewTile(targetLocation);
+        updateTigerInfoForNewTile(targetLocation);
         updateAvailablePlacements(targetLocation);
         placedTiles.add(tileToPlace);
     }
@@ -64,7 +64,7 @@ public class GameBoard {
             }
         }
 
-        updateMeepleInfoForTemporaryTile(targetLocation);
+        updateTigerInfoForTemporaryTile(targetLocation);
     }
 
     void removeTemporaryTile(Location targetLocation){
@@ -83,7 +83,7 @@ public class GameBoard {
 
         for (Edge edge: tileToRemove.edges){
             for (Node node : edge.nodes){
-                node.meeplePlacedInFeature = false;
+                node.tigerPlacedInFeature = false;
             }
         }
 
@@ -92,16 +92,16 @@ public class GameBoard {
         placedTiles.remove(tileToRemove);
     }
     
-    private void updateMeepleInfoForNewTile(Location tileLocation){
+    private void updateTigerInfoForNewTile(Location tileLocation){
         Tile tileToUpdate = board[tileLocation.Row][tileLocation.Col];
 
         for (Edge edge : tileToUpdate.edges) {
             for (Node node : edge.nodes){           //For each node...
-                if (node.meeplePlacedInFeature) continue; //If this node already knows it has a meeple, continue
+                if (node.tigerPlacedInFeature) continue; //If this node already knows it has a tiger, continue
                 
                 /* So this looks kinda hacky, but it should actually be pretty efficient in practice.
-                 *  Visited queue only includes tiles that are not marked as having a meeple.
-                 *  If a node is known to have a meeple, its neighbors are not added to the nodeQueue.
+                 *  Visited queue only includes tiles that are not marked as having a tiger.
+                 *  If a node is known to have a tiger, its neighbors are not added to the nodeQueue.
                  *  We can't break early from the loop to ensure that we get all connected unmarked nodes
                  *  This is to cover the case where a tile placed connects two independent feature zones.
                  */
@@ -116,7 +116,7 @@ public class GameBoard {
                     visitedQueue.add(currNode);
                     for (Node neighbor : currNode.neighbors) {
                         if (currNode.featureType.isSameFeature(neighbor.featureType)) {
-                            if (neighbor.meeplePlacedInFeature) {
+                            if (neighbor.tigerPlacedInFeature) {
                                 shouldMarkVisited = true;
                             } else if (!visitedQueue.contains(neighbor)  && neighbor.owningTileId == currNode.owningTileId) {     //Only add to nodequeue if we haven't seen it before
                                 nodeQueue.add(neighbor);
@@ -127,19 +127,19 @@ public class GameBoard {
                 
                 if (shouldMarkVisited) {
                     for (Node visitedNode : visitedQueue) {
-                        visitedNode.meeplePlacedInFeature = true;
+                        visitedNode.tigerPlacedInFeature = true;
                     }
                 }
             }
         }
     }
 
-    private void updateMeepleInfoForTemporaryTile(Location tileLocation){
+    private void updateTigerInfoForTemporaryTile(Location tileLocation){
         Tile tileToUpdate = board[tileLocation.Row][tileLocation.Col];
 
         for (Edge edge : tileToUpdate.edges) {
             for (Node node : edge.nodes){           //For each node...
-                if (node.meeplePlacedInFeature) continue; //If this node already knows it has a meeple, continue
+                if (node.tigerPlacedInFeature) continue; //If this node already knows it has a tiger, continue
 
                 ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
                 ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
@@ -152,7 +152,7 @@ public class GameBoard {
                     visitedQueue.add(currNode);
                     for (Node neighbor : currNode.neighbors) {
                         if (currNode.featureType.isSameFeature(neighbor.featureType)) {
-                            if (neighbor.meeplePlacedInFeature) {
+                            if (neighbor.tigerPlacedInFeature) {
                                 shouldMarkVisited = true;
                             } else if (!visitedQueue.contains(neighbor) && neighbor.owningTileId == currNode.owningTileId) {     //Only add to nodequeue if we haven't seen it before
                                 nodeQueue.add(neighbor);
@@ -163,18 +163,18 @@ public class GameBoard {
 
                 if (shouldMarkVisited) {
                     for (Node visitedNode : visitedQueue) {
-                        visitedNode.meeplePlacedInFeature = true;
+                        visitedNode.tigerPlacedInFeature = true;
                     }
                 }
             }
         }
     }
     
-    private void updateMeepleInfoForNewMeeple(Location targetLocation, int meepleLocation){
-        if (meepleLocation == 12) return;
+    private void updateTigerInfoForNewTiger(Location targetLocation, int tigerLocation){
+        if (tigerLocation == 12) return;
         
-        int edge = meepleLocation / 3; //Nodes per edge
-        int node = meepleLocation % 3;
+        int edge = tigerLocation / 3; //Nodes per edge
+        int node = tigerLocation % 3;
         Tile tile = board[targetLocation.Row][targetLocation.Col];
         
         if (tile == null) return;
@@ -186,30 +186,30 @@ public class GameBoard {
             Node currNode = nodeQueue.removeFirst();
             visitedQueue.add(currNode);
             for (Node neighbor : currNode.neighbors){
-                if (currNode.featureType.isSameFeature(neighbor.featureType) && !neighbor.meeplePlacedInFeature && !visitedQueue.contains(neighbor)){
-                    neighbor.meeplePlacedInFeature = true;
+                if (currNode.featureType.isSameFeature(neighbor.featureType) && !neighbor.tigerPlacedInFeature && !visitedQueue.contains(neighbor)){
+                    neighbor.tigerPlacedInFeature = true;
                     nodeQueue.add(neighbor);
                 }
             }
         }
     }
     
-    boolean isValidMeeplePlacementOnNode(Location targetLocation, int meepleLocation){
-        if (meepleLocation == 12) return true;
-        else if (meepleLocation < 0 || meepleLocation > 12) return false;
+    boolean isValidTigerPlacementOnNode(Location targetLocation, int tigerLocation){
+        if (tigerLocation == 12) return true;
+        else if (tigerLocation < 0 || tigerLocation > 12) return false;
         
-        int edge = meepleLocation / 3; //Nodes per edge
-        int node = meepleLocation % 3;
+        int edge = tigerLocation / 3; //Nodes per edge
+        int node = tigerLocation % 3;
         Tile tile = board[targetLocation.Row][targetLocation.Col];
 
         if (tile == null) return false;
 
-        if(tile.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
+        if(tile.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerShore){
             node = 1;
         }
         
         Node startingNode = tile.edges[edge].nodes[node];
-        if (startingNode.meeplePlacedInFeature) return false;
+        if (startingNode.tigerPlacedInFeature) return false;
         
         
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
@@ -220,8 +220,8 @@ public class GameBoard {
             visitedQueue.add(currNode);
             for (Node neighbor : currNode.neighbors){
                 if (neighbor.featureType.isSameFeature(currNode.featureType)) {
-                    if (neighbor.meeplePlacedInFeature) {
-                        System.out.println("Potential error from isValidMeeplePlacementOnNode - starting node should be marked true when the tile is placed");
+                    if (neighbor.tigerPlacedInFeature) {
+                        System.out.println("Potential error from isValidTigerPlacementOnNode - starting node should be marked true when the tile is placed");
                         return false;
                     } else if (!visitedQueue.contains(neighbor)) {
                         nodeQueue.add(neighbor);
@@ -233,21 +233,21 @@ public class GameBoard {
         return true;
     }
 
-    boolean isValidMeeplePlacementOnNode(Tile tile, int meepleLocation){
-        if (meepleLocation == 12) return true;
-        else if (meepleLocation < 0 || meepleLocation > 12) return false;
+    boolean isValidTigerPlacementOnNode(Tile tile, int tigerLocation){
+        if (tigerLocation == 12) return true;
+        else if (tigerLocation < 0 || tigerLocation > 12) return false;
 
-        int edge = meepleLocation / 3; //Nodes per edge
-        int node = meepleLocation % 3;
+        int edge = tigerLocation / 3; //Nodes per edge
+        int node = tigerLocation % 3;
 
         if (tile == null) return false;
 
-        if(tile.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
+        if(tile.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerShore){
             node = 1;
         }
 
         Node startingNode = tile.edges[edge].nodes[node];
-        if (startingNode.meeplePlacedInFeature) return false;
+        if (startingNode.tigerPlacedInFeature) return false;
 
 
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
@@ -258,8 +258,8 @@ public class GameBoard {
             visitedQueue.add(currNode);
             for (Node neighbor : currNode.neighbors){
                 if (neighbor.featureType.isSameFeature(currNode.featureType)) {
-                    if (neighbor.meeplePlacedInFeature) {
-                        System.out.println("Potential error from isValidMeeplePlacementOnNode - starting node should be marked true when the tile is placed");
+                    if (neighbor.tigerPlacedInFeature) {
+                        System.out.println("Potential error from isValidTigerPlacementOnNode - starting node should be marked true when the tile is placed");
                         return false;
                     } else if (!visitedQueue.contains(neighbor)) {
                         nodeQueue.add(neighbor);
@@ -271,20 +271,20 @@ public class GameBoard {
         return true;
     }
     
-    void freeMeeple(int ownerID, int meepleID){
-        this.playerMeeples[ownerID][meepleID].status = MeepleStatusEnum.onNone;
-        this.playerMeeples[ownerID][meepleID].location = new Location(-1,-1);
+    void freeTiger(int ownerID, int tigerID){
+        this.playerTigers[ownerID][tigerID].status = TigerStatusEnum.onNone;
+        this.playerTigers[ownerID][tigerID].location = new Location(-1,-1);
     }
     
-    //places a meeple in the valid position
-    void placeMeeple(Tile tileToPlace, Location targetLocation, int placement, int currentPlayer){
+    //places a tiger in the valid position
+    void placeTiger(Tile tileToPlace, Location targetLocation, int placement, int currentPlayer){
         if (placement < 0 || placement > 12) return;
         
         int edge = placement / 3; //Nodes per edge
         int node = placement % 3;
         FeatureTypeEnum feature;
         
-        //finds the feature that the meeple is being placed in
+        //finds the feature that the tiger is being placed in
         if (placement == 12){
             feature = tileToPlace.middle.featureType;
         }
@@ -292,28 +292,28 @@ public class GameBoard {
             feature = tileToPlace.edges[edge].nodes[node].featureType;
         }
         
-        //finds next free meeple in array and updates that meeple's status and location values
-        for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
-            if (playerMeeples[currentPlayer][meepleIndex].status == MeepleStatusEnum.onNone){
-                //Places meeple on board and lets the node acknowledge it
+        //finds next free tiger in array and updates that tiger's status and location values
+        for(int tigerIndex = 0; tigerIndex < NUM_TIGERS; tigerIndex++){
+            if (playerTigers[currentPlayer][tigerIndex].status == TigerStatusEnum.onNone){
+                //Places tiger on board and lets the node acknowledge it
                 if(placement == 12) {
-                    board[targetLocation.Row][targetLocation.Col].middle.meeplePlacedInFeature = true;
-                    board[targetLocation.Row][targetLocation.Col].middle.meeple = playerMeeples[currentPlayer][meepleIndex];
+                    board[targetLocation.Row][targetLocation.Col].middle.tigerPlacedInFeature = true;
+                    board[targetLocation.Row][targetLocation.Col].middle.tiger = playerTigers[currentPlayer][tigerIndex];
                 }
                 else{
                     //if placement is on an inner wall, change the placement to the center node on the edge
-                    if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
+                    if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerShore){
                         node = 1;
                     }
-                    board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].meeplePlacedInFeature = true;
-                    board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].meeple = playerMeeples[currentPlayer][meepleIndex];
-                    updateMeepleInfoForNewMeeple(targetLocation, placement);    //No need to propagate changes for monastery, only do it here
+                    board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].tigerPlacedInFeature = true;
+                    board[targetLocation.Row][targetLocation.Col].edges[edge].nodes[node].tiger = playerTigers[currentPlayer][tigerIndex];
+                    updateTigerInfoForNewTiger(targetLocation, placement);    //No need to propagate changes for monastery, only do it here
                 }
 
-                //Updates location and status of meeple
-                playerMeeples[currentPlayer][meepleIndex].location.Row = targetLocation.Row;
-                playerMeeples[currentPlayer][meepleIndex].location.Col = targetLocation.Col;
-                playerMeeples[currentPlayer][meepleIndex].setStatus(feature.toInt()); // This processes the int value of the feature and sets it to the appropriate status :)
+                //Updates location and status of tiger
+                playerTigers[currentPlayer][tigerIndex].location.Row = targetLocation.Row;
+                playerTigers[currentPlayer][tigerIndex].location.Col = targetLocation.Col;
+                playerTigers[currentPlayer][tigerIndex].setStatus(feature.toInt()); // This processes the int value of the feature and sets it to the appropriate status :)
                 
                 break;
             }
@@ -380,44 +380,44 @@ public class GameBoard {
     	switch (stat){
     	case 0: System.out.println("Placement value is not within -1 to 12");
     		throw new IllegalStateException();
-    	case 1: System.out.println("Meeple already placed in this feature, cannot place new meeple");
+    	case 1: System.out.println("Tiger already placed in this feature, cannot place new tiger");
     		throw new IllegalStateException();
-    	case 2: System.out.println("You are out of meeples to place, cannot place a meeple");
+    	case 2: System.out.println("You are out of tigers to place, cannot place a tiger");
     		throw new IllegalStateException();
     	}
     } */
     
-    //checks if a meeple can be placed at the spot indicated
-    boolean verifyMeeplePlacement(Tile tileToPlace, int meeplePlacement, int currentPlayer){
-        if (meeplePlacement < 0 || meeplePlacement > 11){
-        	if(meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None){
+    //checks if a tiger can be placed at the spot indicated
+    boolean verifyTigerPlacement(Tile tileToPlace, int tigerPlacement, int currentPlayer){
+        if (tigerPlacement < 0 || tigerPlacement > 11){
+        	if(tigerPlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None){
         		return true; //It can be larger than 11 only if it is 12, which must also be a monastery placement
         		//Monasteries are also not connected to anything, so they don't need to be verified for adjacency.
         	}
-        	if(meeplePlacement == -1){
-        		//System.out.println("Placement = -1 meaning don't want to place a meeple");
+        	if(tigerPlacement == -1){
+        		//System.out.println("Placement = -1 meaning don't want to place a tiger");
         		return false;
         	}
         	//dummyFunc(0);
         }
         
         //initializes necessary values
-        int edge = meeplePlacement / 3;
-        int node = meeplePlacement % 3;
+        int edge = tigerPlacement / 3;
+        int node = tigerPlacement % 3;
         
-        if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
+        if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerShore){
             node = 1;
         }
         
-        //checks if there is already a meeple on the feature that the player is trying to place a meeple on
-        if(tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature){
+        //checks if there is already a tiger on the feature that the player is trying to place a tiger on
+        if(tileToPlace.edges[edge].nodes[node].tigerPlacedInFeature){
         	//dummyFunc(1);
             return false;
         }
         
-        //checks if the player has any meeples to place
-        for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
-            if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
+        //checks if the player has any tigers to place
+        for(int tigerIndex = 0; tigerIndex < NUM_TIGERS; tigerIndex++){
+            if (playerTigers[currentPlayer][tigerIndex].getStatus() == TigerStatusEnum.onNone){
                 return true;
             }
         }
@@ -426,45 +426,45 @@ public class GameBoard {
         return false;
     }
 
-    //checks if a meeple can be placed at the spot indicated
-    boolean aiVerifyMeeplePlacement(Tile tileToPlace, int meeplePlacement, int currentPlayer){
- /*       boolean noMeepleAvailable = true;
-        for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
-            if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
-                noMeepleAvailable = false;
+    //checks if a tiger can be placed at the spot indicated
+    boolean aiVerifyTigerPlacement(Tile tileToPlace, int tigerPlacement, int currentPlayer){
+ /*       boolean noTigerAvailable = true;
+        for(int tigerIndex = 0; tigerIndex < NUM_TIGERS; tigerIndex++){
+            if (playerTigers[currentPlayer][tigerIndex].getStatus() == TigerStatusEnum.onNone){
+                noTigerAvailable = false;
             }
         }
 
-        if (noMeepleAvailable) return false;
+        if (noTigerAvailable) return false;
 
-        return isValidMeeplePlacementOnNode(tileToPlace, meeplePlacement);
+        return isValidTigerPlacementOnNode(tileToPlace, tigerPlacement);
 */
-        if (meeplePlacement < 0 || meeplePlacement > 11){
-            if(meeplePlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None){
+        if (tigerPlacement < 0 || tigerPlacement > 11){
+            if(tigerPlacement == 12 && tileToPlace.middle.featureType != FeatureTypeEnum.None){
                 return true; //It can be larger than 11 only if it is 12, which must also be a monastery placement
                 //Monasteries are also not connected to anything, so they don't need to be verified for adjacency.
             }
-            if(meeplePlacement == -1){
+            if(tigerPlacement == -1){
                 return false;
             }
         }
 
         //initializes necessary values
-        int edge = meeplePlacement / 3;
-        int node = meeplePlacement % 3;
+        int edge = tigerPlacement / 3;
+        int node = tigerPlacement % 3;
 
-        if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
+        if(tileToPlace.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerShore){
             node = 1;
         }
 
-        //checks if there is already a meeple on the feature that the player is trying to place a meeple on
-        if(tileToPlace.edges[edge].nodes[node].meeplePlacedInFeature){
+        //checks if there is already a tiger on the feature that the player is trying to place a tiger on
+        if(tileToPlace.edges[edge].nodes[node].tigerPlacedInFeature){
             return false;
         }
 
-        //checks if the player has any meeples to place
-        for(int meepleIndex = 0; meepleIndex < NUM_MEEPLES; meepleIndex++){
-            if (playerMeeples[currentPlayer][meepleIndex].getStatus() == MeepleStatusEnum.onNone){
+        //checks if the player has any tigers to place
+        for(int tigerIndex = 0; tigerIndex < NUM_TIGERS; tigerIndex++){
+            if (playerTigers[currentPlayer][tigerIndex].getStatus() == TigerStatusEnum.onNone){
                 return true;
             }
         }
@@ -589,7 +589,7 @@ public class GameBoard {
         return null;
     }
 
-    int valueCity(Node start){
+    int valueLake(Node start){
         HashSet<Integer> uniqueTiles = new HashSet<Integer>();
         Queue<Node> bfsQueue = new LinkedList<Node>();
         bfsQueue.add(start);
@@ -625,7 +625,7 @@ public class GameBoard {
         return (2*uniqueTiles.size()) * (1 + ((uniquePreyAnimalsMet - crocodilesMet > 0) ? uniquePreyAnimalsMet - crocodilesMet : 0));
     }
 
-    int valueField(Node start) {
+    int valueJungle(Node start) {
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
         ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
 
@@ -641,13 +641,13 @@ public class GameBoard {
 
             for (Node neighbor : currNode.neighbors) {
                 if (!neighbor.visited) {
-                    if (neighbor.featureType == FeatureTypeEnum.Field) {
+                    if (neighbor.featureType == FeatureTypeEnum.Jungle) {
                         nodeQueue.add(neighbor);
-                    } else if (neighbor.featureType == FeatureTypeEnum.Monastery && neighbor.featureID != -1) {
+                    } else if (neighbor.featureType == FeatureTypeEnum.Den && neighbor.featureID != -1) {
                         if (!uniqueDens.contains(neighbor.featureID)) {
                             uniqueDens.add(neighbor.featureID);
                         }
-                    } else if (neighbor.featureType == FeatureTypeEnum.Wall && neighbor.featureID != -1) {
+                    } else if (neighbor.featureType == FeatureTypeEnum.Shore && neighbor.featureID != -1) {
                         if (!uniqueCities.contains(neighbor.featureID)) {
                             uniqueCities.add(neighbor.featureID);
                         }
@@ -663,7 +663,7 @@ public class GameBoard {
         return 3*uniqueCities.size() + 5*uniqueDens.size();
     }
 
-    int valueRoad(Node start){
+    int valueTrail(Node start){
         HashSet<Integer> uniqueTiles = new HashSet<Integer>();
 
         Queue<Node> bfsQueue = new LinkedList<Node>();
@@ -687,7 +687,7 @@ public class GameBoard {
             buffer.visited = true;
             for(int i = 0; i < buffer.neighbors.size(); i++){
                 if(!buffer.neighbors.get(i).visited &&
-                        (buffer.neighbors.get(i).featureType.isSameFeature(FeatureTypeEnum.Road)))
+                        (buffer.neighbors.get(i).featureType.isSameFeature(FeatureTypeEnum.Trail)))
                 {
                     bfsQueue.add(buffer.neighbors.get(i));
                     uniqueTiles.add(buffer.neighbors.get(i).owningTileId);

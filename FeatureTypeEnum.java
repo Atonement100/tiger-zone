@@ -1,22 +1,22 @@
 enum FeatureTypeEnum {
-    Field,
-    Road,
-    City,
-    Wall,
-    RoadEnd,
-    InnerWall,
-    Monastery,
+    Jungle,
+    Trail,
+    Lake,
+    Shore,
+    TrailEnd,
+    InnerShore,
+    Den,
     None;
 
     public int toInt(){
         switch(this){
-            case Field: return 0;
-            case Road: return 1;
-            case City: return 2;
-            case Wall: return 3;
-            case RoadEnd: return 4;
-            case InnerWall: return 5;
-            case Monastery: return 6;
+            case Jungle: return 0;
+            case Trail: return 1;
+            case Lake: return 2;
+            case Shore: return 3;
+            case TrailEnd: return 4;
+            case InnerShore: return 5;
+            case Den: return 6;
             case None: return 9;
             default: throw new IllegalStateException();
         }
@@ -24,13 +24,13 @@ enum FeatureTypeEnum {
 
     public char toChar(){
         switch(this){
-            case Field: return 'F';
-            case Road: return 'R';
-            case RoadEnd: return 'E';
-            case City: return 'C';
-            case Wall: return 'W';
-            case InnerWall: return 'I';
-            case Monastery: return 'M';
+            case Jungle: return 'F';
+            case Trail: return 'R';
+            case TrailEnd: return 'E';
+            case Lake: return 'C';
+            case Shore: return 'W';
+            case InnerShore: return 'I';
+            case Den: return 'M';
             case None: return 'X';
             default: throw new IllegalStateException();
         }
@@ -38,28 +38,28 @@ enum FeatureTypeEnum {
 
     public boolean isSameFeature(FeatureTypeEnum otherType){
         switch (this){
-            case Field:
-                return otherType == Field;
-            case Road:
-            case RoadEnd:
-                return (otherType == Road || otherType == RoadEnd);
-            case City:
-            case Wall:
-            case InnerWall:
-                return (otherType == City || otherType == Wall || otherType == InnerWall);
-            case Monastery:
-                return (otherType == Monastery);
+            case Jungle:
+                return otherType == Jungle;
+            case Trail:
+            case TrailEnd:
+                return (otherType == Trail || otherType == TrailEnd);
+            case Lake:
+            case Shore:
+            case InnerShore:
+                return (otherType == Lake || otherType == Shore || otherType == InnerShore);
+            case Den:
+                return (otherType == Den);
             case None:
                 return (otherType == None);
             default: throw new IllegalStateException();
         }
     }
 
-    public boolean isWallToCity(FeatureTypeEnum otherType){
+    public boolean isShoreToLake(FeatureTypeEnum otherType){
         switch (this){
-            case City:
-            case Wall:
-                return (otherType == City || otherType == Wall);
+            case Lake:
+            case Shore:
+                return (otherType == Lake || otherType == Shore);
             default:
                 return false;
         }

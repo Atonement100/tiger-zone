@@ -20,7 +20,7 @@ public class LabelDemo extends JFrame {
 
 
     private int rotation;
-    private int meeple;
+    private int tiger;
     public String buttonText;
     private int x, y;
     private String[] imgId = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJJT-", "TJTT-",
@@ -65,8 +65,8 @@ public class LabelDemo extends JFrame {
                 y = Integer.parseInt(rowcol[1]);
                 //reference.setIcon(preView.returnImg);
                 Scanner scanner = new Scanner(System.in);
-                System.out.println("Enter a meeple Place ment for placed tile range [-1,12]");
-                setMeeple(scanner.nextInt());
+                System.out.println("Enter a tiger Place ment for placed tile range [-1,12]");
+                setTiger(scanner.nextInt());
                 setDone(true);
             }
         };
@@ -215,12 +215,12 @@ public class LabelDemo extends JFrame {
 
     }
 
-    public int getMeeple() {
-        return meeple;
+    public int getTiger() {
+        return tiger;
     }
 
-    public void setMeeple(int meeple) {
-        this.meeple = meeple;
+    public void setTiger(int tiger) {
+        this.tiger = tiger;
     }
 
     public ImgSet findImg(String tileId) {

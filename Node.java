@@ -2,8 +2,8 @@ import java.util.ArrayList;
 public class Node {
     
     FeatureTypeEnum featureType;
-    Meeple meeple;
-    boolean meeplePlacedInFeature;
+    Tiger tiger;
+    boolean tigerPlacedInFeature;
     ArrayList<Node> neighbors;
     
     
@@ -18,19 +18,19 @@ public class Node {
         
         switch (featureType){
             case 'f':
-            case 'F': this.featureType = FeatureTypeEnum.Field; break;
+            case 'F': this.featureType = FeatureTypeEnum.Jungle; break;
             case 'r':
-            case 'R': this.featureType = FeatureTypeEnum.Road; break;
+            case 'R': this.featureType = FeatureTypeEnum.Trail; break;
             case 'e':
-            case 'E': this.featureType = FeatureTypeEnum.RoadEnd; break;
+            case 'E': this.featureType = FeatureTypeEnum.TrailEnd; break;
             case 'c':
-            case 'C': this.featureType = FeatureTypeEnum.City; break;
+            case 'C': this.featureType = FeatureTypeEnum.Lake; break;
             case 'w':
-            case 'W': this.featureType = FeatureTypeEnum.Wall; break;
+            case 'W': this.featureType = FeatureTypeEnum.Shore; break;
             case 'i':
-            case 'I': this.featureType = FeatureTypeEnum.InnerWall; break;
+            case 'I': this.featureType = FeatureTypeEnum.InnerShore; break;
             case 'm':
-            case 'M': this.featureType = FeatureTypeEnum.Monastery; break;
+            case 'M': this.featureType = FeatureTypeEnum.Den; break;
             case 'n':
             case 'N':
             default: this.featureType = FeatureTypeEnum.None; break;
@@ -38,6 +38,6 @@ public class Node {
         this.neighbors = new ArrayList<Node>();
         this.visited = false;
         this.owningTileId = owningTileId;
-        this.meeplePlacedInFeature = false;
+        this.tigerPlacedInFeature = false;
     }
 }

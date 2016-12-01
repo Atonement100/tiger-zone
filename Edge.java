@@ -14,20 +14,20 @@ public class Edge {
             //handle false positives first
             
             //WALL AND CITY
-            if(this.nodes[i].featureType == FeatureTypeEnum.Wall && other.nodes[2-i].featureType == FeatureTypeEnum.City) continue;
-            else if(this.nodes[i].featureType == FeatureTypeEnum.City && other.nodes[2-i].featureType == FeatureTypeEnum.Wall) continue;
+            if(this.nodes[i].featureType == FeatureTypeEnum.Shore && other.nodes[2-i].featureType == FeatureTypeEnum.Lake) continue;
+            else if(this.nodes[i].featureType == FeatureTypeEnum.Lake && other.nodes[2-i].featureType == FeatureTypeEnum.Shore) continue;
             
             //WALL AND INNER WALL
-            else if(this.nodes[i].featureType == FeatureTypeEnum.InnerWall && other.nodes[2-i].featureType == FeatureTypeEnum.Wall) continue;
-            else if(this.nodes[i].featureType == FeatureTypeEnum.Wall && other.nodes[2-i].featureType == FeatureTypeEnum.InnerWall) continue;
+            else if(this.nodes[i].featureType == FeatureTypeEnum.InnerShore && other.nodes[2-i].featureType == FeatureTypeEnum.Shore) continue;
+            else if(this.nodes[i].featureType == FeatureTypeEnum.Shore && other.nodes[2-i].featureType == FeatureTypeEnum.InnerShore) continue;
             
             //INNER WALL AND CITY
-            else if(this.nodes[i].featureType == FeatureTypeEnum.City && other.nodes[2-i].featureType == FeatureTypeEnum.InnerWall) continue;
-            else if(this.nodes[i].featureType == FeatureTypeEnum.InnerWall && other.nodes[2-i].featureType == FeatureTypeEnum.City) continue;
+            else if(this.nodes[i].featureType == FeatureTypeEnum.Lake && other.nodes[2-i].featureType == FeatureTypeEnum.InnerShore) continue;
+            else if(this.nodes[i].featureType == FeatureTypeEnum.InnerShore && other.nodes[2-i].featureType == FeatureTypeEnum.Lake) continue;
             
             //ROAD AND INTERSECTION
-            else if(this.nodes[i].featureType == FeatureTypeEnum.Road && other.nodes[2-i].featureType == FeatureTypeEnum.RoadEnd) continue;
-            else if(this.nodes[i].featureType == FeatureTypeEnum.RoadEnd && other.nodes[2-i].featureType == FeatureTypeEnum.Road) continue;
+            else if(this.nodes[i].featureType == FeatureTypeEnum.Trail && other.nodes[2-i].featureType == FeatureTypeEnum.TrailEnd) continue;
+            else if(this.nodes[i].featureType == FeatureTypeEnum.TrailEnd && other.nodes[2-i].featureType == FeatureTypeEnum.Trail) continue;
             
             else if(this.nodes[i].featureType != other.nodes[2-i].featureType){
                 edgeIsCompatible = false;

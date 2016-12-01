@@ -3,22 +3,22 @@ import java.util.HashSet;
 
 class ComputerPlayerController extends PlayerController {
     private HashSet<Location> possibleTargets = new HashSet<>();
-    private int numMeeples;
+    private int numTigers;
     private int numCrocodiles;
     
     public ComputerPlayerController(GameBoard board){
-    	this.localMeeples = new Meeple[7];
+    	this.localTigers = new Tiger[7];
         this.localGameBoard = board;
-        this.numMeeples = 7;
+        this.numTigers = 7;
         this.numCrocodiles = 2;
         this.playerID = defaultID++ % 2;
     }
     
     public ComputerPlayerController(GuiAdapter g, GameBoard board) {
         this.guiAdapter = g;
-        this.localMeeples = new Meeple[7];
+        this.localTigers = new Tiger[7];
         this.localGameBoard = board;
-        this.numMeeples = 7;
+        this.numTigers = 7;
         this.numCrocodiles = 2;
         this.playerID = defaultID++ % 2;
     }
@@ -31,14 +31,13 @@ class ComputerPlayerController extends PlayerController {
     @Override
     protected MoveInformation getPlayerMove(Tile currentTile){
         //AI Logic / fx calls may come from here
-        // System.out.println("computer processing move");
-        MoveInformation noMeepleMoveInfo = new MoveInformation(),
-                meepleMoveInfo = new MoveInformation();
-        boolean meepleMoveFound = false;
+        MoveInformation noTigerMoveInfo = new MoveInformation(),
+        tigerMoveInfo = new MoveInformation();
+        boolean tigerMoveFound = false;
 
-        noMeepleMoveInfo.tileLocation = new Location(-1, -1);
-        noMeepleMoveInfo.meepleLocation = -1;
-        meepleMoveInfo.meepleLocation = -1;
+        noTigerMoveInfo.tileLocation = new Location(-1, -1);
+        noTigerMoveInfo.tigerLocation = -1;
+        tigerMoveInfo.tigerLocation = -1;
 
         int maxConnections = 0;
         int highestScore = 0;
@@ -54,17 +53,17 @@ class ComputerPlayerController extends PlayerController {
 
             for (int possibleRot = 0; possibleRot < 4; possibleRot++){
                 if (this.localGameBoard.verifyTilePlacement(currentTile, possibleLoc, possibleRot)){
-                    noMeepleMoveInfo.tileLocation = possibleLoc;
-                    noMeepleMoveInfo.tileRotation = possibleRot;
+                    noTigerMoveInfo.tileLocation = possibleLoc;
+                    noTigerMoveInfo.tileRotation = possibleRot;
                     maxConnections = connections;
 
-                    if (numMeeples == 0) continue;
+                    if (numTigers == 0) continue;
                    // if (currentTile.tileType == 'N' || currentTile.tileType == 'Z') continue;
                     
                     localGameBoard.placeTemporaryTile(currentTile, possibleLoc, possibleRot);
                     
-                    /* Analyze meeple placements */
-                    if (numMeeples > 0){
+                    /* Analyze tiger placements */
+                    if (numTigers > 0){
                         //These must be considered in this order because of the... interesting zoning requirements.
                         //The idea here is to keep a running total of the highest scoring node and only replace the intended target if we /exceed/
                         //The current highest. If we only replace on higher values, we'll never pick a later zone is the same as a previous zone.
@@ -85,24 +84,24 @@ class ComputerPlayerController extends PlayerController {
                         for (int zoneIndex = 0; zoneIndex < zoneValues.length; zoneIndex++){
                             if (zoneValues[zoneIndex].left > highestScore){
                                 highestScore = zoneValues[zoneIndex].left;
-                                meepleMoveInfo.meepleZone = zoneIndex + 1;
-                                meepleMoveInfo.meepleLocation = zoneValues[zoneIndex].right;
-                                meepleMoveInfo.tileRotation = possibleRot;
-                                meepleMoveInfo.tileLocation = possibleLoc;
-                                meepleMoveFound = true;
+                                tigerMoveInfo.tigerZone = zoneIndex + 1;
+                                tigerMoveInfo.tigerLocation = zoneValues[zoneIndex].right;
+                                tigerMoveInfo.tileRotation = possibleRot;
+                                tigerMoveInfo.tileLocation = possibleLoc;
+                                tigerMoveFound = true;
                                 
                             }
                         }
 
-                        if (meepleMoveFound) {
+                        if (tigerMoveFound) {
                             localGameBoard.removeTemporaryTile(possibleLoc);
                             break;
                         }
-                        //moveInfo.meepleLocation = best node (for our local system)
-                        //moveInfo.meepleZone = best zone (for networking)
+                        //moveInfo.tigerLocation = best node (for our local system)
+                        //moveInfo.tigerZone = best zone (for networking)
                     }
 
-                    /* End meeple placement analysis */
+                    /* End tiger placement analysis */
 
                     localGameBoard.removeTemporaryTile(possibleLoc);
 
@@ -113,12 +112,12 @@ class ComputerPlayerController extends PlayerController {
         }
 
 
-        if (meepleMoveFound){
-            numMeeples--;
-            return meepleMoveInfo;
+        if (tigerMoveFound){
+            numTigers--;
+            return tigerMoveInfo;
         }
         else{
-            return noMeepleMoveInfo;
+            return noTigerMoveInfo;
         }
         // System.out.println("No viable location to place :(");
         //return new MoveInformation(new Location(-1, -1), -1, -1);
@@ -126,28 +125,28 @@ class ComputerPlayerController extends PlayerController {
 
     IntegerTuple getValueOfCenter(Tile currentTile){
         //Middle zone
-        if (currentTile.hasMonastery){
-            //Value monastery
+        if (currentTile.hasDen){
+            //Value den
             return new IntegerTuple(9, 12);
         }
         else{
-            int numRoads = 0;
+            int numTrails = 0;
             for (Edge edge : currentTile.edges){
-                if (edge.nodes[1].featureType.isSameFeature(FeatureTypeEnum.Road)) {
-                    numRoads++;
+                if (edge.nodes[1].featureType.isSameFeature(FeatureTypeEnum.Trail)) {
+                    numTrails++;
                 }
             }
 
-            if (!currentTile.roadsEnd && numRoads > 0) { //If roads end no valid placement here.
+            if (!currentTile.trailsEnd && numTrails > 0) { //If trails end no valid placement here.
                 for (int edgeIndex = 0; edgeIndex < currentTile.edges.length; edgeIndex++){
-                    if (currentTile.edges[edgeIndex].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Road)){
+                    if (currentTile.edges[edgeIndex].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Trail)){
                         return getValueOfSide(currentTile, edgeIndex);
                     }
                 }
             }
-            else if (numRoads == 0){
+            else if (numTrails == 0){
                 for (int edgeIndex = 0; edgeIndex < currentTile.edges.length; edgeIndex++){
-                    if (currentTile.edges[edgeIndex].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Field)){
+                    if (currentTile.edges[edgeIndex].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Jungle)){
                         return getValueOfSide(currentTile, edgeIndex);
                     }
                 }
@@ -159,32 +158,32 @@ class ComputerPlayerController extends PlayerController {
 
     IntegerTuple getValueOfCorner(Tile currentTile, int leadingEdge, int followingEdge){
         if (currentTile.edges[leadingEdge].nodes[2].featureType == currentTile.edges[followingEdge].nodes[0].featureType &&
-                currentTile.edges[leadingEdge].nodes[2].featureType.isSameFeature(FeatureTypeEnum.City) &&
-                !currentTile.citiesAreIndependent){
+                currentTile.edges[leadingEdge].nodes[2].featureType.isSameFeature(FeatureTypeEnum.Lake) &&
+                !currentTile.lakesAreIndependent){
             //Guaranteed to be a city zone
             //Use edges[1].nodes[0]
-            if(localGameBoard.aiVerifyMeeplePlacement(currentTile, followingEdge * 3, this.playerID)){
-                return new IntegerTuple(localGameBoard.valueCity(currentTile.edges[followingEdge].nodes[0]), followingEdge * 3);
+            if(localGameBoard.aiVerifyTigerPlacement(currentTile, followingEdge * 3, this.playerID)){
+                return new IntegerTuple(localGameBoard.valueLake(currentTile.edges[followingEdge].nodes[0]), followingEdge * 3);
             }
         }
         else{
-            //Guaranteed to be a field zone
-            if(currentTile.edges[leadingEdge].nodes[2].featureType == FeatureTypeEnum.Field){
-                //If both nodes considered are fields, doesn't matter which we use. Otherwise pick the one that is a field.
-                if (localGameBoard.aiVerifyMeeplePlacement(currentTile, leadingEdge * 3 + 2, this.playerID)){
-                    return new IntegerTuple(localGameBoard.valueField(currentTile.edges[leadingEdge].nodes[2]), leadingEdge * 3 + 2);
+            //Guaranteed to be a jungle zone
+            if(currentTile.edges[leadingEdge].nodes[2].featureType == FeatureTypeEnum.Jungle){
+                //If both nodes considered are jungles, doesn't matter which we use. Otherwise pick the one that is a jungle.
+                if (localGameBoard.aiVerifyTigerPlacement(currentTile, leadingEdge * 3 + 2, this.playerID)){
+                    return new IntegerTuple(localGameBoard.valueJungle(currentTile.edges[leadingEdge].nodes[2]), leadingEdge * 3 + 2);
                 }
             }
-            else if (currentTile.edges[followingEdge].nodes[0].featureType == FeatureTypeEnum.Field){
-                if (localGameBoard.aiVerifyMeeplePlacement(currentTile, followingEdge * 3, this.playerID)){
-                    return new IntegerTuple(localGameBoard.valueField(currentTile.edges[followingEdge].nodes[0]), followingEdge * 3);
+            else if (currentTile.edges[followingEdge].nodes[0].featureType == FeatureTypeEnum.Jungle){
+                if (localGameBoard.aiVerifyTigerPlacement(currentTile, followingEdge * 3, this.playerID)){
+                    return new IntegerTuple(localGameBoard.valueJungle(currentTile.edges[followingEdge].nodes[0]), followingEdge * 3);
                 }
             }
             else{
-                //If neither is a field node then we have the JLLJ- case.
+                //If neither is a jungle node then we have the JLLJ- case.
                 //Have to use edges[2].nodes[0] and apply it here
-                if (localGameBoard.aiVerifyMeeplePlacement(currentTile, ((followingEdge + 1) % 4) * 3, this.playerID)){
-                    return new IntegerTuple(localGameBoard.valueField(currentTile.edges[(followingEdge + 1) % 4].nodes[0]), ((followingEdge + 1) % 4) * 3);
+                if (localGameBoard.aiVerifyTigerPlacement(currentTile, ((followingEdge + 1) % 4) * 3, this.playerID)){
+                    return new IntegerTuple(localGameBoard.valueJungle(currentTile.edges[(followingEdge + 1) % 4].nodes[0]), ((followingEdge + 1) % 4) * 3);
                 }
             }
         }
@@ -195,25 +194,25 @@ class ComputerPlayerController extends PlayerController {
         IntegerTuple move = new IntegerTuple(-1, -1);
 
         switch (currentTile.edges[edgeNum].nodes[1].featureType){
-            case Field:
-                if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                    move = new IntegerTuple(localGameBoard.valueField(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
+            case Jungle:
+                if (localGameBoard.aiVerifyTigerPlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
+                    move = new IntegerTuple(localGameBoard.valueJungle(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
                 }
                 break;
-            case Road:
-                if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                    move = new IntegerTuple(localGameBoard.valueRoad(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
+            case Trail:
+                if (localGameBoard.aiVerifyTigerPlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
+                    move = new IntegerTuple(localGameBoard.valueTrail(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
                 }
                 break;
-            case RoadEnd:
-                if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                    move = new IntegerTuple(localGameBoard.valueRoad(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
+            case TrailEnd:
+                if (localGameBoard.aiVerifyTigerPlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
+                    move = new IntegerTuple(localGameBoard.valueTrail(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
                 }
                 break;
-            case City:
-            case Wall:
-                if (localGameBoard.aiVerifyMeeplePlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
-                    move = new IntegerTuple(localGameBoard.valueCity(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
+            case Lake:
+            case Shore:
+                if (localGameBoard.aiVerifyTigerPlacement(currentTile, edgeNum * 3 + 1, this.playerID)){
+                    move = new IntegerTuple(localGameBoard.valueLake(currentTile.edges[edgeNum].nodes[1]), edgeNum * 3 + 1);
                 }
                 break;
             default: //Realistically should throw exception but let's just pretend like the node doesn't exist and move on with our lives
@@ -261,8 +260,8 @@ class ComputerPlayerController extends PlayerController {
     }
 
     @Override
-    public void processFreedMeeple(int ownerID, int meepleID){
-        super.processFreedMeeple(ownerID, meepleID);
-        if (ownerID == this.playerID) numMeeples++;
+    public void processFreedTiger(int ownerID, int tigerID){
+        super.processFreedTiger(ownerID, tigerID);
+        if (ownerID == this.playerID) numTigers++;
     }
 }
