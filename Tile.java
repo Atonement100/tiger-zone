@@ -37,6 +37,12 @@ public class Tile {
 		this.edges = newTile.edges;
 		this.middle = newTile.middle;
 		this.ID = tileToCopy.ID;
+
+		for (Edge edge : this.edges){
+			for (Node node : edge.nodes){
+				node.owningTileId = this.ID;
+			}
+		}
 	}
 	
 	public Tile(Tile tileToCopy, boolean unrotate){
@@ -52,6 +58,12 @@ public class Tile {
 		this.edges = newTile.edges;
 		this.middle = newTile.middle;
 		this.ID = tileToCopy.ID;
+
+		for (Edge edge : this.edges){
+			for (Node node : edge.nodes){
+				node.owningTileId = this.ID;
+			}
+		}
 	}
 	
 	
