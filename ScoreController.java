@@ -47,6 +47,7 @@ public class ScoreController {
 
     ArrayList<Meeple> processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed, boolean usingLocalBoard){
         placedTiles.add(confirmedTile);
+        System.out.println("Tile " + confirmedTile.ID + " added to placed tiles");
 
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
         
