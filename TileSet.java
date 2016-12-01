@@ -84,7 +84,7 @@ public class TileSet {
     // the current tile image.
     public void setTiger(int position){
     	//System.out.println("placing tiger at " + position);
-        ImageIcon tigerIcon = new ImageIcon("Gui/Tigers/" + position + ".png");
+        ImageIcon tigerIcon = new ImageIcon("tile_assets/Tigers/" + position + ".png");
         ImageIcon untigeredTileIcon = getTileIcon();
         BufferedImage combinedImg = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = combinedImg.createGraphics();

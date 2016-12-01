@@ -27,7 +27,6 @@ public class LabelDemo extends JFrame {
             "LLLL-", "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-",
             "TLJT-", "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-",
             "TLTT-", "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD", "TLLLC"};
-            // Not sure if C is the correct animal ID for crocodile on last tile.
     public TileSet[][] tiles;
     public PreView preView = new PreView();
     public ImgSet[] img = new ImgSet[28];
@@ -38,7 +37,6 @@ public class LabelDemo extends JFrame {
     }
 
     public void setDone(boolean done) {
-        //System.out.println(""+done);
         this.done = done;
     }
 
@@ -65,28 +63,28 @@ public class LabelDemo extends JFrame {
                 y = Integer.parseInt(rowcol[1]);
                 //reference.setIcon(preView.returnImg);
                 Scanner scanner = new Scanner(System.in);
-                System.out.println("Enter a meeple Place ment for placed tile range [-1,12]");
+                System.out.println("Enter a meeple placement for placed tile range [-1,12]");
                 setMeeple(scanner.nextInt());
                 setDone(true);
             }
         };
         try {
-            ICON = ImageIO.read(new File("Gui/assets/icon.png"));
+            ICON = ImageIO.read(new File("tile_assets/assets/icon.png"));
         } catch (IOException e) {
 
         }
-                /*Initialize all the img to imgset class*/
+        /*Initialize all the img to imgset class*/
         for (int i = 0; i < 28; i++) {
             img[i] = new ImgSet();
-            img[i].setImageIcon("Gui/Tiles50x50/" + i + ".jpg");
-            img[i].setImageIcon_1("Gui/Tiles50x50_1/" + i + ".jpg");
-            img[i].setImageIcon_2("Gui/Tiles50x50_2/" + i + ".jpg");
-            img[i].setImageIcon_3("Gui/Tiles50x50_3/" + i + ".jpg");
+            img[i].setImageIcon("tile_assets/Tiles50x50/" + i + ".jpg");
+            img[i].setImageIcon_1("tile_assets/Tiles50x50_1/" + i + ".jpg");
+            img[i].setImageIcon_2("tile_assets/Tiles50x50_2/" + i + ".jpg");
+            img[i].setImageIcon_3("tile_assets/Tiles50x50_3/" + i + ".jpg");
             img[i].setImgID(imgId[i]);
 
         }
 
-                /*Initialize all the button on the Game board and Name them according to row and col*/
+        /*Initialize all the button on the Game board and Name them according to row and col*/
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 tiles[i][j] = new TileSet();
@@ -111,27 +109,7 @@ public class LabelDemo extends JFrame {
         player2Panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         scorePanel.add(player1Panel);
         scorePanel.add(player2Panel);
-        
-        /*this forloop are basicly naming the button on the screen to match what server is taking*/
-        /*for (int i = SIZE / 2; i < SIZE; i++) {
-            for (int j = SIZE / 2; j < SIZE; j++) {
-                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
-            }
-            for (int j = 0; j < SIZE / 2; j++) {
-                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
-            }
 
-        }
-
-        for (int i = 0; i < SIZE / 2; i++) {
-            for (int j = SIZE / 2; j < SIZE; j++) {
-                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
-            }
-            for (int j = 0; j < SIZE / 2; j++) {
-                tiles[i][j].getTileButton().setText(((SIZE / 2) - j) * -1 + "," + (i - (SIZE / 2)) * -1);
-            }
-
-        }*/
         /*******************************************************************************************/
         /*Display the Jframe for the main Game board*/
         frame.setIconImage(ICON);
@@ -170,12 +148,6 @@ public class LabelDemo extends JFrame {
             preView.setImage(findImg(ID).getImageIcon_3());
             preView.setImg(findImg(ID).getImageIcon_3());
         }
-//        preView.setImgID(ID);
-//        preView.setImage(findImg(ID).getImageIcon());
-//        preView.setImg_1(findImg(ID).getImageIcon_1());
-//        preView.setImg_2(findImg(ID).getImageIcon_2());
-//        preView.setImg_3(findImg(ID).getImageIcon_3());
-//        preView.setReturnImg(findImg(ID).getImageIcon());
     }
 
 
@@ -192,21 +164,6 @@ public class LabelDemo extends JFrame {
             }
         }
         return s;
-    }
-
-/*
-    public static void main (String[] args){
-        LabelDemo l= new LabelDemo();
-        //placeStartTile();
-
-        System.out.println("hello form main");
-    }
-*/
-
-
-    public void possibleMove(int[] x, int[] y) {
-
-
     }
 
     public void getImgID(String s) {
@@ -234,10 +191,6 @@ public class LabelDemo extends JFrame {
     }
 
     public void placeFirstTile(int x, int y, String id) {
-//        String  s =getTileIndexs(x,y);
-//        System.out.println(s);
-//        String[] rowcol = s.split("[,]");
-//        tiles[Integer.parseInt(rowcol[0])][Integer.parseInt(rowcol[1])].setTileIcon(findImg(id).getImageIcon());
         tiles[x][y].setTileIcon(findImg(id).getImageIcon());
     }
 
