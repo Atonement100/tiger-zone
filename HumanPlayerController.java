@@ -1,7 +1,10 @@
 import java.util.*;
 
 public class HumanPlayerController extends PlayerController {
-
+	/*
+	 * This is the class that handles the player information and moves for a local game
+	 */
+	
     public GuiAdapter guiAdapter;
 
     HumanPlayerController(GuiAdapter g){
@@ -10,7 +13,7 @@ public class HumanPlayerController extends PlayerController {
 
 
     HumanPlayerController(GameBoard board){
-        this.localMeeples = new Meeple[7];
+        this.localTigers = new Tiger[7];
         this.localGameBoard = board;
     }
 
@@ -29,6 +32,7 @@ public class HumanPlayerController extends PlayerController {
         return getPlayerMoveFromGui(currentTile);
     }
 
+    //Reads the player move from console
     private MoveInformation getPlayerMoveFromConsole(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Input row, column, clockwise rotations, and meeple location [-1,12]");
@@ -40,9 +44,10 @@ public class HumanPlayerController extends PlayerController {
         return new MoveInformation(new Location(inputs[0], inputs[1]), inputs[2], inputs[3]);
     }
 
+    //Reads the player move from the GUI
     private MoveInformation getPlayerMoveFromGui(Tile currentTile){
         guiAdapter.setTileID(""+currentTile.tileType);
-        MoveInformation move = new MoveInformation(new Location(guiAdapter.getX(), guiAdapter.getY()), guiAdapter.getRotation(), guiAdapter.getMeeple());
+        MoveInformation move = new MoveInformation(new Location(guiAdapter.getX(), guiAdapter.getY()), guiAdapter.getRotation(), guiAdapter.getTiger());
         return move;
     }
 

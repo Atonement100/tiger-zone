@@ -10,8 +10,8 @@ public class GuiAdapter {
     private int x;
     private int  y;
     private int rotation;
-    private int meeple;
-    public LabelDemo Gui;
+    private int tiger;
+    public GuiInterface Gui;
     
     String[] Id = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJJT-", "TJTT-",
             "LLLL-", "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-",
@@ -20,15 +20,15 @@ public class GuiAdapter {
             // Not sure if C is the correct animal ID for crocodile on last tile.
 
     public GuiAdapter(int boardSize) {
-        Gui = new LabelDemo(boardSize);
+        Gui = new GuiInterface(boardSize);
 
     }
 
-    public GuiAdapter(int x, int y, int rotation, int meeple) {
+    public GuiAdapter(int x, int y, int rotation, int tiger) {
         this.x = x;
         this.y = y;
         this.rotation = rotation;
-        this.meeple = meeple;
+        this.tiger = tiger;
     }
     int getX() {
         x= Gui.getX();
@@ -57,13 +57,13 @@ public class GuiAdapter {
         this.rotation = rotation;
     }
 
-    public int getMeeple() {
-        meeple = Gui.getMeeple();
-        return meeple;
+    public int getTiger() {
+        tiger = Gui.getTiger();
+        return tiger;
     }
 
-    public void setMeeple(int meeple) {
-        this.meeple = meeple;
+    public void setTiger(int tiger) {
+        this.tiger = tiger;
     }
 
     public String getTileID() {
@@ -89,11 +89,11 @@ public class GuiAdapter {
         GuiID = guiID;
     }
 
-    public LabelDemo getGui() {
+    public GuiInterface getGui() {
         return Gui;
     }
 
-    public void setGui(LabelDemo gui) {
+    public void setGui(GuiInterface gui) {
         Gui = gui;
     }
 
@@ -206,8 +206,8 @@ public class GuiAdapter {
             tileIDChar = 'b';
         }
         addTile(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tileRotation, Character.toString(tileIDChar));
-        if(moveInfo.meepleLocation >= 0){
-            Gui.placeTiger(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.meepleLocation);
+        if(moveInfo.tigerLocation >= 0){
+            Gui.placeTiger(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tigerLocation);
         }
     }
 

@@ -10,18 +10,18 @@ public class TileTest {
 
     @Test
     public void ctorTrueTileWorks() throws Exception {
-        assertTrue(allTrueTile.hasMonastery);
-        assertTrue(allTrueTile.citiesAreIndependent);
-        assertTrue(allTrueTile.roadsEnd);
+        assertTrue(allTrueTile.hasDen);
+        assertTrue(allTrueTile.lakesAreIndependent);
+        assertTrue(allTrueTile.trailsEnd);
         assertTrue(allTrueTile.animalType == 1);
     }
 
     @Test
     public void ctorFalseTileWorks() throws Exception {
         assertFalse(allTrueTile.animalType == 2);
-        assertFalse(allFalseTile.hasMonastery);
-        assertFalse(allFalseTile.citiesAreIndependent);
-        assertFalse(allFalseTile.roadsEnd);
+        assertFalse(allFalseTile.hasDen);
+        assertFalse(allFalseTile.lakesAreIndependent);
+        assertFalse(allFalseTile.trailsEnd);
     }
 
     @Test

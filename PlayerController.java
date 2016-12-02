@@ -1,23 +1,23 @@
 class PlayerController {
     public GuiAdapter guiAdapter;
-    protected Meeple[] localMeeples;
+    protected Tiger[] localTigers;
     protected GameBoard localGameBoard;
     protected int playerID;
 
     protected static int defaultID = 0;
     PlayerController(){
-        this.localMeeples = new Meeple[7];
+        this.localTigers = new Tiger[7];
         this.localGameBoard = new GameBoard(77,77);
     }
 
     PlayerController(GameBoard board){
-        this.localMeeples = new Meeple[7];
+        this.localTigers = new Tiger[7];
         this.localGameBoard = board;
         this.playerID = defaultID++;
     }
 
     PlayerController(GameBoard board, int playerID){
-        this.localMeeples = new Meeple[7];
+        this.localTigers = new Tiger[7];
         this.localGameBoard = board;
         this.playerID = playerID;
     }
@@ -25,7 +25,7 @@ class PlayerController {
     void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
         //need to locally update meeple
         //localGameBoard.placeTile(confirmedTile, moveInfo.tileLocation, moveInfo.tileRotation);
-        //localGameBoard.placeMeeple(confirmedTile, moveInfo.tileLocation, moveInfo.meepleLocation, playerConfirmed);
+        //localGameBoard.placeTiger(confirmedTile, moveInfo.tileLocation, moveInfo.meepleLocation, playerConfirmed);
     }
 
     void processConfirmedMove(MoveInformation moveInfo) {
@@ -41,7 +41,7 @@ class PlayerController {
         return new MoveInformation();
     }
 
-    public void processFreedMeeple(int ownerID, int meepleID) {
-        localGameBoard.freeMeeple(ownerID, meepleID);
+    public void processFreedTiger(int ownerID, int meepleID) {
+        localGameBoard.freeTiger(ownerID, meepleID);
     }
 }

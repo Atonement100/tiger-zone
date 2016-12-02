@@ -6,7 +6,7 @@ import java.util.Scanner;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-class LabelDemo extends JFrame {
+class GuiInterface extends JFrame {
     private int size = 2;
     private static Image ICON;
     private boolean done= false;
@@ -15,7 +15,7 @@ class LabelDemo extends JFrame {
 
 
     private int rotation;
-    private int meeple;
+    private int tiger;
     private String buttonText;
     private int x, y;
     private String[] imgId = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJJT-", "TJTT-",
@@ -39,7 +39,7 @@ class LabelDemo extends JFrame {
         return nextmove;
     }
 
-    LabelDemo(int boardSize) {
+    GuiInterface(int boardSize) {
         size = boardSize;
         tiles = new TileSet[size][size];
         JFrame frame = new JFrame("Tiger Zone");
@@ -54,8 +54,8 @@ class LabelDemo extends JFrame {
                 x = Integer.parseInt(rowcol[0]);
                 y = Integer.parseInt(rowcol[1]);
                 Scanner scanner = new Scanner(System.in);
-                System.out.println("Enter a meeple placement for placed tile range [-1,12]");
-                setMeeple(scanner.nextInt());
+                System.out.println("Enter a tiger placement for placed tile range [-1,12]");
+                setTiger(scanner.nextInt());
                 setDone(true);
             }
         };
@@ -163,12 +163,12 @@ class LabelDemo extends JFrame {
 
     }
 
-    public int getMeeple() {
-        return meeple;
+    public int getTiger() {
+        return tiger;
     }
 
-    public void setMeeple(int meeple) {
-        this.meeple = meeple;
+    public void setTiger(int tiger) {
+        this.tiger = tiger;
     }
 
     private ImgSet findImg(String tileId) {

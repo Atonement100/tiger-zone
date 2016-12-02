@@ -26,12 +26,12 @@ class PreView extends JFrame {
     }
 
 
-    public int getMeeple() {
+    public int getTiger() {
 
-        return meeple;
+        return tiger;
     }
 
-    public int meeple;
+    public int tiger;
 
     int getRotation() {
         return Rotation;

@@ -2,36 +2,36 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class MeepleTest {
+public class TigerTest {
 	
 	@Test
 	public void testMeeple() throws Exception {
-		Meeple m = new Meeple();
+		Tiger m = new Tiger();
 		assertEquals(-1, m.owner);
 		assertTrue(m.location.isEqual(new Location(-1,-1)));
-		assertEquals(MeepleStatusEnum.onNone, m.status);
+		assertEquals(TigerStatusEnum.onNone, m.status);
 	}
 
 	@Test
 	public void testMeepleInt() throws Exception {
-		Meeple m = new Meeple(1, 1);
+		Tiger m = new Tiger(1, 1);
 		assertEquals(1, m.owner);
 		assertTrue(m.location.isEqual(new Location(-1,-1)));
-		assertEquals(MeepleStatusEnum.onNone, m.status);
+		assertEquals(TigerStatusEnum.onNone, m.status);
 	}
 
 	@Test
 	public void testUpdateLocation() throws Exception {
-		Meeple m = new Meeple(1, 1);
+		Tiger m = new Tiger(1, 1);
 		m.updateLocation(new Location(1,1));
 		assertTrue(m.location.isEqual(new Location(1,1)));
 	}
 
 	@Test
 	public void testUpdateStatus() throws Exception {
-		Meeple m = new Meeple(1, 1);
+		Tiger m = new Tiger(1, 1);
 		m.setStatus(1);
-		assertEquals(MeepleStatusEnum.onRoad, m.status);
+		assertEquals(TigerStatusEnum.onTrail, m.status);
 	}
 
 }
