@@ -10,18 +10,18 @@ public class TileTest {
 
     @Test
     public void ctorTrueTileWorks() throws Exception {
-        assertTrue(allTrueTile.hasMonastery);
-        assertTrue(allTrueTile.citiesAreIndependent);
-        assertTrue(allTrueTile.roadsEnd);
+        assertTrue(allTrueTile.hasDen);
+        assertTrue(allTrueTile.lakesAreIndependent);
+        assertTrue(allTrueTile.trailsEnd);
         assertTrue(allTrueTile.animalType == 1);
     }
 
     @Test
     public void ctorFalseTileWorks() throws Exception {
         assertFalse(allTrueTile.animalType == 2);
-        assertFalse(allFalseTile.hasMonastery);
-        assertFalse(allFalseTile.citiesAreIndependent);
-        assertFalse(allFalseTile.roadsEnd);
+        assertFalse(allFalseTile.hasDen);
+        assertFalse(allFalseTile.lakesAreIndependent);
+        assertFalse(allFalseTile.trailsEnd);
     }
 
     @Test
@@ -91,50 +91,4 @@ public class TileTest {
         assertArrayEquals(allTrueTile.edgeValues, trueCopy.edgeValues);
     }
 
-    @Test
-    public void nodeConnectionTileTypeK() throws Exception {
-        Tile tile = new Tile(false, false, false, 0, new Integer[]{2,0,2,0}, 'K');
-        Edge[] edges = tile.edges;
-
-        assertSame(edges[0].nodes[0].neighbors.get(0), edges[2].nodes[2]);
-        assertSame(edges[0].nodes[0].neighbors.get(1), edges[3].nodes[2]);
-        assertSame(edges[0].nodes[1].neighbors.get(0), edges[2].nodes[1]);
-        assertSame(edges[0].nodes[2].neighbors.get(0), edges[2].nodes[0]);
-        assertSame(edges[0].nodes[2].neighbors.get(1), edges[1].nodes[0]);
-
-        assertSame(edges[1].nodes[0].neighbors.get(0), edges[0].nodes[2]);
-        assertSame(edges[1].nodes[0].neighbors.get(1), edges[1].nodes[1]);
-        assertSame(edges[1].nodes[1].neighbors.get(0), edges[1].nodes[0]);
-        assertSame(edges[1].nodes[1].neighbors.get(1), edges[1].nodes[2]);
-        assertSame(edges[1].nodes[2].neighbors.get(0), edges[1].nodes[1]);
-        assertSame(edges[1].nodes[2].neighbors.get(1), edges[2].nodes[0]);
-
-        assertSame(edges[2].nodes[0].neighbors.get(0), edges[0].nodes[2]);
-        assertSame(edges[2].nodes[0].neighbors.get(1), edges[1].nodes[2]);
-        assertSame(edges[2].nodes[1].neighbors.get(0), edges[0].nodes[1]);
-        assertSame(edges[2].nodes[2].neighbors.get(0), edges[0].nodes[0]);
-        assertSame(edges[2].nodes[2].neighbors.get(1), edges[3].nodes[0]);
-
-        assertSame(edges[3].nodes[0].neighbors.get(0), edges[2].nodes[2]);
-        assertSame(edges[3].nodes[0].neighbors.get(1), edges[3].nodes[1]);
-        assertSame(edges[3].nodes[1].neighbors.get(0), edges[3].nodes[0]);
-        assertSame(edges[3].nodes[1].neighbors.get(1), edges[3].nodes[2]);
-        assertSame(edges[3].nodes[2].neighbors.get(0), edges[3].nodes[1]);
-        assertSame(edges[3].nodes[2].neighbors.get(1), edges[0].nodes[0]);
-    }
-
-    /* These may safely be deleted, they were used only to test java functionality
-    @Test
-    public void copyConstructor() throws Exception {
-        Tile tileToCopy = new Tile(false, false, false, 0, new Integer[]{0, 1, 2, 2}, 'K');
-
-        rotate(tileToCopy, 1);
-
-        assertArrayEquals(new Integer[]{0, 1, 2, 2}, tileToCopy.edgeValues);
-    }
-
-    void rotate(Tile tile, int rotations){
-        tile.rotateClockwise(rotations);
-    }
-    */
 }

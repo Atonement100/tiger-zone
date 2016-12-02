@@ -5,9 +5,8 @@ import java.util.*;
 import java.util.ArrayList;
 
 public class Tile {
-	public static final int EDGES_PER_TILE = 4;
-	public static final int NODES_PER_EDGE = 3;
-	public static final int NODES_PER_TILE = EDGES_PER_TILE * NODES_PER_EDGE + 1;
+	private static final int EDGES_PER_TILE = 4;
+	private static final int NODES_PER_EDGE = 3;
 	private static int identify = 0;
 	
 	int ID,
@@ -17,20 +16,20 @@ public class Tile {
 			EDGES_PER_TILE];
 	Node middle;
 	char tileType;
-	boolean hasMonastery,
-		 	roadsEnd,
-			citiesAreIndependent;
+	boolean hasDen,
+		 	trailsEnd,
+			lakesAreIndependent;
 	int animalType;
 
-	public static void resetTileIdentify(){
+	static void resetTileIdentify(){
 		identify = 0;
 	}
 
 	public Tile(Tile tileToCopy){
-		Tile newTile = new Tile(tileToCopy.hasMonastery, tileToCopy.roadsEnd, tileToCopy.citiesAreIndependent, tileToCopy.animalType, tileToCopy.edgeValues, tileToCopy.tileType);
-		this.hasMonastery = newTile.hasMonastery;
-		this.roadsEnd = newTile.roadsEnd;
-		this.citiesAreIndependent = newTile.citiesAreIndependent;
+		Tile newTile = new Tile(tileToCopy.hasDen, tileToCopy.trailsEnd, tileToCopy.lakesAreIndependent, tileToCopy.animalType, tileToCopy.edgeValues, tileToCopy.tileType);
+		this.hasDen = newTile.hasDen;
+		this.trailsEnd = newTile.trailsEnd;
+		this.lakesAreIndependent = newTile.lakesAreIndependent;
 		this.tileType = newTile.tileType;
 		this.rotations = newTile.rotations;
 		this.edgeValues = newTile.edgeValues;
@@ -41,14 +40,14 @@ public class Tile {
 	}
 	
 	public Tile(Tile tileToCopy, boolean unrotate){
-		Tile newTile = new Tile(tileToCopy.hasMonastery, tileToCopy.roadsEnd, tileToCopy.citiesAreIndependent, tileToCopy.animalType, tileToCopy.edgeValues, tileToCopy.tileType);
+		Tile newTile = new Tile(tileToCopy.hasDen, tileToCopy.trailsEnd, tileToCopy.lakesAreIndependent, tileToCopy.animalType, tileToCopy.edgeValues, tileToCopy.tileType);
 		
 		Tile.printTile(newTile);
 		if (unrotate) newTile.rotateClockwise(-tileToCopy.rotations);
 		Tile.printTile(newTile);
-		this.hasMonastery = newTile.hasMonastery;
-		this.roadsEnd = newTile.roadsEnd;
-		this.citiesAreIndependent = newTile.citiesAreIndependent;
+		this.hasDen = newTile.hasDen;
+		this.trailsEnd = newTile.trailsEnd;
+		this.lakesAreIndependent = newTile.lakesAreIndependent;
 		this.tileType = newTile.tileType;
 		this.rotations = 0;
 		this.edgeValues = newTile.edgeValues;
@@ -61,30 +60,30 @@ public class Tile {
 	
 	
 
-	public Tile(boolean hasMonastery, boolean roadsEnd, boolean citiesAreIndependent, int animalType, Integer[] edgeValues, char tileType){
-		this.hasMonastery = hasMonastery;
-		this.roadsEnd = roadsEnd;
-		this.citiesAreIndependent = citiesAreIndependent;
+	public Tile(boolean hasDen, boolean trailsEnd, boolean lakesAreIndependent, int animalType, Integer[] edgeValues, char tileType){
+		this.hasDen = hasDen;
+		this.trailsEnd = trailsEnd;
+		this.lakesAreIndependent = lakesAreIndependent;
 		this.tileType = tileType;
 		this.rotations = 0;
 		this.edgeValues = edgeValues;
 		this.animalType = animalType;
 		this.ID = identify++ % 77;
 
-		//Count number of road + city edges
-		int numRoads = 0, numCities = 0;
+		//Count number of trail + city edges
+		int numTrails = 0, numCities = 0;
 		ArrayList<Integer> cityLocations = new ArrayList<Integer>();
 		for (int edgeIndex = 0; edgeIndex < edgeValues.length; edgeIndex++){
-			if (edgeValues[edgeIndex] == FeatureTypeEnum.City.toInt()){
+			if (edgeValues[edgeIndex] == FeatureTypeEnum.Lake.toInt()){
 				numCities++;
 				cityLocations.add(edgeIndex);
 			}
-			else if (edgeValues[edgeIndex] == FeatureTypeEnum.Road.toInt()){
-				numRoads++;
+			else if (edgeValues[edgeIndex] == FeatureTypeEnum.Trail.toInt()){
+				numTrails++;
 			}
 		}
 
-		//Can't combine these two loops, this depends on numCities and numRoads.
+		//Can't combine these two loops, this depends on numCities and numTrails.
 		//This loop handles the creation of all the edges (and their composing nodes) for the tile.
 		for (int edgeIndex = 0; edgeIndex < edgeValues.length; edgeIndex++){
 			Node[] nodeBuffer = new Node[NODES_PER_EDGE];
@@ -93,15 +92,15 @@ public class Tile {
 				switch (nodeIndex) {
 					case 0:	// For first and third nodes, always field if not a city, otherwise always a city
 					case 2:
-						nodeBuffer[nodeIndex] = (edgeValues[edgeIndex] == FeatureTypeEnum.City.toInt()) ? new Node(FeatureTypeEnum.City.toChar(), this.ID) : new Node(FeatureTypeEnum.Field.toChar(), this.ID);
+						nodeBuffer[nodeIndex] = (edgeValues[edgeIndex] == FeatureTypeEnum.Lake.toInt()) ? new Node(FeatureTypeEnum.Lake.toChar(), this.ID) : new Node(FeatureTypeEnum.Jungle.toChar(), this.ID);
 						break;
 					case 1: // For second node, always equal to the type of edge it is on.
-						if (edgeValues[edgeIndex] == FeatureTypeEnum.City.toInt())
-							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.City.toChar(), this.ID);
-						else if (edgeValues[edgeIndex] == FeatureTypeEnum.Road.toInt())
-							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.Road.toChar(), this.ID);
-						else if (edgeValues[edgeIndex] == FeatureTypeEnum.Field.toInt())
-							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.Field.toChar(), this.ID);
+						if (edgeValues[edgeIndex] == FeatureTypeEnum.Lake.toInt())
+							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.Lake.toChar(), this.ID);
+						else if (edgeValues[edgeIndex] == FeatureTypeEnum.Trail.toInt())
+							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.Trail.toChar(), this.ID);
+						else if (edgeValues[edgeIndex] == FeatureTypeEnum.Jungle.toInt())
+							nodeBuffer[nodeIndex] = new Node(FeatureTypeEnum.Jungle.toChar(), this.ID);
 						else
 							System.out.println("Error with tile import: invalid edge value");
 						break;
@@ -112,23 +111,23 @@ public class Tile {
 			}
 
 			//Handle some of the edge cases down here. Certainly can be incorporated above, but makes it much harder to read
-			if (edgeValues[edgeIndex] == FeatureTypeEnum.City.toInt() && (this.citiesAreIndependent || numCities == 1)){
+			if (edgeValues[edgeIndex] == FeatureTypeEnum.Lake.toInt() && (this.lakesAreIndependent || numCities == 1)){
 				for (int nodeIndex = 0; nodeIndex < nodeBuffer.length; nodeIndex++){
-					nodeBuffer[nodeIndex].featureType = FeatureTypeEnum.Wall;
+					nodeBuffer[nodeIndex].featureType = FeatureTypeEnum.Shore;
 				}
 			}
-			else if (edgeValues[edgeIndex] == FeatureTypeEnum.Road.toInt() && (this.roadsEnd || numRoads == 1)){
-				nodeBuffer[1].featureType = FeatureTypeEnum.RoadEnd;
+			else if (edgeValues[edgeIndex] == FeatureTypeEnum.Trail.toInt() && (this.trailsEnd || numTrails == 1)){
+				nodeBuffer[1].featureType = FeatureTypeEnum.TrailEnd;
 			}
 
 			this.edges[edgeIndex] = new Edge(nodeBuffer);
 		}
 
-		if (this.hasMonastery) {
-			this.middle = new Node(FeatureTypeEnum.Monastery.toChar(), this.ID);
+		if (this.hasDen) {
+			this.middle = new Node(FeatureTypeEnum.Den.toChar(), this.ID);
 
 			for (Edge edge : this.edges){
-				if (edge.nodes[1].featureType == FeatureTypeEnum.Field){
+				if (edge.nodes[1].featureType == FeatureTypeEnum.Jungle){
 					addEachNodeAsNeighbor(middle, edge.nodes[1]);
 					break;
 				}
@@ -138,40 +137,40 @@ public class Tile {
 
 		//Now we need to handle city edge cases
 		//numCities == 1 case is already handled above
-		if (numCities == 2 && !this.citiesAreIndependent){ //Independent cities are already handled above
-			int firstCityLoc = cityLocations.get(0), secondCityLoc = cityLocations.get(1);
-			if (secondCityLoc - firstCityLoc == 2){ //In this case, the cities oppose each other on the tile
+		if (numCities == 2 && !this.lakesAreIndependent){ //Independent lakes are already handled above
+			int firstLakeLoc = cityLocations.get(0), secondLakeLoc = cityLocations.get(1);
+			if (secondLakeLoc - firstLakeLoc == 2){ //In this case, the lakes oppose each other on the tile
 				for (int nodeIndex = 0; nodeIndex < NODES_PER_EDGE; nodeIndex++){
 					int antiNodeIndex = NODES_PER_EDGE - 1 - nodeIndex; //Used to mirror the nodeIndex on edges opposite each other
 
 					if (nodeIndex != 1) { //Prevents the type of the middle node from being changed
-						edges[firstCityLoc].nodes[nodeIndex].featureType = FeatureTypeEnum.Wall;
-						edges[secondCityLoc].nodes[antiNodeIndex].featureType = FeatureTypeEnum.Wall;
+						edges[firstLakeLoc].nodes[nodeIndex].featureType = FeatureTypeEnum.Shore;
+						edges[secondLakeLoc].nodes[antiNodeIndex].featureType = FeatureTypeEnum.Shore;
 					}
 					//Then connect opposing nodes
-					addEachNodeAsNeighbor(edges[firstCityLoc].nodes[nodeIndex], edges[secondCityLoc].nodes[antiNodeIndex]);
+					addEachNodeAsNeighbor(edges[firstLakeLoc].nodes[nodeIndex], edges[secondLakeLoc].nodes[antiNodeIndex]);
 				}
 			}
 			else{ //Otherwise, the two city edges are adjacent on the tile
-				if (secondCityLoc - firstCityLoc == 3) { int swap = firstCityLoc; firstCityLoc = secondCityLoc; secondCityLoc = swap; }
+				if (secondLakeLoc - firstLakeLoc == 3) { int swap = firstLakeLoc; firstLakeLoc = secondLakeLoc; secondLakeLoc = swap; }
 				//These [inner nodes] will be automatically linked later by the adjacency linker
-				edges[firstCityLoc].nodes[2].featureType = FeatureTypeEnum.InnerWall;
-				edges[secondCityLoc].nodes[0].featureType = FeatureTypeEnum.InnerWall;
+				edges[firstLakeLoc].nodes[2].featureType = FeatureTypeEnum.InnerShore;
+				edges[secondLakeLoc].nodes[0].featureType = FeatureTypeEnum.InnerShore;
 
 				//Outer node set up. Need to be linked here.
-				edges[firstCityLoc].nodes[0].featureType = FeatureTypeEnum.Wall;
-				edges[secondCityLoc].nodes[2].featureType = FeatureTypeEnum.Wall;
+				edges[firstLakeLoc].nodes[0].featureType = FeatureTypeEnum.Shore;
+				edges[secondLakeLoc].nodes[2].featureType = FeatureTypeEnum.Shore;
 
-				addEachNodeAsNeighbor(edges[firstCityLoc].nodes[0], edges[secondCityLoc].nodes[2]);
-				addEachNodeAsNeighbor(edges[firstCityLoc].nodes[1], edges[secondCityLoc].nodes[1]);
+				addEachNodeAsNeighbor(edges[firstLakeLoc].nodes[0], edges[secondLakeLoc].nodes[2]);
+				addEachNodeAsNeighbor(edges[firstLakeLoc].nodes[1], edges[secondLakeLoc].nodes[1]);
 			}
 		}
 		else if (numCities == 3){
 			for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++){
 				//This sets up the true wall neighboring the field
-				if(edges[edgeIndex].nodes[2].featureType == FeatureTypeEnum.City && edges[(edgeIndex + 1) % edges.length].nodes[2].featureType == FeatureTypeEnum.Field){
-					edges[edgeIndex].nodes[2].featureType = FeatureTypeEnum.Wall;
-					edges[(edgeIndex + 2) % edges.length].nodes[0].featureType = FeatureTypeEnum.Wall;
+				if(edges[edgeIndex].nodes[2].featureType == FeatureTypeEnum.Lake && edges[(edgeIndex + 1) % edges.length].nodes[2].featureType == FeatureTypeEnum.Jungle){
+					edges[edgeIndex].nodes[2].featureType = FeatureTypeEnum.Shore;
+					edges[(edgeIndex + 2) % edges.length].nodes[0].featureType = FeatureTypeEnum.Shore;
 
 					addEachNodeAsNeighbor(edges[edgeIndex].nodes[2], edges[(edgeIndex + 2) % edges.length].nodes[0]);
 
@@ -182,17 +181,17 @@ public class Tile {
 				}
 
 				//This sets up the inner connections to be linked later
-				if((edgeValues[edgeIndex] == FeatureTypeEnum.City.toInt()) && edgeValues[(edgeIndex + 1) % edges.length] == FeatureTypeEnum.City.toInt()){
-					edges[edgeIndex].nodes[2].featureType = FeatureTypeEnum.InnerWall;
-					edges[(edgeIndex + 1) % edges.length].nodes[0].featureType = FeatureTypeEnum.InnerWall;
+				if((edgeValues[edgeIndex] == FeatureTypeEnum.Lake.toInt()) && edgeValues[(edgeIndex + 1) % edges.length] == FeatureTypeEnum.Lake.toInt()){
+					edges[edgeIndex].nodes[2].featureType = FeatureTypeEnum.InnerShore;
+					edges[(edgeIndex + 1) % edges.length].nodes[0].featureType = FeatureTypeEnum.InnerShore;
 				}
 			}
 		}
 		else if (numCities == 4){
 			//Will be linked later by adjacency linker
 			for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++) {
-				edges[edgeIndex].nodes[0].featureType = FeatureTypeEnum.InnerWall;
-				edges[edgeIndex].nodes[2].featureType = FeatureTypeEnum.InnerWall;
+				edges[edgeIndex].nodes[0].featureType = FeatureTypeEnum.InnerShore;
+				edges[edgeIndex].nodes[2].featureType = FeatureTypeEnum.InnerShore;
 
 				addEachNodeAsNeighbor(edges[edgeIndex].nodes[1], (edges[(edgeIndex + 1) % EDGES_PER_TILE]).nodes[1]);
 			}
@@ -202,31 +201,31 @@ public class Tile {
 			for (int nodeIndex = 0; nodeIndex <
 					NODES_PER_EDGE - 1; nodeIndex++) { //We can only loop for 1st two nodes on an edge. Third node needs to be handled specially
 				if (edges[edgeIndex].nodes[nodeIndex].featureType == edges[edgeIndex].nodes[nodeIndex + 1].featureType || 					//If same feature type
-						edges[edgeIndex].nodes[nodeIndex].featureType.isWallToCity(edges[edgeIndex].nodes[nodeIndex + 1].featureType)) {	//Or a wall to city connection
+						edges[edgeIndex].nodes[nodeIndex].featureType.isShoreToLake(edges[edgeIndex].nodes[nodeIndex + 1].featureType)) {	//Or a wall to city connection
 					addEachNodeAsNeighbor(edges[edgeIndex].nodes[nodeIndex], edges[edgeIndex].nodes[nodeIndex + 1]);
 				}
 			}
 
 			//3rd node handler
-			if (this.citiesAreIndependent &&
-					edges[edgeIndex].nodes[2].featureType == FeatureTypeEnum.Wall &&
-					edges[(edgeIndex + 1) % edges.length].nodes[0].featureType == FeatureTypeEnum.Wall){
+			if (this.lakesAreIndependent &&
+					edges[edgeIndex].nodes[2].featureType == FeatureTypeEnum.Shore &&
+					edges[(edgeIndex + 1) % edges.length].nodes[0].featureType == FeatureTypeEnum.Shore){
 				continue;
 			}
 
 			addEachNodeAsNeighbor(edges[edgeIndex].nodes[2], edges[(edgeIndex + 1) % edges.length].nodes[0]);
 		}
 
-		//Road handler
-		roadLoop:
-		if (numRoads == 2){
+		//Trail handler
+		trailLoop:
+		if (numTrails == 2){
 			for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++){
-				if (edges[edgeIndex].nodes[1].featureType == FeatureTypeEnum.Road){
+				if (edges[edgeIndex].nodes[1].featureType == FeatureTypeEnum.Trail){
 					for (int targetEdgeIndex = edgeIndex + 1; targetEdgeIndex < edges.length; targetEdgeIndex++){
-						if (edges[targetEdgeIndex].nodes[1].featureType == FeatureTypeEnum.Road){
-							//Connect the roads
+						if (edges[targetEdgeIndex].nodes[1].featureType == FeatureTypeEnum.Trail){
+							//Connect the trails
 							addEachNodeAsNeighbor(edges[edgeIndex].nodes[1], edges[targetEdgeIndex].nodes[1]);
-							//Consider fields next to road for connections
+							//Consider fields next to trail for connections
 							if (numCities == 1){
 								int lowerIndex = cityLocations.get(0) - 1;
 								if (lowerIndex < 0) lowerIndex += EDGES_PER_TILE;
@@ -237,13 +236,13 @@ public class Tile {
 								if (lowerIndex < 0) lowerIndex += EDGES_PER_TILE;
 								addEachNodeAsNeighbor(edges[lowerIndex].nodes[2], edges[(cityLocations.get(1) + 1) % EDGES_PER_TILE].nodes[0]);
 							}
-							break roadLoop;
+							break trailLoop;
 						}
 					}
 				}
 			}
 		}
-		else if (numRoads == 3 && numCities > 0){
+		else if (numTrails == 3 && numCities > 0){
 			int lowerIndex = cityLocations.get(0) - 1;
 			if (lowerIndex < 0) lowerIndex += EDGES_PER_TILE;
 			addEachNodeAsNeighbor(edges[lowerIndex].nodes[2], edges[(cityLocations.get(0) + 1) % EDGES_PER_TILE].nodes[0]);
@@ -255,29 +254,13 @@ public class Tile {
 		nodeB.neighbors.add(nodeA);
 	}
 
-	public void connectNodes(){
-		if(this.edges[0].nodes[1].featureType == FeatureTypeEnum.Road && this.edges[2].nodes[1].featureType == FeatureTypeEnum.Road && this.middle.featureType == FeatureTypeEnum.Road){
-			
-			this.edges[0].nodes[1].neighbors.add(this.middle);
-			
-			this.middle.neighbors.add(this.edges[0].nodes[1]);
-			this.middle.neighbors.add(this.edges[2].nodes[1]);
-			
-			this.edges[2].nodes[1].neighbors.add(this.middle);
-			
-			System.out.println("YES");
-		}
-
-		
-	}
-
-	public boolean isEqual(Tile other){
+	boolean isEqual(Tile other){
 		//More robust checks do not need to be implemented as long as we control tileset input.
 		return this.tileType == other.tileType;
 	}
 
 
-	public void rotateClockwise(int rotations){
+	void rotateClockwise(int rotations){
 		rotations %= EDGES_PER_TILE;
 		if (rotations == 0) return;
 		else if (rotations < 0) rotations += EDGES_PER_TILE;
@@ -289,7 +272,7 @@ public class Tile {
 		return;
 	}
 
-	public void rotateAntiClockwise(int rotations){
+	void rotateAntiClockwise(int rotations){
 		rotations %= EDGES_PER_TILE;
 		if (rotations == 0) return;
 		else if (rotations < 0) rotations += EDGES_PER_TILE;
@@ -308,7 +291,7 @@ public class Tile {
 		}
 	}
     
-    public static void printTile(Tile toPrint){
+    static void printTile(Tile toPrint){
         System.out.print(" ");
         for(int i = 0; i < 3; i++){
             System.out.print(toPrint.edges[1].nodes[i].featureType.toChar());

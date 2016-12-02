@@ -5,7 +5,7 @@ import java.util.Scanner;
 /* Needs: Tile.java, TileRetriever.java, tileset.txt, AI.java */
 
 //Takes strings read from server and converts them to usable information
-public class NetworkAdapter{
+class NetworkAdapter{
 	private static final int NUM_EXPECTED_TILES = 77;
 	private ArrayList<Tile> shuffledTiles = new ArrayList<Tile>();
 	private static ArrayList<Tile> staticTiles = new ArrayList<Tile>();
@@ -18,7 +18,7 @@ public class NetworkAdapter{
 	Scanner s = new Scanner(System.in);
 	
 	//Creates array of local tiles from input file
-	public NetworkAdapter(){
+	NetworkAdapter(){
 		if (staticTiles.isEmpty()){
 			String filePath = "tileset.txt";
 			staticTiles = new TileRetriever(filePath).tiles;
@@ -29,78 +29,44 @@ public class NetworkAdapter{
 	}
 
 	//Parses the string and decides which method to call
-	public void parseMatchProtocol(String message){
-		
-		
-		
+	void parseMatchProtocol(String message){
 		String[] tokens = message.split(" ");
-	
-
-		
 		String tileID, gid, x, y, orientation;
 
+		switch (tokens[0]) {
+			case "BEGIN":
+				gameControllers[0] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
+				gameControllers[1] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
 
-		
-		if(tokens[0].equals("BEGIN")){
-
-			
-			gameControllers[0] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
-			gameControllers[1] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
-
-		}
-		else if(tokens[0].equals("STARTING")){
-
-			
-			tileID = convertTileToID(tokens[3]);
-			Tile startingTile = convertFromTileID(tileID);
-			x = tokens[5];
-			y = tokens[6];
-			orientation = tokens[7];
-			//Place on both AI boards
-			int rotation = Integer.parseInt(orientation);
-			rotation = convertDegreesToRotations(rotation);
-			rotation = convertAnticlockwiseToClockwise(rotation);
-
-			for (GameController gameController : gameControllers){
-				Location tileLocation = gameController.getBoardCenter();
-				tileLocation.Col += Integer.parseInt(x);
-				tileLocation.Row += ((Integer.parseInt(y))*(-1));				
-				
-				gameController.processNetworkStart(startingTile, new MoveInformation(tileLocation, rotation, -1));
-			}
-		}
-		else if(tokens[0].equals("YOUR")){
-			oid = tokens[4];
-			
-			// THE REMAINING TILES ARE : - should push array of tiles into AI here
-		}
-		else if(tokens[0].equals("THE")){
-			initializeShuffledTiles(Integer.parseInt(tokens[2]), tokens);
-		}
-		else{
-			
-		}
-		
-		/*
-		switch(tokens[0]){
-		
-		
-			case "BEGIN": //Create the game ctrlrs we are going to use
-				
 				break;
-			case "STARTING": //Place starting tile on AI's board
-				
-				
+			case "STARTING":
+				tileID = convertTileToID(tokens[3]);
+				Tile startingTile = convertFromTileID(tileID);
+				x = tokens[5];
+				y = tokens[6];
+				orientation = tokens[7];
+				//Place on both AI boards
+				int rotation = Integer.parseInt(orientation);
+				rotation = convertDegreesToRotations(rotation);
+				rotation = convertAnticlockwiseToClockwise(rotation);
+
+				for (GameController gameController : gameControllers) {
+					Location tileLocation = gameController.getBoardCenter();
+					tileLocation.Col += Integer.parseInt(x);
+					tileLocation.Row += ((Integer.parseInt(y)) * (-1));
+
+					gameController.processNetworkStart(startingTile, new MoveInformation(tileLocation, rotation, -1));
+				}
 				break;
-				
-			//Set opponent's player ID
-			case "YOUR": 
-				
-			case "THE": //Create shuffled array of tiles
-				
+			case "YOUR":
+				oid = tokens[4];
+				break;
+			case "THE":
+				initializeShuffledTiles(Integer.parseInt(tokens[2]), tokens);
+				break;
+			default:
 				break;
 		}
-		*/
 	}
 	
 	// Make Move string is parsed, should probably send AI the tile and GameID we get from parsing here
@@ -130,8 +96,9 @@ public class NetworkAdapter{
 
 		return "";
 	}
+	
 	// Update gameboard string for both games is parsed - should update gameboards for our gamemove and opponent's game move on AI's representation of board
-	public void parseUpdateGameBoard(String message){
+	void parseUpdateGameBoard(String message){
 		String[] tokens = message.split(" ");
 		String tileID, gid, x, y, orientation;
 		//Read in move that was legally made for both players & place tile on board
@@ -160,33 +127,30 @@ public class NetworkAdapter{
 				gameControllers[gameIndex].processConfirmedNetworkedMove(tilePlaced, new MoveInformation(tileLocation, rotation, -1), activePlayer);
 			}
 			else{
-				int meepleLocation = convertMeepleZoneToNode(tilePlaced, rotation, zone);
-				gameControllers[gameIndex].processConfirmedNetworkedMove(tilePlaced, new MoveInformation(tileLocation, rotation, meepleLocation), activePlayer);
+				int tigerLocation = convertTigerZoneToNode(tilePlaced, rotation, zone);
+				gameControllers[gameIndex].processConfirmedNetworkedMove(tilePlaced, new MoveInformation(tileLocation, rotation, tigerLocation), activePlayer);
 			}
 
 		}
-		else{
-		//Game was forfeited from an illegal move
-		//End AI for this match
-		}
 	}
 
-	private int convertMeepleZoneToNode(Tile tilePlaced, int rotation, String zone) {
+	//Converts the servers representation of a meeple placement to the local representation
+	private int convertTigerZoneToNode(Tile tilePlaced, int rotation, String zone) {
 		int location = -1;
 		tilePlaced.rotateClockwise(rotation);
 		switch (Integer.parseInt(zone)){
 			case 1:
 				//TODO: Refactor this into a function.. case 1 == 3 == 6 == 8, except for which edges and what location they result in
 				if (tilePlaced.edges[0].nodes[2].featureType == tilePlaced.edges[1].nodes[0].featureType &&
-						tilePlaced.edges[0].nodes[2].featureType.isSameFeature(FeatureTypeEnum.City) &&
-						!tilePlaced.citiesAreIndependent){
+						tilePlaced.edges[0].nodes[2].featureType.isSameFeature(FeatureTypeEnum.Lake) &&
+						!tilePlaced.lakesAreIndependent){
 					location = 3;
 				}
 				else{
-					if(tilePlaced.edges[0].nodes[2].featureType == FeatureTypeEnum.Field){
+					if(tilePlaced.edges[0].nodes[2].featureType == FeatureTypeEnum.Jungle){
 						location = 2;
 					}
-					else if (tilePlaced.edges[1].nodes[0].featureType == FeatureTypeEnum.Field){
+					else if (tilePlaced.edges[1].nodes[0].featureType == FeatureTypeEnum.Jungle){
 						location = 3;
 					}
 					else{ //JLLJ- case
@@ -199,15 +163,15 @@ public class NetworkAdapter{
 				break;
 			case 3:
 				if (tilePlaced.edges[1].nodes[2].featureType == tilePlaced.edges[2].nodes[0].featureType &&
-						tilePlaced.edges[1].nodes[2].featureType.isSameFeature(FeatureTypeEnum.City) &&
-						!tilePlaced.citiesAreIndependent){
+						tilePlaced.edges[1].nodes[2].featureType.isSameFeature(FeatureTypeEnum.Lake) &&
+						!tilePlaced.lakesAreIndependent){
 					location = 6;
 				}
 				else{
-					if(tilePlaced.edges[1].nodes[2].featureType == FeatureTypeEnum.Field){
+					if(tilePlaced.edges[1].nodes[2].featureType == FeatureTypeEnum.Jungle){
 						location = 5;
 					}
-					else if (tilePlaced.edges[2].nodes[0].featureType == FeatureTypeEnum.Field){
+					else if (tilePlaced.edges[2].nodes[0].featureType == FeatureTypeEnum.Jungle){
 						location = 6;
 					}
 					else{ //JLLJ- case
@@ -219,17 +183,17 @@ public class NetworkAdapter{
 				location = 1;
 				break;
 			case 5:
-				if (tilePlaced.hasMonastery) {
+				if (tilePlaced.hasDen) {
 					location = 12;
 				}
 				else {
-					if (tilePlaced.edges[2].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Road)){
+					if (tilePlaced.edges[2].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Trail)){
 						location = 7;
 					}
-					else if (tilePlaced.edges[3].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Road)) {
+					else if (tilePlaced.edges[3].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Trail)) {
 						location = 10;
 					}
-					else if (tilePlaced.edges[2].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Field)){
+					else if (tilePlaced.edges[2].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Jungle)){
 						location = 7;
 					}
 					else {
@@ -242,15 +206,15 @@ public class NetworkAdapter{
 				break;
 			case 7:
 				if (tilePlaced.edges[2].nodes[2].featureType == tilePlaced.edges[3].nodes[0].featureType &&
-						tilePlaced.edges[2].nodes[2].featureType.isSameFeature(FeatureTypeEnum.City) &&
-						!tilePlaced.citiesAreIndependent){
+						tilePlaced.edges[2].nodes[2].featureType.isSameFeature(FeatureTypeEnum.Lake) &&
+						!tilePlaced.lakesAreIndependent){
 					location = 9;
 				}
 				else{
-					if(tilePlaced.edges[2].nodes[2].featureType == FeatureTypeEnum.Field){
+					if(tilePlaced.edges[2].nodes[2].featureType == FeatureTypeEnum.Jungle){
 						location = 8;
 					}
-					else if (tilePlaced.edges[3].nodes[0].featureType == FeatureTypeEnum.Field){
+					else if (tilePlaced.edges[3].nodes[0].featureType == FeatureTypeEnum.Jungle){
 						location = 9;
 					}
 					else{ //JLLJ- case
@@ -263,15 +227,15 @@ public class NetworkAdapter{
 				break;
 			case 9:
 				if (tilePlaced.edges[3].nodes[2].featureType == tilePlaced.edges[0].nodes[0].featureType &&
-						tilePlaced.edges[3].nodes[2].featureType.isSameFeature(FeatureTypeEnum.City) &&
-						!tilePlaced.citiesAreIndependent){
+						tilePlaced.edges[3].nodes[2].featureType.isSameFeature(FeatureTypeEnum.Lake) &&
+						!tilePlaced.lakesAreIndependent){
 					location = 0;
 				}
 				else{
-					if(tilePlaced.edges[3].nodes[2].featureType == FeatureTypeEnum.Field){
+					if(tilePlaced.edges[3].nodes[2].featureType == FeatureTypeEnum.Jungle){
 						location = 11;
 					}
-					else if (tilePlaced.edges[0].nodes[0].featureType == FeatureTypeEnum.Field){
+					else if (tilePlaced.edges[0].nodes[0].featureType == FeatureTypeEnum.Jungle){
 						location = 0;
 					}
 					else{ //JLLJ- case
@@ -287,12 +251,8 @@ public class NetworkAdapter{
 		return location;
 	}
 
-	public void endGame(){
-		//Round: Wait for next match, Challenges: wait for next challenge
-		//Empty shuffledTiles array
-	}
-
-	String processMoveInformation(MoveInformation moveInfo, String gid, String tileID){
+	//Creates the legal message to return back to the server
+	private String processMoveInformation(MoveInformation moveInfo, String gid, String tileID){
 		String messageToReturn;
 
 		if (moveInfo.tileLocation.isEqual(new Location(-1, -1))){
@@ -306,11 +266,11 @@ public class NetworkAdapter{
 			int x = moveInfo.tileLocation.Col - gameControllers[0].getBoardCenter().Col;
 			int y = (gameControllers[0].getBoardCenter().Row - moveInfo.tileLocation.Row);
 			
-			if(moveInfo.meepleLocation == -1){
-				messageToReturn = formatMove(0, gid, tileID, x, y, rotation, moveInfo.meepleZone);
+			if(moveInfo.tigerLocation == -1){
+				messageToReturn = formatMove(0, gid, tileID, x, y, rotation, moveInfo.tigerZone);
 			}
 			else{
-				messageToReturn = formatMove(2, gid, tileID, x, y, rotation, moveInfo.meepleZone);
+				messageToReturn = formatMove(2, gid, tileID, x, y, rotation, moveInfo.tigerZone);
 			}
 
 		}
@@ -320,7 +280,7 @@ public class NetworkAdapter{
 
 	//Creates message to be sent through the network for a tile placement
 	//messageStatus denotes type of move
-	public String formatMove(int messageStatus, String gid, String tileID, int x, int y, int orientation, int zone){
+	String formatMove(int messageStatus, String gid, String tileID, int x, int y, int orientation, int zone){
 		String message = "";
 		switch(messageStatus){
 			case 0: message = "GAME " + gid + " MOVE " + moveNum + " PLACE " + convertTileToString(tileID) + " AT " + x + " " + y + " " + orientation + " NONE";
@@ -347,10 +307,12 @@ public class NetworkAdapter{
 		}
 	}
 
+	//Converts degrees to number of rotations
 	private int convertDegreesToRotations(int degrees){
 		return degrees / 90;
 	}
 
+	//Converts counterclockwise rotations to clockwise rotations
 	private int convertAnticlockwiseToClockwise(int rotations){
 		if(rotations == 0){
 			return rotations;
@@ -358,14 +320,15 @@ public class NetworkAdapter{
 		return Math.abs(rotations - 4);
 	}
 
+	//Converts clockwise rotations to counterclockwise rotations
 	private int convertClockwisetoAnticlockwise(int rotations){
 		if(rotations == 0){
 			return rotations;
 		}
 		return Math.abs(rotations - 4);
-		// I know these are the same but...... I can't think of a good bidirectional name like switchCardinality or something
 	}
 
+	//Converts number of rotations to degrees
 	private int convertRotationsToDegrees(int rotations){
 		return rotations * 90;
 	}
@@ -442,6 +405,7 @@ public class NetworkAdapter{
 		}
 	}
 
+	//Creates a local tile based on our local representation of ID of the tile
 	private Tile convertFromTileID(String tileID){
 		switch(tileID){
 			case "A": return (new Tile(false, false, false, 0, new Integer[]{0, 0, 0, 0}, 'A'));

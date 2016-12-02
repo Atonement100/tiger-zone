@@ -10,8 +10,8 @@ public class GuiAdapter {
     private int x;
     private int  y;
     private int rotation;
-    private int meeple;
-    public LabelDemo Gui;
+    private int tiger;
+    public GuiInterface Gui;
     
     String[] Id = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJJT-", "TJTT-",
             "LLLL-", "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-",
@@ -20,57 +20,57 @@ public class GuiAdapter {
             // Not sure if C is the correct animal ID for crocodile on last tile.
 
     public GuiAdapter(int boardSize) {
-        Gui = new LabelDemo(boardSize);
+        Gui = new GuiInterface(boardSize);
 
     }
 
-    public GuiAdapter(int x, int y, int rotation, int meeple) {
+    public GuiAdapter(int x, int y, int rotation, int tiger) {
         this.x = x;
         this.y = y;
         this.rotation = rotation;
-        this.meeple = meeple;
+        this.tiger = tiger;
     }
-    public int getX() {
+    int getX() {
         x= Gui.getX();
         return x;
     }
 
-    public void setX(int x) {
+    private void setX(int x) {
         this.x = x;
     }
 
-    public int getY() {
+    int getY() {
         y= Gui.getY();
         return y;
     }
 
-    public void setY(int y) {
+    private void setY(int y) {
         this.y = y;
     }
 
-    public int getRotation() {
+    int getRotation() {
         rotation =Gui.getRotation();
         return rotation;
     }
 
-    public void setRotation(int rotation) {
+    private void setRotation(int rotation) {
         this.rotation = rotation;
     }
 
-    public int getMeeple() {
-        meeple = Gui.getMeeple();
-        return meeple;
+    public int getTiger() {
+        tiger = Gui.getTiger();
+        return tiger;
     }
 
-    public void setMeeple(int meeple) {
-        this.meeple = meeple;
+    public void setTiger(int tiger) {
+        this.tiger = tiger;
     }
 
     public String getTileID() {
         return TileID;
     }
 
-    public void setTileID(String tileID) {
+    void setTileID(String tileID) {
         Gui.setDone(false);
         TileID = tileID;
         mapTileid(tileID);
@@ -78,12 +78,7 @@ public class GuiAdapter {
         while (!Gui.isDone()){
 
             Gui.refreshPreview(GuiID,Gui.getRotation());
-        };
-
-
-
-        //  System.out.println(GuiID);
-
+        }
     }
 
     public String getGuiID() {
@@ -94,128 +89,116 @@ public class GuiAdapter {
         GuiID = guiID;
     }
 
-    public LabelDemo getGui() {
+    public GuiInterface getGui() {
         return Gui;
     }
 
-    public void setGui(LabelDemo gui) {
+    public void setGui(GuiInterface gui) {
         Gui = gui;
     }
-    public void mapTileid(String gameTile){
-        if (gameTile.equals("A")){GuiID= Id[0];}
-        else if (gameTile.equals("B")){GuiID= Id[1];}
-        else if (gameTile.equals("C")){GuiID= Id[2];}
-        else if (gameTile.equals("D")){GuiID= Id[3];}
-        else if (gameTile.equals("E")){GuiID= Id[4];}
-        else  if (gameTile.equals("F")){GuiID= Id[5];}
-        else  if (gameTile.equals("G")){GuiID= Id[6];}
-        else if (gameTile.equals("H")){GuiID= Id[7];}
-        else if (gameTile.equals("I")){GuiID= Id[8];}
-        else if (gameTile.equals("J")){GuiID= Id[9];}
-        else if (gameTile.equals("K")){GuiID= Id[10];}
-        else  if (gameTile.equals("L")){GuiID= Id[11];}
-        else  if (gameTile.equals("M")){GuiID= Id[12];}
-        else  if (gameTile.equals("N")){GuiID= Id[13];}
-        else if (gameTile.equals("O")){GuiID= Id[14];}
-        else if (gameTile.equals("P")){GuiID= Id[15];}
-        else if (gameTile.equals("Q")){GuiID= Id[16];}
-        else if (gameTile.equals("R")){GuiID= Id[17];}
-        else if (gameTile.equals("S")){GuiID= Id[18];}
-        else if (gameTile.equals("T")){GuiID= Id[19];}
-        else  if (gameTile.equals("U")){GuiID= Id[20];}
-        else  if (gameTile.equals("V")){GuiID= Id[21];}
-        else  if (gameTile.equals("W")){GuiID= Id[22];}
-        else  if (gameTile.equals("X")){GuiID= Id[23];}
-        else   if (gameTile.equals("Y")){GuiID= Id[24];}
-        else   if (gameTile.equals("Z")){GuiID= Id[25];}
-        else   if (gameTile.equals("a")){GuiID= Id[26];}
-        else if (gameTile.equals("b")){GuiID= Id[27];}
+
+    private void mapTileid(String gameTile){
+        switch (gameTile) {
+            case "A":
+                GuiID = Id[0];
+                break;
+            case "B":
+                GuiID = Id[1];
+                break;
+            case "C":
+                GuiID = Id[2];
+                break;
+            case "D":
+                GuiID = Id[3];
+                break;
+            case "E":
+                GuiID = Id[4];
+                break;
+            case "F":
+                GuiID = Id[5];
+                break;
+            case "G":
+                GuiID = Id[6];
+                break;
+            case "H":
+                GuiID = Id[7];
+                break;
+            case "I":
+                GuiID = Id[8];
+                break;
+            case "J":
+                GuiID = Id[9];
+                break;
+            case "K":
+                GuiID = Id[10];
+                break;
+            case "L":
+                GuiID = Id[11];
+                break;
+            case "M":
+                GuiID = Id[12];
+                break;
+            case "N":
+                GuiID = Id[13];
+                break;
+            case "O":
+                GuiID = Id[14];
+                break;
+            case "P":
+                GuiID = Id[15];
+                break;
+            case "Q":
+                GuiID = Id[16];
+                break;
+            case "R":
+                GuiID = Id[17];
+                break;
+            case "S":
+                GuiID = Id[18];
+                break;
+            case "T":
+                GuiID = Id[19];
+                break;
+            case "U":
+                GuiID = Id[20];
+                break;
+            case "V":
+                GuiID = Id[21];
+                break;
+            case "W":
+                GuiID = Id[22];
+                break;
+            case "X":
+                GuiID = Id[23];
+                break;
+            case "Y":
+                GuiID = Id[24];
+                break;
+            case "Z":
+                GuiID = Id[25];
+                break;
+            case "a":
+                GuiID = Id[26];
+                break;
+            case "b":
+                GuiID = Id[27];
+                break;
+        }
 
 
     }
-    public void unmapTileid(String gameTile){
-        if (gameTile.equals(Id[0])){
-            setTileID("A");
-        }
-        if (GuiID==Id[1]){
-            setTileID("B");
-        } if (GuiID==Id[2]){
-            setTileID("C");
-        } if (GuiID==Id[3]){
-            setTileID("D");
-        } if (GuiID==Id[4]){
-            setTileID("E");
-        } if (GuiID==Id[5]){
-            setTileID("F");
-        } if (GuiID==Id[6]){
-            setTileID("G");
-        } if (GuiID==Id[7]){
-            setTileID("H");
-        } if (GuiID==Id[8]){
-            setTileID("I");
-        } if (GuiID==Id[9]){
-            setTileID("J");
-        } if (GuiID==Id[10]){
-            setTileID("K");
-        } if (GuiID==Id[11]){
-            setTileID("L");
-        } if (GuiID==Id[12]){
-            setTileID("M");
-        } if (GuiID==Id[13]){
-            setTileID("N");
-        } if (GuiID==Id[14]){
-            setTileID("O");
-        } if (GuiID==Id[15]){
-            setTileID("P");
-        } if (GuiID==Id[16]){
-            setTileID("Q");
-        } if (GuiID==Id[17]){
-            setTileID("R");
-        } if (GuiID==Id[18]){
-            setTileID("S");
-        } if (GuiID==Id[19]){
-            setTileID("T");
-        } if (GuiID==Id[20]){
-            setTileID("U");
-        } if (GuiID==Id[21]){
-            setTileID("V");
-        } if (GuiID==Id[22]){
-            setTileID("W");
-        } if (GuiID==Id[23]){
-            setTileID("X");
-        } if (GuiID==Id[24]){
-            setTileID("Y");
-        } if (GuiID==Id[25]){
-            setTileID("Z");
-        } if (GuiID==Id[26]){
-            setTileID("a");
-        } if (GuiID==Id[27]){
-            // Not sure if this should be the internal GuiAdapter version ("b") or the tile
-            // version ("U").
-            setTileID("b");  
-        }
-    }
-    public void placeFirstTile(int x,int y,String id){
+
+    void placeFirstTile(int x,int y,String id){
         mapTileid(id);
         Gui.placeFirstTile(x,y,GuiID);
     }
-    public void placeTile(int x,int y,String id){
-        mapTileid(id);
-        //Gui.placeFirstTile(x,y,GuiID);
-    }
-    public void tilePlaced(int x,int y,int rotation,int meeple){
-        setX(x);
-        setY(y);
-        setRotation(rotation);
-        setMeeple(meeple);
-    }
 
-    public void addTile(int row, int col, int tileRotation, String s) {
+    private void addTile(int row, int col, int tileRotation, String s) {
         mapTileid(s);
         Gui.placeComputertile(row,col,tileRotation,GuiID);
     }
 
-    public void proccessConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
+    void proccessConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed){
         // Tile TLLL- and TLLLC both have id character 'U', so a different one must be used for 
         //      TLLLC in GUIAdapter to map the tile id character to the tile id string. 
         char tileIDChar = confirmedTile.tileType;
@@ -223,12 +206,12 @@ public class GuiAdapter {
             tileIDChar = 'b';
         }
         addTile(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tileRotation, Character.toString(tileIDChar));
-        if(moveInfo.meepleLocation >= 0){
-            Gui.placeTiger(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.meepleLocation);
+        if(moveInfo.tigerLocation >= 0){
+            Gui.placeTiger(moveInfo.tileLocation.Row, moveInfo.tileLocation.Col, moveInfo.tigerLocation);
         }
     }
 
-    public void updateScores(int player1Score, int player2Score){
+    void updateScores(int player1Score, int player2Score){
         Gui.updateScores(player1Score, player2Score);
     }
 }

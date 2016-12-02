@@ -3,6 +3,10 @@ import java.util.Objects;
 public class Location {
 	int Row, Col;
 	
+	/*
+	 * Holds a location based on row and column values
+	 */
+	
 	Location(int Row, int Col){
 		this.Row = Row;
 		this.Col = Col;

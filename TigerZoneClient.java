@@ -95,15 +95,6 @@ public class TigerZoneClient {
 							break;
 					}
 				}
-				/*
-				fromServer = networkIn.readLine();
-				System.out.println("Server: " + fromServer);
-				serverText = fromServer.split(" ");
-				
-				if(serverText[0].equals("BEGIN"))){
-					
-				}
-				*/
 			}
 		}
 

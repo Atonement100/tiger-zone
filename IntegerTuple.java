@@ -1,6 +1,6 @@
-public class IntegerTuple{
-    public final int left;
-    public final int right;
+class IntegerTuple{
+    final int left;
+    final int right;
 
     IntegerTuple(int left, int right){
         this.left = left;

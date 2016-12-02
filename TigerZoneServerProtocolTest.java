@@ -35,21 +35,21 @@ public class TigerZoneServerProtocolTest {
 	public void testNotifyPlayer(){
 		TigerZoneProtocol tzProtocol = new TigerZoneProtocol();
 		String notification = tzProtocol.NotifyPlayer();
-		String expected = "MAKE YOUR MOVE IN GAME A WITHIN 1 SECOND: MOVE 1 PLACE JJJJ-";
+		String expected = "MAKE YOUR MOVE IN GAME C WITHIN 1 SECOND: MOVE 1 PLACE JJJJ-";
 		assertEquals(expected, notification);
 	}
 	@Test
 	public void testSendGameAMove(){
 		TigerZoneProtocol tzProtocol = new TigerZoneProtocol();
-		String gameAMove = tzProtocol.SendGameAMove("GAME A PLACE JJJJ- AT 1 1 90 TIGER 5");
-		String expected = "GAME A MOVE 1 PLAYER Red PLACED JJJJ- AT 1 1 90 TIGER 5";
+		String gameAMove = tzProtocol.SendGameAMove("GAME C MOVE 1 PLACE JJJJ- AT 1 1 90 TIGER 5");
+		String expected = "GAME C MOVE 1 PLAYER Red PLACED JJJJ- AT 1 1 90 TIGER 5";
 		assertEquals(expected, gameAMove);
 	}
 	@Test 
 	public void testSendGameBMove(){
 		TigerZoneProtocol tzProtocol = new TigerZoneProtocol();
-		String gameBMove = tzProtocol.SendGameBMove("GAME A PLACE JJJJ- AT 1 1 90 TIGER 5");
-		String expected = "GAME B MOVE 1 PLAYER Blue PLACED JJJJ- AT 1 1 90 TIGER 5";
+		String gameBMove = tzProtocol.SendGameBMove("GAME D MOVE 1 PLACE JJJJ- AT 1 1 90 TIGER 5");
+		String expected = "GAME D MOVE 1 PLAYER Blue PLACED JJJJ- AT 1 1 90 TIGER 5";
 		assertEquals(expected, gameBMove);
 	}
 }
