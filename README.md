@@ -9,6 +9,11 @@ Installation requires the JDK and should be performed with the following command
     
 The former will compile everything necessary for a local game, while the latter will do the same but for connecting to a remote server.
 
+Tests will require a JUnit installation and all tests can be built with the following command.
+
+    javac *Test.java
+    
+
 ## Usage
 The local game takes in no arguments, and can simply be run with:
   
@@ -17,6 +22,8 @@ The local game takes in no arguments, and can simply be run with:
 The remote game requires arguments (as a result of information being necessary to connect to the server) and should be run as such:
 
     java TigerZoneClient <hostname> <port> <tournament password> <client identifier> <client password>
+    
+Tests can be run by individual file names on the command line (each ending with \*Test), or run much more quickly inside a configured IDE such as Intellij or Eclipse.
 
 ## The Team
 Assigned the identifier 'Team G,' our members are as follows. 
