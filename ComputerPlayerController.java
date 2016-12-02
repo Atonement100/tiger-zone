@@ -5,7 +5,7 @@ class ComputerPlayerController extends PlayerController {
     private HashSet<Location> possibleTargets = new HashSet<>();
     private int numTigers;
     private int numCrocodiles;
-    
+
     public ComputerPlayerController(GameBoard board){
     	this.localTigers = new Tiger[7];
         this.localGameBoard = board;
@@ -13,7 +13,7 @@ class ComputerPlayerController extends PlayerController {
         this.numCrocodiles = 2;
         this.playerID = defaultID++ % 2;
     }
-    
+
     public ComputerPlayerController(GuiAdapter g, GameBoard board) {
         this.guiAdapter = g;
         this.localTigers = new Tiger[7];
@@ -28,7 +28,7 @@ class ComputerPlayerController extends PlayerController {
         return getPlayerMove(currentTile);
     }
 
-    
+
     @Override
     protected MoveInformation getPlayerMove(Tile currentTile){
         MoveInformation noTigerMoveInfo = new MoveInformation(),
@@ -58,16 +58,18 @@ class ComputerPlayerController extends PlayerController {
                     maxConnections = connections;
 
                     if (numTigers == 0) continue;
-                    
+
                     localGameBoard.placeTemporaryTile(currentTile, possibleLoc, possibleRot);
-                    
+
                     /* Analyze tiger placements */
                     if (numTigers > 0){
                         //These must be considered in this order because of the zoning requirements.
                         //The idea here is to keep a running total of the highest scoring node and only replace the intended target if we /exceed/
                         //The current highest. If we only replace on higher values, we'll never pick a later zone is the same as a previous zone.
 
-                        //int[] zoneScores = new int[9], nodeIndices = new int[9];
+                        //Note that the values returned by this are heuristic in nature, not algorithmic.
+                        //The improved_ai branch /does/ use algorithmic scoring but has translation issues over network.
+
                         IntegerTuple[] zoneValues = new IntegerTuple[9];
 
                         zoneValues[0] = getValueOfCorner(currentTile, 0, 1);    //Zone 1
@@ -88,7 +90,7 @@ class ComputerPlayerController extends PlayerController {
                                 tigerMoveInfo.tileRotation = possibleRot;
                                 tigerMoveInfo.tileLocation = possibleLoc;
                                 tigerMoveFound = true;
-                                
+
                             }
                         }
 
@@ -119,28 +121,28 @@ class ComputerPlayerController extends PlayerController {
     }
 
     //To determine the center zone feature value
-    IntegerTuple getValueOfCenter(Tile currentTile){
+    private IntegerTuple getValueOfCenter(Tile currentTile){
         //Middle zone
         if (currentTile.hasDen){
             //Value monastery
             return new IntegerTuple(9, 12);
         }
         else{
-            int numTrails = 0;
+            int numRoads = 0;
             for (Edge edge : currentTile.edges){
                 if (edge.nodes[1].featureType.isSameFeature(FeatureTypeEnum.Trail)) {
-                    numTrails++;
+                    numRoads++;
                 }
             }
 
-            if (!currentTile.trailsEnd && numTrails > 0) { //If trails end no valid placement here.
+            if ((!currentTile.trailsEnd && numRoads > 0) || (currentTile.trailsEnd && numRoads == 1)) { //If roads end no valid placement here.
                 for (int edgeIndex = 0; edgeIndex < currentTile.edges.length; edgeIndex++){
                     if (currentTile.edges[edgeIndex].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Trail)){
                         return getValueOfSide(currentTile, edgeIndex);
                     }
                 }
             }
-            else if (numTrails == 0){
+            else if (numRoads == 0){
                 for (int edgeIndex = 0; edgeIndex < currentTile.edges.length; edgeIndex++){
                     if (currentTile.edges[edgeIndex].nodes[1].featureType.isSameFeature(FeatureTypeEnum.Jungle)){
                         return getValueOfSide(currentTile, edgeIndex);
@@ -157,16 +159,16 @@ class ComputerPlayerController extends PlayerController {
         if (currentTile.edges[leadingEdge].nodes[2].featureType == currentTile.edges[followingEdge].nodes[0].featureType &&
                 currentTile.edges[leadingEdge].nodes[2].featureType.isSameFeature(FeatureTypeEnum.Lake) &&
                 !currentTile.lakesAreIndependent){
-            //Guaranteed to be a city zone
+            //Guaranteed to be a lake zone
             //Use edges[1].nodes[0]
             if(localGameBoard.aiVerifyTigerPlacement(currentTile, followingEdge * 3, this.playerID)){
                 return new IntegerTuple(3, followingEdge * 3);
             }
         }
         else{
-            //Guaranteed to be a field zone
+            //Guaranteed to be a jungle zone
             if(currentTile.edges[leadingEdge].nodes[2].featureType == FeatureTypeEnum.Jungle){
-                //If both nodes considered are fields, doesn't matter which we use. Otherwise pick the one that is a field.
+                //If both nodes considered are jungles, doesn't matter which we use. Otherwise pick the one that is a jungle.
                 if (localGameBoard.aiVerifyTigerPlacement(currentTile, leadingEdge * 3 + 2, this.playerID)){
                     return new IntegerTuple(1, leadingEdge * 3 + 2);
                 }
@@ -177,7 +179,7 @@ class ComputerPlayerController extends PlayerController {
                 }
             }
             else{
-                //If neither is a field node then we have the JLLJ- case.
+                //If neither is a jungle node then we have the JLLJ- case.
                 //Have to use edges[2].nodes[0] and apply it here
                 if (localGameBoard.aiVerifyTigerPlacement(currentTile, ((followingEdge + 1) % 4) * 3, this.playerID)){
                     return new IntegerTuple(1, ((followingEdge + 1) % 4) * 3);
