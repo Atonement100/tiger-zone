@@ -1,11 +1,6 @@
-
-
 import javax.swing.*;
 
-/**
- * Created by Darshil on 11/19/2016.
- */
-public class ImgSet {
+class ImgSet {
     private String file;
     private ImageIcon imageIcon;
     private ImageIcon imageIcon_1;
@@ -13,47 +8,47 @@ public class ImgSet {
     private ImageIcon imageIcon_3;
     private String imgID;
 
-    public ImgSet() {
+    ImgSet() {
     }
-    public ImageIcon getImageIcon_1() {
+    ImageIcon getImageIcon_1() {
         return imageIcon_1;
     }
 
-    public void setImageIcon_1(String file) {
+    void setImageIcon_1(String file) {
         imageIcon_1 =new ImageIcon(file);
     }
 
-    public ImageIcon getImageIcon_2() {
+    ImageIcon getImageIcon_2() {
         return imageIcon_2;
     }
 
-    public void setImageIcon_2(String file) {
+    void setImageIcon_2(String file) {
         imageIcon_2 =new ImageIcon(file);
     }
 
-    public ImageIcon getImageIcon_3() {
+    ImageIcon getImageIcon_3() {
         return imageIcon_3;
     }
 
-    public void setImageIcon_3(String file) {
+    void setImageIcon_3(String file) {
         imageIcon_3 =new ImageIcon(file);
     }
 
-    public ImageIcon getImageIcon() {
+    ImageIcon getImageIcon() {
         return imageIcon;
     }
 
-    public void setImageIcon(String file) {
+    void setImageIcon(String file) {
         imageIcon =new ImageIcon(file);
 
 
     }
 
-    public String getImgID() {
+    String getImgID() {
         return imgID;
     }
 
-    public void setImgID(String imgID) {
+    void setImgID(String imgID) {
         this.imgID = imgID;
     }
 }

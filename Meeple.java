@@ -1,18 +1,18 @@
 
-public class Meeple {
+class Meeple {
 	int owner;
 	int ID;
 	MeepleStatusEnum status;
 	Location location;
 	
-	public Meeple(){
+	Meeple(){
 		this.owner = -1;
 		this.status = MeepleStatusEnum.onNone;
 		this.location = new Location(-1,-1);
 		this.ID = 0;
 	}
 	
-	public Meeple(int owner, int ID){
+	Meeple(int owner, int ID){
 		this.owner = owner;
 		this.status = MeepleStatusEnum.onNone;
 		this.location = new Location(-1, -1);
@@ -41,7 +41,7 @@ public class Meeple {
 		return status;
 	}
 
-	public MeepleStatusEnum convertIntToMeepleStatus (int status){
+	private MeepleStatusEnum convertIntToMeepleStatus (int status){
 		switch (status) {
 			case 0:
 				return MeepleStatusEnum.onField;

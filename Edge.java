@@ -1,13 +1,12 @@
 
-public class Edge {
+class Edge {
     Node[] nodes;
     
-    public Edge(Node[] nodes){
+    Edge(Node[] nodes){
         this.nodes = nodes;
     }
     
-    public boolean isCompatible(Edge other){
-        
+    boolean isCompatible(Edge other){
         boolean edgeIsCompatible = true;
         for(int i = 0; i < nodes.length; i++){
             

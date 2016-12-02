@@ -5,9 +5,8 @@ import java.util.*;
 import java.util.ArrayList;
 
 public class Tile {
-	public static final int EDGES_PER_TILE = 4;
-	public static final int NODES_PER_EDGE = 3;
-	public static final int NODES_PER_TILE = EDGES_PER_TILE * NODES_PER_EDGE + 1;
+	private static final int EDGES_PER_TILE = 4;
+	private static final int NODES_PER_EDGE = 3;
 	private static int identify = 0;
 	
 	int ID,
@@ -22,7 +21,7 @@ public class Tile {
 			citiesAreIndependent;
 	int animalType;
 
-	public static void resetTileIdentify(){
+	static void resetTileIdentify(){
 		identify = 0;
 	}
 
@@ -255,29 +254,13 @@ public class Tile {
 		nodeB.neighbors.add(nodeA);
 	}
 
-	public void connectNodes(){
-		if(this.edges[0].nodes[1].featureType == FeatureTypeEnum.Road && this.edges[2].nodes[1].featureType == FeatureTypeEnum.Road && this.middle.featureType == FeatureTypeEnum.Road){
-			
-			this.edges[0].nodes[1].neighbors.add(this.middle);
-			
-			this.middle.neighbors.add(this.edges[0].nodes[1]);
-			this.middle.neighbors.add(this.edges[2].nodes[1]);
-			
-			this.edges[2].nodes[1].neighbors.add(this.middle);
-			
-			System.out.println("YES");
-		}
-
-		
-	}
-
-	public boolean isEqual(Tile other){
+	boolean isEqual(Tile other){
 		//More robust checks do not need to be implemented as long as we control tileset input.
 		return this.tileType == other.tileType;
 	}
 
 
-	public void rotateClockwise(int rotations){
+	void rotateClockwise(int rotations){
 		rotations %= EDGES_PER_TILE;
 		if (rotations == 0) return;
 		else if (rotations < 0) rotations += EDGES_PER_TILE;
@@ -289,7 +272,7 @@ public class Tile {
 		return;
 	}
 
-	public void rotateAntiClockwise(int rotations){
+	void rotateAntiClockwise(int rotations){
 		rotations %= EDGES_PER_TILE;
 		if (rotations == 0) return;
 		else if (rotations < 0) rotations += EDGES_PER_TILE;
@@ -308,7 +291,7 @@ public class Tile {
 		}
 	}
     
-    public static void printTile(Tile toPrint){
+    static void printTile(Tile toPrint){
         System.out.print(" ");
         for(int i = 0; i < 3; i++){
             System.out.print(toPrint.edges[1].nodes[i].featureType.toChar());

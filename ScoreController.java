@@ -31,8 +31,6 @@ public class ScoreController {
     }
     
     ArrayList<Meeple> processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed, boolean usingLocalBoard){
-        
-        
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
         
         meeplesToReturn.addAll(handleDens(confirmedTile, moveInfo));
@@ -58,7 +56,7 @@ public class ScoreController {
         localBoard.freeMeeple(ownerID, meepleID);
     }
     
-    public ArrayList<Meeple> handleDens(Tile confirmedTile, MoveInformation moveInfo){
+    private ArrayList<Meeple> handleDens(Tile confirmedTile, MoveInformation moveInfo){
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
         //**************************************************************************************************************
         //FACILITATE CHECK FOR ANY SURROUNDING DENS AND CHECK IF THIS IS A SCORABLE TILE IN CASE IT IS A TILE WITH A DEN
@@ -103,44 +101,8 @@ public class ScoreController {
         return meeplesToReturn;
     }
     
-    /*
-     public void attemptScoring(Tile toCheck){
-     
-     ArrayList<Node> cycleBuffer;
-     
-     //WALL CYCLES
-     for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
-     for(int cornerNodeIndex = 0; cornerNodeIndex < toCheck.edges[edgeIndex].nodes.length; cornerNodeIndex += 2){
-     cycleBuffer = getWallCycleNodes(toCheck.edges[edgeIndex].nodes[cornerNodeIndex]);
-     //System.out.println("NODES IN WALL CYCLE " + cycleBuffer.size());
-     
-     //FOR TESTING *******************************
-     while(!cycleBuffer.isEmpty()){
-     cycleBuffer.remove(0).visited = false;
-     }
-     //*******************************************
-     //System.out.println("");
-     }
-     }
-     
-     //ROAD CYCLES
-     for(int edgeIndex = 0; edgeIndex < toCheck.edges.length; edgeIndex++){
-     cycleBuffer = getRoadCycleNodes(toCheck.edges[edgeIndex].nodes[1]);
-     //System.out.println("NODES IN ROAD CYCLE " + cycleBuffer.size());
-     
-     //FOR TESTING *******************************
-     while(!cycleBuffer.isEmpty()){
-     cycleBuffer.remove(0).visited = false;
-     }
-     //*******************************************
-     //System.out.println("");
-     }
-     }
-     */
-    
     void scoreField(Node start){
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
-        ArrayDeque<Node> visitedNodes = new ArrayDeque<>();
 
         HashSet<Integer> uniqueCities = new HashSet<Integer>();
         HashSet<Integer> uniqueDens = new HashSet<Integer>();
@@ -151,7 +113,6 @@ public class ScoreController {
 
         while (!nodeQueue.isEmpty()){
             Node currNode = nodeQueue.removeFirst();
-            visitedNodes.add(currNode);
             currNode.visited = true;
             if (currNode.meeple != null) meeplesReturned[currNode.meeple.owner]++;
 
@@ -189,7 +150,7 @@ public class ScoreController {
         }
     }
     
-    void scoreCompleteDen(Node den){
+    private void scoreCompleteDen(Node den){
         //handleDens will take care of returning meeples appropriately
         denIdentifier++;
         den.featureID = denIdentifier;
@@ -225,7 +186,7 @@ public class ScoreController {
     }
     
     
-    public ArrayList<Meeple> scoreRoad(Node start){
+    private ArrayList<Meeple> scoreRoad(Node start){
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
         int[] meeplesReturned = new int[2];
         roadIdentifier++;
@@ -259,7 +220,7 @@ public class ScoreController {
             if(gameTileReference.get(start.owningTileId).animalType < 4 && gameTileReference.get(start.owningTileId).animalType > 0 && !uniqueTiles.contains(start.owningTileId)){
                 preyAnimalsMet++;
             }
-            else if (gameTileReference.get(start.owningTileId).animalType == 4 && !uniqueTiles.contains(gameTileReference.get(start.owningTileId))){
+            else if (gameTileReference.get(start.owningTileId).animalType == 4 && !uniqueTiles.contains(start.owningTileId)){
                 crocodilesMet++;
             }
             uniqueTiles.add(buffer.owningTileId);
@@ -300,7 +261,7 @@ public class ScoreController {
         return meeplesToReturn;
     }
     
-    boolean isRoadScorable(Node start){
+    private boolean isRoadScorable(Node start){
         if (start.featureID != -1) return false; //Already been scored, skip
         
         ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
@@ -325,7 +286,6 @@ public class ScoreController {
             for (Node neighbor : currNode.neighbors){
                 if (visitedNodes.contains(neighbor)){
                     if (neighbor != currParent) {
-                        //System.out.println ("road cycle");
                         cycleDetected = true;
                     }
                     continue;
@@ -336,7 +296,6 @@ public class ScoreController {
                     nodeCameFrom.add(currNode);
                 }
                 else if (neighbor.featureType == FeatureTypeEnum.RoadEnd){
-                    //System.out.println("reached endpt");
                     endpointsReached++;
                     if (!visitedTiles.contains(neighbor.owningTileId)){ //this should never be false, since endpoints are always only one node in
                         visitedTiles.add(neighbor.owningTileId);
@@ -344,24 +303,11 @@ public class ScoreController {
                 }
             }
         }
-        
-        //System.out.println("endpoints: " + endpointsReached);
-        
+
         return ((endpointsReached == 0 && cycleDetected) || endpointsReached == 2); //Either 2 endpoints need to have been reached or a cycle was detected.
-        /* Old code used to return tile ids instead of boolean
-         switch (endpointsReached){
-         case 0:
-         if (cycleDetected) return visitedTiles;
-         else return new ArrayList<>();
-         case 1: return new ArrayList<>(); // if only one endpoint was found, cant be a cycle and isnt complete
-         case 2: return visitedTiles;
-         default: throw new IllegalStateException();
-         }
-         */
     }
     
-    public ArrayList<Meeple> scoreIncompleteCity(Node start){
-
+    ArrayList<Meeple> scoreIncompleteCity(Node start){
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
         lakeIdentifier++;
         int[] meeplesReturned = new int[2];
@@ -386,7 +332,7 @@ public class ScoreController {
             if(gameTileReference.get(start.owningTileId).animalType < 4 && gameTileReference.get(start.owningTileId).animalType > 0 && !uniqueTiles.contains(buffer.owningTileId)){
                 preyAnimalsMet++;
             }
-            else if(gameTileReference.get(start.owningTileId).animalType == 4 && !uniqueTiles.contains(gameTileReference.get(start.owningTileId))){
+            else if(gameTileReference.get(start.owningTileId).animalType == 4 && !uniqueTiles.contains(start.owningTileId)){
                 crocodilesMet++;
             }
 
@@ -424,14 +370,11 @@ public class ScoreController {
             }
         }
 
-
         return meeplesToReturn;
     }
     
     
-    public ArrayList<Meeple> scoreCompleteCity(Node start){
-
-
+    private ArrayList<Meeple> scoreCompleteCity(Node start){
         ArrayList<Meeple> meeplesToReturn = new ArrayList<>();
         lakeIdentifier++;
         int[] meeplesReturned = new int[2];
@@ -456,10 +399,9 @@ public class ScoreController {
             Node buffer = bfsQueue.poll();
             nodesToUnvisit.add(buffer);
             if(gameTileReference.get(start.owningTileId).animalType < 4 && gameTileReference.get(start.owningTileId).animalType > 0){
-                //System.out.println("MET AN ANIMAL");
                 uniqueAnimals.add(gameTileReference.get(start.owningTileId).animalType);
             }
-            else if(gameTileReference.get(start.owningTileId).animalType < 4 && gameTileReference.get(start.owningTileId).animalType > 0 && !uniqueTiles.contains(gameTileReference.get(start.owningTileId))){
+            else if(gameTileReference.get(start.owningTileId).animalType < 4 && gameTileReference.get(start.owningTileId).animalType > 0 && !uniqueTiles.contains(start.owningTileId)){
                 crocodilesMet++;
             }
 
@@ -468,8 +410,7 @@ public class ScoreController {
             buffer.featureID = lakeIdentifier;
             for(int i = 0; i < buffer.neighbors.size(); i++){
                 if(!buffer.neighbors.get(i).visited &&
-                        (buffer.neighbors.get(i).featureType.toChar() == 'W' || buffer.neighbors.get(i).featureType.toChar() == 'I'
-                                ||buffer.neighbors.get(i).featureType.toChar() == 'C'))
+                        (buffer.neighbors.get(i).featureType.isSameFeature(FeatureTypeEnum.City)))
                 {
                     bfsQueue.add(buffer.neighbors.get(i));
                     uniqueTiles.add(buffer.neighbors.get(i).owningTileId);
@@ -504,7 +445,7 @@ public class ScoreController {
         return meeplesToReturn;
     }
     
-    public ArrayList<Node> getWallCycleNodes(Node start){
+    private ArrayList<Node> getWallCycleNodes(Node start){
         if (start.featureID != -1) return new ArrayList<>(); //Already been scored, skip
         
         //attempting to find a wall cycle from a non-wall node
@@ -516,15 +457,13 @@ public class ScoreController {
         //first mark start as visited, and add it in the cycle list
         start.visited = true;
         nodesInCycle.add(start);
-        //System.out.println("START\n" + start.featureType.toChar() + " " + start.owningTileId + " " + start.hashCode());
-        
+
         //get one of start node's neighbors of the same feature type and add it in the cycle list
         for(int neighborIndex = 0; neighborIndex < start.neighbors.size(); neighborIndex++)
         {
             if(start.neighbors.get(neighborIndex).featureType.toChar() == 'W' || start.neighbors.get(neighborIndex).featureType.toChar() == 'I')
             {
                 nodesInCycle.add(start.neighbors.get(neighborIndex));
-                //System.out.println(start.neighbors.get(neighborIndex).featureType.toChar() + " " + start.neighbors.get(neighborIndex).owningTileId + " " + start.neighbors.get(neighborIndex).hashCode());
                 start.neighbors.get(neighborIndex).visited = true;
                 break;
             }
@@ -578,14 +517,13 @@ public class ScoreController {
             Node buffer = queue.poll();
             buffer.visited = true;
             nodesInCycle.add(buffer);
-            //System.out.println(buffer.featureType.toChar() + " "+ buffer.owningTileId + " " + buffer.hashCode());
             for(int i = 0; i < buffer.neighbors.size(); i++){
                 if(buffer.neighbors.get(i).visited && buffer.neighbors.get(i) == start)
                 {
                     cycle = true;
                 }
                 else if(!buffer.neighbors.get(i).visited &&
-                        (buffer.neighbors.get(i).featureType.toChar() == 'W' || buffer.neighbors.get(i).featureType.toChar() == 'I'))
+                        (buffer.neighbors.get(i).featureType == FeatureTypeEnum.Wall || buffer.neighbors.get(i).featureType == FeatureTypeEnum.InnerWall))
                 {
                     queue.add(buffer.neighbors.get(i));
                 }
@@ -601,114 +539,26 @@ public class ScoreController {
         
         //INNER WALL CYCLE EDGE CASE BEGIN ******************************************************************
         boolean innerWallCycle = true;
-        if(cycle){
-            for(int nodeIndex = 0; nodeIndex < nodesInCycle.size(); nodeIndex++){
-                if(nodesInCycle.get(nodeIndex).featureType.toChar() !='I'){
-                    innerWallCycle = false;
-                    break;
-                }
+        for (Node node : nodesInCycle) {
+            if (node.featureType != FeatureTypeEnum.InnerWall) {
+                innerWallCycle = false;
+                break;
             }
         }
+
         if(innerWallCycle){
             //System.out.println("INNER WALL CYCLE DETECTED");
             while(!nodesInCycle.isEmpty()){
                 nodesInCycle.remove(0).visited = false;
             }
         }
-        //INNER WALL CYCLE EDGE CASE END ******************************************************************
-        
-        //System.out.println("CYCLE");
-        if(cycle){
-            for(Node nodeToUnvisit : nodesInCycle){
-                nodeToUnvisit.visited = false;
-            }
+
+        for(Node nodeToUnvisit : nodesInCycle){
+            nodeToUnvisit.visited = false;
         }
+
         
         return nodesInCycle;		//actual cycle;
         
-    }
-    
-    public ArrayList<Node> getRoadCycleNodes(Node start){
-        
-        //tentative list of nodesInCycle
-        ArrayList<Node> nodesInCycle = new ArrayList<Node>();
-        
-        //first mark start as visited, and add it in the cycle list
-        start.visited = true;
-        nodesInCycle.add(start);
-        
-        //get one of start node's neighbors of the same feature type and add it in the cycle list
-        for(int neighborIndex = 0; neighborIndex < start.neighbors.size(); neighborIndex++)
-        {
-            if(start.neighbors.get(neighborIndex).featureType.toChar() == 'R')
-            {
-                nodesInCycle.add(start.neighbors.get(neighborIndex));
-                start.neighbors.get(neighborIndex).visited = true;
-                break;
-            }
-            
-        }
-        
-        //if there were no neighbors of the same feature type cycle is impossible,
-        // mark start node as unvisited and return an empty cycle List
-        if(nodesInCycle.size() < 2)
-        {
-            nodesInCycle.remove(0).visited = false;				//this would be the starting node; remove it from the list, unvisit, and return
-            return nodesInCycle;
-        }
-        
-        //get last node added (one node away from starting node)
-        Node oneLevelDepthNode = nodesInCycle.get(nodesInCycle.size()-1);
-        
-        //get one of the one level depth node's neighbors of the same feature type and add it in the cycle list
-        for(int neighborIndex = 0; neighborIndex < oneLevelDepthNode.neighbors.size(); neighborIndex++)
-        {
-            if(!oneLevelDepthNode.neighbors.get(neighborIndex).visited && oneLevelDepthNode.neighbors.get(neighborIndex).featureType.toChar() == 'R')
-            {
-                nodesInCycle.add(oneLevelDepthNode.neighbors.get(neighborIndex));
-                oneLevelDepthNode.neighbors.get(neighborIndex).visited = true;
-                break;
-            }
-        }
-        
-        //if there were no neighbors of the same feature type cycle is impossible,
-        //mark everything in cycle List unvisited and return an empty List
-        if(nodesInCycle.size() < 3){
-            while(!nodesInCycle.isEmpty()){
-                nodesInCycle.remove(0).visited = false;
-            }
-            return nodesInCycle;						//empty
-        }
-        
-        //get last node added(two nodes away from starting node)
-        //we will start searching at this point, so we will remove it from the nodesInCycle list
-        //so that it doesn't exist two times in the list when it gets added back in the traversal
-        Node twoLevelDepthNode = nodesInCycle.remove(nodesInCycle.size()-1);
-        
-        //create queue to traverse along edges
-        Queue<Node> queue = new LinkedList<Node>();
-        queue.add(twoLevelDepthNode);
-        
-        boolean cycle = false;
-        while(!queue.isEmpty()){
-            Node buffer = queue.poll();
-            buffer.visited = true;
-            nodesInCycle.add(buffer);
-            for(int i = 0; i < buffer.neighbors.size(); i++){
-                if(buffer.neighbors.get(i).visited && buffer.neighbors.get(i) == start){
-                    cycle = true;
-                }
-                else if(!buffer.neighbors.get(i).visited && buffer.neighbors.get(i).featureType.toChar() == 'R'){
-                    queue.add(buffer.neighbors.get(i));
-                }
-            }
-        }
-        
-        if(!cycle){
-            while(!nodesInCycle.isEmpty()){
-                nodesInCycle.remove(0).visited = false;
-            }
-        }
-        return nodesInCycle;
     }
 }

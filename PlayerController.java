@@ -1,4 +1,4 @@
-public class PlayerController {
+class PlayerController {
     public GuiAdapter guiAdapter;
     protected Meeple[] localMeeples;
     protected GameBoard localGameBoard;

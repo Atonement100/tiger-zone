@@ -5,7 +5,7 @@ import java.util.Scanner;
 /* Needs: Tile.java, TileRetriever.java, tileset.txt, AI.java */
 
 //Takes strings read from server and converts them to usable information
-public class NetworkAdapter{
+class NetworkAdapter{
 	private static final int NUM_EXPECTED_TILES = 77;
 	private ArrayList<Tile> shuffledTiles = new ArrayList<Tile>();
 	private static ArrayList<Tile> staticTiles = new ArrayList<Tile>();
@@ -18,7 +18,7 @@ public class NetworkAdapter{
 	Scanner s = new Scanner(System.in);
 	
 	//Creates array of local tiles from input file
-	public NetworkAdapter(){
+	NetworkAdapter(){
 		if (staticTiles.isEmpty()){
 			String filePath = "tileset.txt";
 			staticTiles = new TileRetriever(filePath).tiles;
@@ -29,78 +29,44 @@ public class NetworkAdapter{
 	}
 
 	//Parses the string and decides which method to call
-	public void parseMatchProtocol(String message){
-		
-		
-		
+	void parseMatchProtocol(String message){
 		String[] tokens = message.split(" ");
-	
-
-		
 		String tileID, gid, x, y, orientation;
 
+		switch (tokens[0]) {
+			case "BEGIN":
+				gameControllers[0] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
+				gameControllers[1] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
 
-		
-		if(tokens[0].equals("BEGIN")){
-
-			
-			gameControllers[0] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
-			gameControllers[1] = new GameController(NUM_EXPECTED_TILES * 2 + 1, NUM_EXPECTED_TILES * 2 + 1, staticTiles);
-
-		}
-		else if(tokens[0].equals("STARTING")){
-
-			
-			tileID = convertTileToID(tokens[3]);
-			Tile startingTile = convertFromTileID(tileID);
-			x = tokens[5];
-			y = tokens[6];
-			orientation = tokens[7];
-			//Place on both AI boards
-			int rotation = Integer.parseInt(orientation);
-			rotation = convertDegreesToRotations(rotation);
-			rotation = convertAnticlockwiseToClockwise(rotation);
-
-			for (GameController gameController : gameControllers){
-				Location tileLocation = gameController.getBoardCenter();
-				tileLocation.Col += Integer.parseInt(x);
-				tileLocation.Row += ((Integer.parseInt(y))*(-1));				
-				
-				gameController.processNetworkStart(startingTile, new MoveInformation(tileLocation, rotation, -1));
-			}
-		}
-		else if(tokens[0].equals("YOUR")){
-			oid = tokens[4];
-			
-			// THE REMAINING TILES ARE : - should push array of tiles into AI here
-		}
-		else if(tokens[0].equals("THE")){
-			initializeShuffledTiles(Integer.parseInt(tokens[2]), tokens);
-		}
-		else{
-			
-		}
-		
-		/*
-		switch(tokens[0]){
-		
-		
-			case "BEGIN": //Create the game ctrlrs we are going to use
-				
 				break;
-			case "STARTING": //Place starting tile on AI's board
-				
-				
+			case "STARTING":
+				tileID = convertTileToID(tokens[3]);
+				Tile startingTile = convertFromTileID(tileID);
+				x = tokens[5];
+				y = tokens[6];
+				orientation = tokens[7];
+				//Place on both AI boards
+				int rotation = Integer.parseInt(orientation);
+				rotation = convertDegreesToRotations(rotation);
+				rotation = convertAnticlockwiseToClockwise(rotation);
+
+				for (GameController gameController : gameControllers) {
+					Location tileLocation = gameController.getBoardCenter();
+					tileLocation.Col += Integer.parseInt(x);
+					tileLocation.Row += ((Integer.parseInt(y)) * (-1));
+
+					gameController.processNetworkStart(startingTile, new MoveInformation(tileLocation, rotation, -1));
+				}
 				break;
-				
-			//Set opponent's player ID
-			case "YOUR": 
-				
-			case "THE": //Create shuffled array of tiles
-				
+			case "YOUR":
+				oid = tokens[4];
+				break;
+			case "THE":
+				initializeShuffledTiles(Integer.parseInt(tokens[2]), tokens);
+				break;
+			default:
 				break;
 		}
-		*/
 	}
 	
 	// Make Move string is parsed, should probably send AI the tile and GameID we get from parsing here
@@ -131,7 +97,7 @@ public class NetworkAdapter{
 		return "";
 	}
 	// Update gameboard string for both games is parsed - should update gameboards for our gamemove and opponent's game move on AI's representation of board
-	public void parseUpdateGameBoard(String message){
+	void parseUpdateGameBoard(String message){
 		String[] tokens = message.split(" ");
 		String tileID, gid, x, y, orientation;
 		//Read in move that was legally made for both players & place tile on board
@@ -164,10 +130,6 @@ public class NetworkAdapter{
 				gameControllers[gameIndex].processConfirmedNetworkedMove(tilePlaced, new MoveInformation(tileLocation, rotation, meepleLocation), activePlayer);
 			}
 
-		}
-		else{
-		//Game was forfeited from an illegal move
-		//End AI for this match
 		}
 	}
 
@@ -287,12 +249,7 @@ public class NetworkAdapter{
 		return location;
 	}
 
-	public void endGame(){
-		//Round: Wait for next match, Challenges: wait for next challenge
-		//Empty shuffledTiles array
-	}
-
-	String processMoveInformation(MoveInformation moveInfo, String gid, String tileID){
+	private String processMoveInformation(MoveInformation moveInfo, String gid, String tileID){
 		String messageToReturn;
 
 		if (moveInfo.tileLocation.isEqual(new Location(-1, -1))){
@@ -320,7 +277,7 @@ public class NetworkAdapter{
 
 	//Creates message to be sent through the network for a tile placement
 	//messageStatus denotes type of move
-	public String formatMove(int messageStatus, String gid, String tileID, int x, int y, int orientation, int zone){
+	String formatMove(int messageStatus, String gid, String tileID, int x, int y, int orientation, int zone){
 		String message = "";
 		switch(messageStatus){
 			case 0: message = "GAME " + gid + " MOVE " + moveNum + " PLACE " + convertTileToString(tileID) + " AT " + x + " " + y + " " + orientation + " NONE";

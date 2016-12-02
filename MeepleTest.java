@@ -9,7 +9,7 @@ public class MeepleTest {
 		Meeple m = new Meeple();
 		assertEquals(-1, m.owner);
 		assertTrue(m.location.isEqual(new Location(-1,-1)));
-		assertEquals(-1, m.status);
+		assertEquals(MeepleStatusEnum.onNone, m.status);
 	}
 
 	@Test
@@ -17,7 +17,7 @@ public class MeepleTest {
 		Meeple m = new Meeple(1, 1);
 		assertEquals(1, m.owner);
 		assertTrue(m.location.isEqual(new Location(-1,-1)));
-		assertEquals(0, m.status);
+		assertEquals(MeepleStatusEnum.onNone, m.status);
 	}
 
 	@Test
@@ -31,7 +31,7 @@ public class MeepleTest {
 	public void testUpdateStatus() throws Exception {
 		Meeple m = new Meeple(1, 1);
 		m.setStatus(1);
-		assertEquals(1, m.status);
+		assertEquals(MeepleStatusEnum.onRoad, m.status);
 	}
 
 }

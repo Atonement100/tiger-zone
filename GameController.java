@@ -1,18 +1,16 @@
 import java.util.*;
 import java.util.ArrayList;
 public class GameController {
-    protected GuiAdapter guiAdapter;
-    private static final char startingTileChar = 'S';
+    private GuiAdapter guiAdapter;
+    private static final char startingTileChar = 'S'; //Only used for local game
     static final int NUM_PLAYERS = 2;
     static final int NUM_MEEPLES = 7;
-    GameBoard board;
+    private GameBoard board;
     private PlayerController[] players = new PlayerController[NUM_PLAYERS];
-    //private Meeple[][] playerMeeples = new Meeple[NUM_PLAYERS][NUM_MEEPLES];
-    
     private ArrayList<Tile> gameTileReference; // Don't modify this one after constructor. Can be indexed in to with tile.ID.
     private ArrayList<Tile> gameTiles;
     private int currentPlayer = 0;
-    public ScoreController scoreController;
+    private ScoreController scoreController;
     
     public GameController(int row, int col){
         board = new GameBoard(row, col);
@@ -24,7 +22,7 @@ public class GameController {
         scoreController = new ScoreController(gameTileReference, board);
     }
     
-    public GameController(int row, int col, ArrayList<Tile> tiles){
+    GameController(int row, int col, ArrayList<Tile> tiles){
         board = new GameBoard(row, col);
 
         players[0] = new ComputerPlayerController(board);
@@ -34,7 +32,7 @@ public class GameController {
         scoreController = new ScoreController(gameTileReference, board);
     }
 
-    public GameController(int numHumanPlayers){
+    GameController(int numHumanPlayers){
         this.gameTiles = retrieveGameTiles();
         this.gameTileReference = retrieveGameTiles();
         board = new GameBoard(gameTiles.size(), gameTiles.size());
@@ -67,7 +65,6 @@ public class GameController {
             gameTiles.remove(gameTiles.size() - 1);
         } while (!board.isPossibleToPlaceTileSomewhere(nextTile));
 
-
         return nextTile;
     }
     
@@ -78,17 +75,17 @@ public class GameController {
         while(!gameTiles.isEmpty()){
             currentTile = drawTile();
             handleMove(currentTile);
-            //board.printBoard();
-           // System.out.println("Player 1 score: " + scoreController.player1Score);
-           // System.out.println("Player 2 score: " + scoreController.player2Score);
-            //guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
+
             if (spectating){
                 System.out.print("Press enter to continue.");
                 Scanner scanner = new Scanner(System.in);
                 scanner.nextLine();
             }
         }
-        
+
+        System.out.println("END GAME SCORE");
+        System.out.println(scoreController.player1Score);
+        System.out.println(scoreController.player2Score);
         
         endOfGameScoring();
         guiAdapter.updateScores(scoreController.player1Score, scoreController.player2Score);
@@ -174,9 +171,6 @@ public class GameController {
     }
 
     private void handleMove(Tile tileForPlayer){
-        //System.out.println("player " + currentPlayer + " has tile " + tileForPlayer.tileType + " to move with");
-        //Tile.printTile(tileForPlayer);
-
         MoveInformation playerMoveInfo;
         boolean firstAttempt = true;
         do {
@@ -184,9 +178,7 @@ public class GameController {
             playerMoveInfo = players[currentPlayer].processPlayerMove(tileForPlayer);
             firstAttempt = false;
         } while (!board.verifyTilePlacement(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation));
-        
-        //System.out.println("Player " + currentPlayer + " has confirmed a move Row: " + playerMoveInfo.tileLocation.Row + " Col: " + playerMoveInfo.tileLocation.Col + " Rotation: " + playerMoveInfo.tileRotation + " Meeple Location: " + playerMoveInfo.meepleLocation);
-        
+
         board.placeTile(tileForPlayer, playerMoveInfo.tileLocation, playerMoveInfo.tileRotation);
         
         if (board.verifyMeeplePlacement(tileForPlayer, playerMoveInfo.meepleLocation, currentPlayer) ) {
@@ -215,7 +207,6 @@ public class GameController {
         }
         
         switchPlayerControl();
-        return;
     }
     
     private void switchPlayerControl(){
@@ -243,8 +234,7 @@ public class GameController {
     
     private ArrayList<Tile> retrieveGameTiles(){
         Tile.resetTileIdentify();
-        Scanner scanner = new Scanner(System.in);
-        String filePath = "tileset.txt";// scanner.next();
+        String filePath = "tileset.txt";
         return new TileRetriever(filePath).tiles;
     }
 

@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.io.*;
-public class TileRetriever {
-
+class TileRetriever {
 	ArrayList<Tile> tiles;
 
 	public TileRetriever(String path){

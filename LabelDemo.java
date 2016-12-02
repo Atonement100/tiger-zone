@@ -6,37 +6,32 @@ import java.util.Scanner;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-/*
- * LabelDemo.java needs one other file:
- *   images/middle.gif
- *
- */
-public class LabelDemo extends JFrame {
-    public int size = 2;
-    public static Image ICON;
+class LabelDemo extends JFrame {
+    private int size = 2;
+    private static Image ICON;
     private boolean done= false;
-    public boolean nextmove;
+    private boolean nextmove;
 
 
 
     private int rotation;
     private int meeple;
-    public String buttonText;
+    private String buttonText;
     private int x, y;
     private String[] imgId = {"JJJJ-", "JJJJX", "JJTJX", "TTTT-", "TJTJ-", "TJJT-", "TJTT-",
             "LLLL-", "JLLL-", "LLJJ-", "JLJL-", "LJLJ-", "LJJJ-", "JLLJ-",
             "TLJT-", "TLJTP", "JLTT-", "JLTTB", "TLTJ-", "TLTJD", "TLLL-",
             "TLTT-", "TLTTP", "TLLT-", "TLLTB", "LJTJ-", "LJTJD", "TLLLC"};
-    public TileSet[][] tiles;
-    public PreView preView = new PreView();
-    public ImgSet[] img = new ImgSet[28];
+    private TileSet[][] tiles;
+    private PreView preView = new PreView();
+    private ImgSet[] img = new ImgSet[28];
     private JLabel p1ScoreLabel, p2ScoreLabel;
 
-    public boolean isDone() {
+    boolean isDone() {
         return done;
     }
 
-    public void setDone(boolean done) {
+    void setDone(boolean done) {
         this.done = done;
     }
 
@@ -44,8 +39,7 @@ public class LabelDemo extends JFrame {
         return nextmove;
     }
 
-
-    public LabelDemo(int boardSize) {
+    LabelDemo(int boardSize) {
         size = boardSize;
         tiles = new TileSet[size][size];
         JFrame frame = new JFrame("Tiger Zone");
@@ -54,14 +48,11 @@ public class LabelDemo extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                //  System.out.println(e.getButton());
                 JButton reference = (JButton) e.getSource();
-                //System.out.print("clicked button: " + reference.getText());
                 buttonText = reference.getText();
                 String[] rowcol = buttonText.split("[,]");
                 x = Integer.parseInt(rowcol[0]);
                 y = Integer.parseInt(rowcol[1]);
-                //reference.setIcon(preView.returnImg);
                 Scanner scanner = new Scanner(System.in);
                 System.out.println("Enter a meeple placement for placed tile range [-1,12]");
                 setMeeple(scanner.nextInt());
@@ -180,7 +171,7 @@ public class LabelDemo extends JFrame {
         this.meeple = meeple;
     }
 
-    public ImgSet findImg(String tileId) {
+    private ImgSet findImg(String tileId) {
         for (int i = 0; i < 28; i++) {
             if (img[i].getImgID().equals(tileId)) {
                 return img[i];
@@ -190,7 +181,7 @@ public class LabelDemo extends JFrame {
         return null;
     }
 
-    public void placeFirstTile(int x, int y, String id) {
+    void placeFirstTile(int x, int y, String id) {
         tiles[x][y].setTileIcon(findImg(id).getImageIcon());
     }
 
@@ -203,15 +194,15 @@ public class LabelDemo extends JFrame {
     public int getY() {
         return y;
     }
-    public int getRotation() {
+    int getRotation() {
         rotation= preView.getRotation();
         return rotation;
     }
 
-    public void setRotation(int rotation) {
+    private void setRotation(int rotation) {
         this.rotation = rotation;
     }
-    public void placeComputertile(int row, int col, int tileRotation, String guiID) {
+    void placeComputertile(int row, int col, int tileRotation, String guiID) {
         setRotation(tileRotation);
         if (rotation==0){
             tiles[row][col].setTileIcon(findImg(guiID).getImageIcon());
@@ -227,12 +218,12 @@ public class LabelDemo extends JFrame {
     }
     
     // Place a tiger icon (orange dot) on the tile.
-    public void placeTiger(int row, int col, int tigerPos){
+    void placeTiger(int row, int col, int tigerPos){
         tiles[row][col].setTiger(tigerPos);
     }
     
     
-    public void updateScores(int p1Score, int p2Score){
+    void updateScores(int p1Score, int p2Score){
         p1ScoreLabel.setText("Player 1 Score: " + p1Score);
         p1ScoreLabel.repaint();
         p2ScoreLabel.setText(("Player 2 score: " + p2Score));

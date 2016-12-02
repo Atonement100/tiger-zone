@@ -28,7 +28,6 @@ public class MoveInformation {
 
     @Override
     public String toString(){
-        String str = "(" + tileLocation.Row + ", " + tileLocation.Col + "), " + tileRotation + ", " + meepleLocation;
-        return str;
+        return "(" + tileLocation.Row + ", " + tileLocation.Col + "), " + tileRotation + ", " + meepleLocation;
     }
 }

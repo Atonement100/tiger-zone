@@ -1,13 +1,10 @@
 import java.util.ArrayList;
 public class Node {
-    
     FeatureTypeEnum featureType;
     Meeple meeple;
     boolean meeplePlacedInFeature;
     ArrayList<Node> neighbors;
-    
-    
-    
+
     boolean visited;
     int owningTileId;
     int featureID;

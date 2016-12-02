@@ -191,83 +191,6 @@ public class GameBoard {
         }
     }
     
-    boolean isValidMeeplePlacementOnNode(Location targetLocation, int meepleLocation){
-        if (meepleLocation == 12) return true;
-        else if (meepleLocation < 0 || meepleLocation > 12) return false;
-        
-        int edge = meepleLocation / 3; //Nodes per edge
-        int node = meepleLocation % 3;
-        Tile tile = board[targetLocation.Row][targetLocation.Col];
-
-        if (tile == null) return false;
-
-        if(tile.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
-            node = 1;
-        }
-        
-        Node startingNode = tile.edges[edge].nodes[node];
-        if (startingNode.meeplePlacedInFeature) return false;
-        
-        
-        ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
-        ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
-        nodeQueue.add(startingNode);
-        while (!nodeQueue.isEmpty()){
-            Node currNode = nodeQueue.removeFirst();
-            visitedQueue.add(currNode);
-            for (Node neighbor : currNode.neighbors){
-                if (neighbor.featureType.isSameFeature(currNode.featureType)) {
-                    if (neighbor.meeplePlacedInFeature) {
-                        System.out.println("Potential error from isValidMeeplePlacementOnNode - starting node should be marked true when the tile is placed");
-                        return false;
-                    } else if (!visitedQueue.contains(neighbor)) {
-                        nodeQueue.add(neighbor);
-                    }
-                }
-            }
-        }
-        
-        return true;
-    }
-
-    boolean isValidMeeplePlacementOnNode(Tile tile, int meepleLocation){
-        if (meepleLocation == 12) return true;
-        else if (meepleLocation < 0 || meepleLocation > 12) return false;
-
-        int edge = meepleLocation / 3; //Nodes per edge
-        int node = meepleLocation % 3;
-
-        if (tile == null) return false;
-
-        if(tile.edges[edge].nodes[node].featureType == FeatureTypeEnum.InnerWall){
-            node = 1;
-        }
-
-        Node startingNode = tile.edges[edge].nodes[node];
-        if (startingNode.meeplePlacedInFeature) return false;
-
-
-        ArrayDeque<Node> nodeQueue = new ArrayDeque<>();
-        ArrayDeque<Node> visitedQueue = new ArrayDeque<>();
-        nodeQueue.add(startingNode);
-        while (!nodeQueue.isEmpty()){
-            Node currNode = nodeQueue.removeFirst();
-            visitedQueue.add(currNode);
-            for (Node neighbor : currNode.neighbors){
-                if (neighbor.featureType.isSameFeature(currNode.featureType)) {
-                    if (neighbor.meeplePlacedInFeature) {
-                        System.out.println("Potential error from isValidMeeplePlacementOnNode - starting node should be marked true when the tile is placed");
-                        return false;
-                    } else if (!visitedQueue.contains(neighbor)) {
-                        nodeQueue.add(neighbor);
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-    
     void freeMeeple(int ownerID, int meepleID){
         this.playerMeeples[ownerID][meepleID].status = MeepleStatusEnum.onNone;
         this.playerMeeples[ownerID][meepleID].location = new Location(-1,-1);
@@ -513,7 +436,7 @@ public class GameBoard {
         return false;
     }
 
-    void updateAvailablePlacements(Location moveLocation){
+    private void updateAvailablePlacements(Location moveLocation){
         for (Location loc : getEmptyNeighboringLocations(moveLocation)){
             if (loc != null){
                 possibleTargets.add(loc);

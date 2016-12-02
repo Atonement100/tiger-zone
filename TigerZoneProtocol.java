@@ -59,7 +59,6 @@ public class TigerZoneProtocol {
         Collections.shuffle(Arrays.asList(tiles));
         ArrayList<String> newTile = new ArrayList<String>();
         Collections.addAll(newTile, tiles);
-        //Collections.shuffle(newTile);
 
 		StringBuilder strBuilder = new StringBuilder();
 		for (String string : newTile){

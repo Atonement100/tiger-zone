@@ -30,8 +30,6 @@ class ComputerPlayerController extends PlayerController {
 
     @Override
     protected MoveInformation getPlayerMove(Tile currentTile){
-        //AI Logic / fx calls may come from here
-        // System.out.println("computer processing move");
         MoveInformation noMeepleMoveInfo = new MoveInformation(),
                 meepleMoveInfo = new MoveInformation();
         boolean meepleMoveFound = false;
@@ -59,13 +57,12 @@ class ComputerPlayerController extends PlayerController {
                     maxConnections = connections;
 
                     if (numMeeples == 0) continue;
-                   // if (currentTile.tileType == 'N' || currentTile.tileType == 'Z') continue;
                     
                     localGameBoard.placeTemporaryTile(currentTile, possibleLoc, possibleRot);
                     
                     /* Analyze meeple placements */
                     if (numMeeples > 0){
-                        //These must be considered in this order because of the... interesting zoning requirements.
+                        //These must be considered in this order because of the zoning requirements.
                         //The idea here is to keep a running total of the highest scoring node and only replace the intended target if we /exceed/
                         //The current highest. If we only replace on higher values, we'll never pick a later zone is the same as a previous zone.
 
@@ -120,8 +117,6 @@ class ComputerPlayerController extends PlayerController {
         else{
             return noMeepleMoveInfo;
         }
-        // System.out.println("No viable location to place :(");
-        //return new MoveInformation(new Location(-1, -1), -1, -1);
     }
 
     IntegerTuple getValueOfCenter(Tile currentTile){
@@ -224,9 +219,6 @@ class ComputerPlayerController extends PlayerController {
 
     @Override
     void processConfirmedMove(Tile confirmedTile, MoveInformation moveInfo, int playerConfirmed) {
-        //super.processConfirmedMove(confirmedTile, moveInfo, playerConfirmed);
-        //System.out.println("Computer player has confirmed the recent move Row: " + moveInfo.tileLocation.Row + " Col: " + moveInfo.tileLocation.Col + " Rotation: " + moveInfo.tileRotation);
-
         Location moveLocation = moveInfo.tileLocation;
 
         for (Location loc : localGameBoard.getEmptyNeighboringLocations(moveLocation)){
@@ -235,17 +227,10 @@ class ComputerPlayerController extends PlayerController {
             }
         }
         possibleTargets.remove(moveLocation);
-
-     //   for (Location loc : possibleTargets){
-     //       System.out.println("target: " + loc.Row + ", " + loc.Col);
-     //   }
     }
 
     @Override
     void processConfirmedMove(MoveInformation moveInfo) {
-        //super.processConfirmedMove(confirmedTile, moveInfo, playerConfirmed);
-        //System.out.println("Computer player has confirmed the recent move Row: " + moveInfo.tileLocation.Row + " Col: " + moveInfo.tileLocation.Col + " Rotation: " + moveInfo.tileRotation);
-
         Location moveLocation = moveInfo.tileLocation;
 
         for (Location loc : localGameBoard.getEmptyNeighboringLocations(moveLocation)){
@@ -254,10 +239,6 @@ class ComputerPlayerController extends PlayerController {
             }
         }
         possibleTargets.remove(moveLocation);
-
-        /* for (Location loc : possibleTargets){
-            System.out.println("target: " + loc.Row + ", " + loc.Col);
-        } */
     }
 
     @Override

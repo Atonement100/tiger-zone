@@ -1,35 +1,30 @@
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-/**
- * Created by Darshil on 11/19/2016.
- */
-public class PreView extends JFrame {
-    public JFrame preview = new JFrame("next tile");
-    public JButton previewButton = new JButton();
-    public JLabel score = new JLabel();
+class PreView extends JFrame {
+    private JFrame preview = new JFrame("next tile");
+    private JButton previewButton = new JButton();
+    private JLabel score = new JLabel();
     private JLabel upLabel, rightLabel, downLabel, leftLabel;
     private JPanel buttonPanel;
-    public ImageIcon img;
-    public ImageIcon img_1;
-    public ImageIcon img_2;
-    public ImageIcon img_3;
+    private ImageIcon img;
+    private ImageIcon img_1;
+    private ImageIcon img_2;
+    private ImageIcon img_3;
+    private ImageIcon returnImg;
+    private String imgID;
 
     public ImageIcon getReturnImg() {
         return returnImg;
     }
 
-    public void setReturnImg(ImageIcon returnImg) {
+    void setReturnImg(ImageIcon returnImg) {
         this.returnImg = returnImg;
     }
 
-    public ImageIcon returnImg;
-    public String imgID;
 
     public int getMeeple() {
 
@@ -38,7 +33,7 @@ public class PreView extends JFrame {
 
     public int meeple;
 
-    public int getRotation() {
+    int getRotation() {
         return Rotation;
     }
 
@@ -48,7 +43,7 @@ public class PreView extends JFrame {
         return img_1;
     }
 
-    public void setImg_1(ImageIcon img_1) {
+    void setImg_1(ImageIcon img_1) {
         this.img_1 = img_1;
     }
 
@@ -56,7 +51,7 @@ public class PreView extends JFrame {
         return img_2;
     }
 
-    public void setImg(ImageIcon img) {
+    void setImg(ImageIcon img) {
         this.img = img;
     }
 
@@ -64,7 +59,7 @@ public class PreView extends JFrame {
         return img;
     }
 
-    public void setImg_2(ImageIcon img_2) {
+    void setImg_2(ImageIcon img_2) {
         this.img_2 = img_2;
     }
 
@@ -72,7 +67,7 @@ public class PreView extends JFrame {
         return img_3;
     }
 
-    public void setImg_3(ImageIcon img_3) {
+    void setImg_3(ImageIcon img_3) {
         this.img_3 = img_3;
     }
 
@@ -80,7 +75,7 @@ public class PreView extends JFrame {
         return imgID;
     }
 
-    public void setImgID(String imgID) {
+    void setImgID(String imgID) {
         this.imgID = imgID;
     }
 
@@ -90,12 +85,12 @@ public class PreView extends JFrame {
 
     }
 
-    public void setImage(ImageIcon img) {
+    void setImage(ImageIcon img) {
 
         previewButton.setIcon(img);
     }
 
-    public PreView()
+    PreView()
         {
             setReturnImg(img);
         MouseAdapter ma = new MouseAdapter() {
