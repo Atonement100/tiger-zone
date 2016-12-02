@@ -49,7 +49,7 @@ class ComputerPlayerController extends PlayerController {
                 if (loc == null) connections++;
             }
 
-            if (connections < maxConnections) continue;
+            if (connections <= maxConnections) continue;
 
             for (int possibleRot = 0; possibleRot < 4; possibleRot++){
                 if (this.localGameBoard.verifyTilePlacement(currentTile, possibleLoc, possibleRot)){

@@ -197,11 +197,17 @@ public class Tile {
 			}
 		}
 
+		/*Adjacency linker*/
 		for (int edgeIndex = 0; edgeIndex < edges.length; edgeIndex++){
 			for (int nodeIndex = 0; nodeIndex <
 					NODES_PER_EDGE - 1; nodeIndex++) { //We can only loop for 1st two nodes on an edge. Third node needs to be handled specially
-				if (edges[edgeIndex].nodes[nodeIndex].featureType == edges[edgeIndex].nodes[nodeIndex + 1].featureType || 					//If same feature type
-						edges[edgeIndex].nodes[nodeIndex].featureType.isShoreToLake(edges[edgeIndex].nodes[nodeIndex + 1].featureType)) {	//Or a wall to city connection
+				//if (edges[edgeIndex].nodes[nodeIndex].featureType == edges[edgeIndex].nodes[nodeIndex + 1].featureType || 					//If same feature type
+				//		edges[edgeIndex].nodes[nodeIndex].featureType.isShoreToLake(edges[edgeIndex].nodes[nodeIndex + 1].featureType)) {	//Or a wall to city connection
+				//	addEachNodeAsNeighbor(edges[edgeIndex].nodes[nodeIndex], edges[edgeIndex].nodes[nodeIndex + 1]);
+				//}
+
+				//Just link all adjacent nodes if they are the same feature.
+				if (edges[edgeIndex].nodes[nodeIndex].featureType.isSameFeature(edges[edgeIndex].nodes[nodeIndex+1].featureType)){
 					addEachNodeAsNeighbor(edges[edgeIndex].nodes[nodeIndex], edges[edgeIndex].nodes[nodeIndex + 1]);
 				}
 			}
@@ -246,6 +252,10 @@ public class Tile {
 			int lowerIndex = cityLocations.get(0) - 1;
 			if (lowerIndex < 0) lowerIndex += EDGES_PER_TILE;
 			addEachNodeAsNeighbor(edges[lowerIndex].nodes[2], edges[(cityLocations.get(0) + 1) % EDGES_PER_TILE].nodes[0]);
+		}
+
+		if(this.tileType == 'H'){
+			this.printNodeHashes();
 		}
 	}
 
