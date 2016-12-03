@@ -406,6 +406,14 @@ class NetworkAdapter{
 	}
 
 	//Creates a local tile based on our local representation of ID of the tile
+	//TILE REFERENCE**********************************************************************************************************
+	//Tile(boolean hasDen, boolean trailsEnd, boolean lakesAreIndependent, int animalType, Integer[] edgeValues, char tileType)
+	/*
+	edge values: 
+		0 - jungle
+		1 - trail
+		2 - city
+	*/
 	private Tile convertFromTileID(String tileID){
 		switch(tileID){
 			case "A": return (new Tile(false, false, false, 0, new Integer[]{0, 0, 0, 0}, 'A'));
