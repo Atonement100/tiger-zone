@@ -9,10 +9,11 @@ Installation requires the JDK and should be performed with the following command
     
 The former will compile everything necessary for a local game, while the latter will do the same but for connecting to a remote server.
 
-Tests will require a JUnit installation and all tests can be built with the following command.
+Unit tests will require a JUnit installation and all tests can be built with the following command.
 
     javac *Test.java
     
+Acceptance testing was carried out through the use of a graphical interface that launches with each instance of the game.
 
 ## Usage
 The local game takes in no arguments, and can simply be run with:
