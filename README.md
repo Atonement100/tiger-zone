@@ -1,6 +1,25 @@
 # Tiger Zone
-Designed for Software Engineering (CEN3031), Tiger Zone is a Carcassonne-esque game. The implementation here is able to both host local games, either between players or our competitive AI, as well as compete over a TCP connection to a remote server hosting the game, returning feedback on each move.
+Tiger Zone is an implemenatation of a Carcassonne-esque game, designed for CEN3031, Intro. to Software Engineering. Our implemenation of the game is able to both host local games, as well as compete over a TCP connection to a remote server hosting the game as well.
 
+Our local implementation hosts for up to two players, and each player may either be a human or an instance of our AI. The remotely connected version, per project specifications, is only playable by the AI, but could be modified to allow a human player if desired. 
+
+The remote game required connected players to maintain two active games in each match it played and returned feedback about all moves to players after moves in each game were confirmed. Links to complete project specifications are provided below.
+
+## Project Specification
+
+Project specifications were changed throughout the development cycle to imitate evolving requirements of a real-world project.
+
++ Day 0 - Develop as if the game were Carcassonne. Proper development practices will allow work to be usable once TigerZone rules are released.
++ Day 17 - [TigerZone Rules v1.2](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20v1.2.pdf)
++ Day 22 - [TigerZone Tournament Rules v1.0](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Tournament%20Rules%20v1.0.pdf) - Conceptual dicta about how the tournament would be run.
++ Day 24 - [TigerZone Rules v2.2](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20v2.2.pdf)
++       - [TigerZone Tournament Rules v2.2](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Tournament%20Rules%20v2.2.pdf)
++       - [TigerZone Networking Protocol v1.1](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Networking%20Protocol%20v1.1.pdf) - Actual networking formats
++ Day 26 - [TigerZone Networking Protocol v1.2](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Networking%20Protocol%20v1.2.pdf)
++ Day 30 - [TigerZone Networking Protocol v1.3](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Networking%20Protocol%20v1.3.pdf)
++ Day 31 - [TigerZone Networking Protocol v1.4](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Networking%20Protocol%20v1.4.pdf)
++ Day 32 - Tournaments Begin.
+       
 ## Installation
 Installation requires the JDK and should be performed with the following command/s in the source directory after cloning. 
 
