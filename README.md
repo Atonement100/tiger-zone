@@ -5,6 +5,11 @@ Our local implementation hosts for up to two players, and each player may either
 
 The remote game required connected players to maintain two active games in each match it played and returned feedback about all moves to players after moves in each game were confirmed. Links to complete project specifications are provided below.
 
+## Debug GUI
+This is a snapshot of the graphics interface used to either play the game or observe it played by our AI. It was used as a driver for acceptance testing.
+
+![Graphics Interface used to play TigerZone for acceptance testing](https://raw.githubusercontent.com/Atonement100/tiger-zone/master/TigerZoneDemo.png)
+
 ## Project Specification
 
 Project specifications were changed throughout the development cycle to imitate evolving requirements of a real-world project.
