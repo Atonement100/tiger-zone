@@ -18,8 +18,8 @@ Project specifications were changed throughout the development cycle to imitate 
 + Day 17 - [TigerZone Rules v1.2](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20v1.2.pdf)
 + Day 22 - [TigerZone Tournament Rules v1.0](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Tournament%20Rules%20v1.0.pdf) - Conceptual dicta about how the tournament would be run.
 + Day 24 - [TigerZone Rules v2.2](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20v2.2.pdf)
-+       - [TigerZone Tournament Rules v2.2](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Tournament%20Rules%20v2.2.pdf)
-+       - [TigerZone Networking Protocol v1.1](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Networking%20Protocol%20v1.1.pdf) - Actual networking formats
++ Day 24 - [TigerZone Tournament Rules v2.2](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Tournament%20Rules%20v2.2.pdf)
++ Day 24 - [TigerZone Networking Protocol v1.1](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Networking%20Protocol%20v1.1.pdf) - Actual networking formats
 + Day 26 - [TigerZone Networking Protocol v1.2](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Networking%20Protocol%20v1.2.pdf)
 + Day 30 - [TigerZone Networking Protocol v1.3](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Networking%20Protocol%20v1.3.pdf)
 + Day 31 - [TigerZone Networking Protocol v1.4](http://www.cise.ufl.edu/~dts/cen3031/TigerZone/TigerZone%20-%20Networking%20Protocol%20v1.4.pdf)
